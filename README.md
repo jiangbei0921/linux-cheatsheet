@@ -1,5 +1,7 @@
 # Linux 与 Git 指令速查指南
 
+> 🌐 **在线使用**：[https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)（打开即可直接搜索，无需安装）
+
 纯前端、零依赖、全中文的命令行查询与学习工具。面向 AI 时代的初学者：不只是"查命令"，更帮你**读懂并安全使用 AI 生成的命令**。
 
 ## 功能特性
@@ -12,8 +14,9 @@
 
 ## 使用方式
 
+- **在线（推荐）**：直接访问 👉 [https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)，打开即可在浏览器中搜索、浏览、复制所有命令，无需任何安装或配置。
 - **本地**：直接双击 `index.html`，即可在浏览器中离线使用（数据通过 `data/commands.js` 注入，无需服务器）。
-- **部署**：将整个目录托管到任意静态服务（GitHub Pages / 腾讯云 EdgeOne Pages 等）即可在线访问。
+- **源码仓库**：[https://github.com/jiangbei0921/linux-git-cheatsheet](https://github.com/jiangbei0921/linux-git-cheatsheet)
 
 ## 目录结构
 
