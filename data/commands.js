@@ -1,0 +1,7237 @@
+window.COMMAND_DATA = {
+  "categories": [
+    {
+      "id": "file",
+      "name": "文件与目录操作",
+      "group": "linux"
+    },
+    {
+      "id": "view",
+      "name": "文件查看",
+      "group": "linux"
+    },
+    {
+      "id": "text",
+      "name": "文本处理",
+      "group": "linux"
+    },
+    {
+      "id": "perm",
+      "name": "文件权限与属性",
+      "group": "linux"
+    },
+    {
+      "id": "user",
+      "name": "用户与用户组",
+      "group": "linux"
+    },
+    {
+      "id": "proc",
+      "name": "进程管理",
+      "group": "linux"
+    },
+    {
+      "id": "disk",
+      "name": "磁盘与文件系统",
+      "group": "linux"
+    },
+    {
+      "id": "net",
+      "name": "网络",
+      "group": "linux"
+    },
+    {
+      "id": "archive",
+      "name": "压缩与归档",
+      "group": "linux"
+    },
+    {
+      "id": "sys",
+      "name": "系统信息与监控",
+      "group": "linux"
+    },
+    {
+      "id": "power",
+      "name": "关机与系统控制",
+      "group": "linux"
+    },
+    {
+      "id": "pkg",
+      "name": "软件包管理",
+      "group": "linux"
+    },
+    {
+      "id": "kernel",
+      "name": "内核模块",
+      "group": "linux"
+    },
+    {
+      "id": "shell",
+      "name": "Shell 内建命令",
+      "group": "linux"
+    },
+    {
+      "id": "editor",
+      "name": "编辑器与工具",
+      "group": "linux"
+    },
+    {
+      "id": "g_config",
+      "name": "仓库与配置",
+      "group": "git"
+    },
+    {
+      "id": "g_commit",
+      "name": "暂存与提交",
+      "group": "git"
+    },
+    {
+      "id": "g_view",
+      "name": "查看与比较",
+      "group": "git"
+    },
+    {
+      "id": "g_branch",
+      "name": "分支与合并",
+      "group": "git"
+    },
+    {
+      "id": "g_remote",
+      "name": "远程协作",
+      "group": "git"
+    },
+    {
+      "id": "g_undo",
+      "name": "撤销与重置",
+      "group": "git"
+    },
+    {
+      "id": "g_patch",
+      "name": "补丁与邮件",
+      "group": "git"
+    },
+    {
+      "id": "g_debug",
+      "name": "调试",
+      "group": "git"
+    },
+    {
+      "id": "g_maint",
+      "name": "维护",
+      "group": "git"
+    },
+    {
+      "id": "g_other",
+      "name": "脚本与其他",
+      "group": "git"
+    },
+    {
+      "id": "g_plumb",
+      "name": "底层命令 plumbing",
+      "group": "git"
+    },
+    {
+      "id": "g_adv",
+      "name": "进阶工作流",
+      "group": "git"
+    },
+    {
+      "id": "g_transport",
+      "name": "传输与服务",
+      "group": "git"
+    }
+  ],
+  "commands": [
+    {
+      "name": "ls",
+      "category": "file",
+      "description": "列出目录内容",
+      "keywords": [
+        "列出",
+        "目录",
+        "文件列表",
+        "ls"
+      ],
+      "examples": [
+        {
+          "cmd": "ls -la",
+          "desc": "长格式显示全部文件（含隐藏文件）"
+        },
+        {
+          "cmd": "ls -lh",
+          "desc": "以人类可读大小显示"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "默认不显示隐藏文件（以 . 开头），需加 -a",
+      "compare": "ls 列目录；ll 多为 ls -l 别名"
+    },
+    {
+      "name": "cd",
+      "category": "file",
+      "description": "切换工作目录",
+      "keywords": [
+        "切换",
+        "目录",
+        "cd"
+      ],
+      "examples": [
+        {
+          "cmd": "cd ~",
+          "desc": "回到家目录"
+        },
+        {
+          "cmd": "cd -",
+          "desc": "回到上次所在目录"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "pwd",
+      "category": "file",
+      "description": "显示当前目录绝对路径",
+      "keywords": [
+        "当前目录",
+        "路径",
+        "pwd"
+      ],
+      "examples": [
+        {
+          "cmd": "pwd",
+          "desc": "打印工作目录"
+        },
+        {
+          "cmd": "pwd -P",
+          "desc": "解析符号链接后的真实路径"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "cp",
+      "category": "file",
+      "description": "复制文件或目录",
+      "keywords": [
+        "复制",
+        "拷贝",
+        "cp"
+      ],
+      "examples": [
+        {
+          "cmd": "cp a.txt b.txt",
+          "desc": "复制文件"
+        },
+        {
+          "cmd": "cp -r src/ dst/",
+          "desc": "递归复制目录"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "复制目录必须加 -r，否则报错",
+      "compare": null
+    },
+    {
+      "name": "mv",
+      "category": "file",
+      "description": "移动或重命名",
+      "keywords": [
+        "移动",
+        "重命名",
+        "mv"
+      ],
+      "examples": [
+        {
+          "cmd": "mv a.txt b.txt",
+          "desc": "重命名文件"
+        },
+        {
+          "cmd": "mv f.txt dir/",
+          "desc": "移动到目录"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "rm",
+      "category": "file",
+      "description": "删除文件或目录",
+      "keywords": [
+        "删除",
+        "移除",
+        "rm"
+      ],
+      "examples": [
+        {
+          "cmd": "rm file.txt",
+          "desc": "删除文件"
+        },
+        {
+          "cmd": "rm -rf dir",
+          "desc": "递归强制删除目录（危险）"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "rm -rf / 或 rm -rf ~ 会销毁系统/家目录数据，务必先确认路径",
+      "compare": null
+    },
+    {
+      "name": "mkdir",
+      "category": "file",
+      "description": "创建目录",
+      "keywords": [
+        "创建目录",
+        "新建文件夹",
+        "mkdir"
+      ],
+      "examples": [
+        {
+          "cmd": "mkdir foo",
+          "desc": "创建单级目录"
+        },
+        {
+          "cmd": "mkdir -p a/b/c",
+          "desc": "递归创建多级目录"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "父目录不存在时需 -p，否则失败",
+      "compare": null
+    },
+    {
+      "name": "rmdir",
+      "category": "file",
+      "description": "删除空目录",
+      "keywords": [
+        "删除空目录",
+        "rmdir"
+      ],
+      "examples": [
+        {
+          "cmd": "rmdir empty/",
+          "desc": "删除空目录"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "rmdir 仅删空目录；rm -r 可删非空目录"
+    },
+    {
+      "name": "touch",
+      "category": "file",
+      "description": "创建空文件或更新时间戳",
+      "keywords": [
+        "创建文件",
+        "时间戳",
+        "touch"
+      ],
+      "examples": [
+        {
+          "cmd": "touch new.txt",
+          "desc": "新建空文件"
+        },
+        {
+          "cmd": "touch -c old.txt",
+          "desc": "仅更新时间不新建"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "find",
+      "category": "file",
+      "description": "按条件查找文件",
+      "keywords": [
+        "查找文件",
+        "搜索",
+        "find"
+      ],
+      "examples": [
+        {
+          "cmd": "find . -name '*.py'",
+          "desc": "按名查找"
+        },
+        {
+          "cmd": "find . -mtime -7",
+          "desc": "查找 7 天内修改的文件"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "路径放最前；-delete 误用会删文件，先不加该参数确认",
+      "compare": null
+    },
+    {
+      "name": "ln",
+      "category": "file",
+      "description": "创建链接",
+      "keywords": [
+        "链接",
+        "软链接",
+        "硬链接",
+        "ln"
+      ],
+      "examples": [
+        {
+          "cmd": "ln -s target link",
+          "desc": "创建软链接"
+        },
+        {
+          "cmd": "ln f hard",
+          "desc": "创建硬链接"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "软链接用 -s；源路径建议用绝对路径，否则移动后失效",
+      "compare": null
+    },
+    {
+      "name": "readlink",
+      "category": "file",
+      "description": "查看链接指向",
+      "keywords": [
+        "链接指向",
+        "readlink"
+      ],
+      "examples": [
+        {
+          "cmd": "readlink link",
+          "desc": "打印链接目标"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "realpath",
+      "category": "file",
+      "description": "解析为绝对路径",
+      "keywords": [
+        "绝对路径",
+        "realpath"
+      ],
+      "examples": [
+        {
+          "cmd": "realpath f.txt",
+          "desc": "输出规范绝对路径"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "basename",
+      "category": "file",
+      "description": "取路径中的文件名",
+      "keywords": [
+        "文件名",
+        "basename"
+      ],
+      "examples": [
+        {
+          "cmd": "basename /a/b/c.txt",
+          "desc": "得到 c.txt"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dirname",
+      "category": "file",
+      "description": "取路径中的目录部分",
+      "keywords": [
+        "目录名",
+        "dirname"
+      ],
+      "examples": [
+        {
+          "cmd": "dirname /a/b/c.txt",
+          "desc": "得到 /a/b"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "tree",
+      "category": "file",
+      "description": "树状显示目录结构",
+      "keywords": [
+        "树状",
+        "目录结构",
+        "tree"
+      ],
+      "examples": [
+        {
+          "cmd": "tree -L 2",
+          "desc": "显示两层"
+        },
+        {
+          "cmd": "tree -a",
+          "desc": "包含隐藏文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "stat",
+      "category": "file",
+      "description": "显示文件详细状态",
+      "keywords": [
+        "文件状态",
+        "stat"
+      ],
+      "examples": [
+        {
+          "cmd": "stat file.txt",
+          "desc": "查看大小/权限/时间"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "file",
+      "category": "file",
+      "description": "识别文件类型",
+      "keywords": [
+        "文件类型",
+        "file"
+      ],
+      "examples": [
+        {
+          "cmd": "file a.bin",
+          "desc": "识别为 ELF/文本等"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "tee",
+      "category": "file",
+      "description": "输出到屏幕并写入文件",
+      "keywords": [
+        "分流输出",
+        "tee"
+      ],
+      "examples": [
+        {
+          "cmd": "cmd | tee out.txt",
+          "desc": "既显示又保存"
+        },
+        {
+          "cmd": "cmd | tee -a out.txt",
+          "desc": "追加保存"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "默认覆盖目标文件，追加需 -a",
+      "compare": null
+    },
+    {
+      "name": "pushd",
+      "category": "file",
+      "description": "压入目录栈并切换",
+      "keywords": [
+        "目录栈",
+        "pushd"
+      ],
+      "examples": [
+        {
+          "cmd": "pushd dir",
+          "desc": "切换并压栈"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "popd",
+      "category": "file",
+      "description": "弹出目录栈",
+      "keywords": [
+        "目录栈",
+        "popd"
+      ],
+      "examples": [
+        {
+          "cmd": "popd",
+          "desc": "回到上一个目录"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "cat",
+      "category": "view",
+      "description": "查看/拼接文件内容",
+      "keywords": [
+        "查看文件",
+        "拼接",
+        "cat"
+      ],
+      "examples": [
+        {
+          "cmd": "cat f.txt",
+          "desc": "打印全部内容"
+        },
+        {
+          "cmd": "cat a b > c",
+          "desc": "拼接两文件"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "大文件会刷屏，改用 less",
+      "compare": null
+    },
+    {
+      "name": "less",
+      "category": "view",
+      "description": "分页查看文件",
+      "keywords": [
+        "分页查看",
+        "less"
+      ],
+      "examples": [
+        {
+          "cmd": "less f.txt",
+          "desc": "上下翻页查看"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "less 可上下翻；more 基本只能下翻"
+    },
+    {
+      "name": "more",
+      "category": "view",
+      "description": "逐屏查看文件",
+      "keywords": [
+        "逐屏查看",
+        "more"
+      ],
+      "examples": [
+        {
+          "cmd": "more f.txt",
+          "desc": "逐屏显示"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "head",
+      "category": "view",
+      "description": "查看文件开头",
+      "keywords": [
+        "开头",
+        "head"
+      ],
+      "examples": [
+        {
+          "cmd": "head -n 20 f",
+          "desc": "看前 20 行"
+        },
+        {
+          "cmd": "head -c 100 f",
+          "desc": "看前 100 字节"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "tail",
+      "category": "view",
+      "description": "查看文件末尾",
+      "keywords": [
+        "末尾",
+        "tail"
+      ],
+      "examples": [
+        {
+          "cmd": "tail -n 20 f",
+          "desc": "看后 20 行"
+        },
+        {
+          "cmd": "tail -f f",
+          "desc": "实时跟踪新增内容"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "跟踪日志首选 tail -f",
+      "compare": null
+    },
+    {
+      "name": "nl",
+      "category": "view",
+      "description": "带行号输出",
+      "keywords": [
+        "行号",
+        "nl"
+      ],
+      "examples": [
+        {
+          "cmd": "nl f.txt",
+          "desc": "输出带行号"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "tac",
+      "category": "view",
+      "description": "逆序输出行",
+      "keywords": [
+        "逆序",
+        "tac"
+      ],
+      "examples": [
+        {
+          "cmd": "tac f.txt",
+          "desc": "从末尾到开头"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "od",
+      "category": "view",
+      "description": "八进制/十六进制查看",
+      "keywords": [
+        "二进制查看",
+        "od"
+      ],
+      "examples": [
+        {
+          "cmd": "od -c f",
+          "desc": "以字符显示"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "xxd",
+      "category": "view",
+      "description": "十六进制转储",
+      "keywords": [
+        "十六进制",
+        "xxd"
+      ],
+      "examples": [
+        {
+          "cmd": "xxd f.bin",
+          "desc": "十六进制+ASCII"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "hexdump",
+      "category": "view",
+      "description": "十六进制转储",
+      "keywords": [
+        "十六进制",
+        "hexdump"
+      ],
+      "examples": [
+        {
+          "cmd": "hexdump -C f",
+          "desc": "规范十六进制格式"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "strings",
+      "category": "view",
+      "description": "提取可打印字符串",
+      "keywords": [
+        "字符串",
+        "strings"
+      ],
+      "examples": [
+        {
+          "cmd": "strings a.out",
+          "desc": "查看二进制中的字符串"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "fold",
+      "category": "view",
+      "description": "按宽度折行",
+      "keywords": [
+        "折行",
+        "fold"
+      ],
+      "examples": [
+        {
+          "cmd": "fold -w 80 f",
+          "desc": "每行 80 列"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "pr",
+      "category": "view",
+      "description": "格式化分页输出",
+      "keywords": [
+        "格式化",
+        "pr"
+      ],
+      "examples": [
+        {
+          "cmd": "pr f.txt",
+          "desc": "加页眉分页"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "grep",
+      "category": "text",
+      "description": "文本搜索",
+      "keywords": [
+        "搜索文本",
+        "匹配",
+        "grep"
+      ],
+      "examples": [
+        {
+          "cmd": "grep -rn 'TODO' src/",
+          "desc": "递归搜索含 TODO 的文件"
+        },
+        {
+          "cmd": "grep -i error log",
+          "desc": "忽略大小写"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "正则默认识别基础语法；用 -E 启用扩展正则",
+      "compare": null
+    },
+    {
+      "name": "egrep",
+      "category": "text",
+      "description": "扩展正则搜索（=grep -E）",
+      "keywords": [
+        "扩展正则",
+        "egrep"
+      ],
+      "examples": [
+        {
+          "cmd": "egrep 'a|b' f",
+          "desc": "匹配 a 或 b"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "egrep 等价于 grep -E"
+    },
+    {
+      "name": "fgrep",
+      "category": "text",
+      "description": "固定字符串搜索（=grep -F）",
+      "keywords": [
+        "固定字符串",
+        "fgrep"
+      ],
+      "examples": [
+        {
+          "cmd": "fgrep 'a$b' f",
+          "desc": "按字面量匹配"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "fgrep 不解释正则，等价于 grep -F"
+    },
+    {
+      "name": "sed",
+      "category": "text",
+      "description": "流编辑器",
+      "keywords": [
+        "流编辑",
+        "替换",
+        "sed"
+      ],
+      "examples": [
+        {
+          "cmd": "sed 's/foo/bar/g' f",
+          "desc": "全局替换"
+        },
+        {
+          "cmd": "sed -i 's/a/b/g' f",
+          "desc": "就地修改文件"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "-i 直接改文件，先备份；macOS 需 -i ''",
+      "compare": null
+    },
+    {
+      "name": "awk",
+      "category": "text",
+      "description": "文本处理语言",
+      "keywords": [
+        "字段处理",
+        "awk"
+      ],
+      "examples": [
+        {
+          "cmd": "awk '{print $1}' f",
+          "desc": "打印第一列"
+        },
+        {
+          "cmd": "awk -F: '$3>100' /etc/passwd",
+          "desc": "按 : 分割筛选"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "进阶",
+      "pitfalls": "默认空格分隔；$0 整行、$1 第一列",
+      "compare": null
+    },
+    {
+      "name": "sort",
+      "category": "text",
+      "description": "排序",
+      "keywords": [
+        "排序",
+        "sort"
+      ],
+      "examples": [
+        {
+          "cmd": "sort f.txt",
+          "desc": "字典序排序"
+        },
+        {
+          "cmd": "sort -n -k2 f",
+          "desc": "按第 2 列数值排序"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "uniq",
+      "category": "text",
+      "description": "去重（需先排序）",
+      "keywords": [
+        "去重",
+        "uniq"
+      ],
+      "examples": [
+        {
+          "cmd": "sort f | uniq",
+          "desc": "去重"
+        },
+        {
+          "cmd": "uniq -c",
+          "desc": "统计出现次数"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "uniq 只去相邻重复，通常先 sort",
+      "compare": null
+    },
+    {
+      "name": "cut",
+      "category": "text",
+      "description": "按列截取",
+      "keywords": [
+        "截取列",
+        "cut"
+      ],
+      "examples": [
+        {
+          "cmd": "cut -d: -f1 /etc/passwd",
+          "desc": "取第一字段"
+        },
+        {
+          "cmd": "cut -c1-10 f",
+          "desc": "取 1-10 字符"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "paste",
+      "category": "text",
+      "description": "横向合并文件",
+      "keywords": [
+        "合并列",
+        "paste"
+      ],
+      "examples": [
+        {
+          "cmd": "paste a.txt b.txt",
+          "desc": "并排合并"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "join",
+      "category": "text",
+      "description": "按字段连接",
+      "keywords": [
+        "连接",
+        "join"
+      ],
+      "examples": [
+        {
+          "cmd": "join a.txt b.txt",
+          "desc": "按公共字段连接"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "comm",
+      "category": "text",
+      "description": "比较已排序文件",
+      "keywords": [
+        "比较文件",
+        "comm"
+      ],
+      "examples": [
+        {
+          "cmd": "comm a.txt b.txt",
+          "desc": "显示交集/差集"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "diff",
+      "category": "text",
+      "description": "比较文件差异",
+      "keywords": [
+        "比较差异",
+        "diff"
+      ],
+      "examples": [
+        {
+          "cmd": "diff a.txt b.txt",
+          "desc": "逐行比较"
+        },
+        {
+          "cmd": "diff -u a b > p.patch",
+          "desc": "生成补丁"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "patch",
+      "category": "text",
+      "description": "应用补丁",
+      "keywords": [
+        "打补丁",
+        "patch"
+      ],
+      "examples": [
+        {
+          "cmd": "patch < p.patch",
+          "desc": "应用补丁"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "打错可能损坏文件，先 --dry-run 预览",
+      "compare": null
+    },
+    {
+      "name": "tr",
+      "category": "text",
+      "description": "字符转换/删除",
+      "keywords": [
+        "字符替换",
+        "tr"
+      ],
+      "examples": [
+        {
+          "cmd": "tr 'a-z' 'A-Z'",
+          "desc": "转大写"
+        },
+        {
+          "cmd": "tr -d '\r'",
+          "desc": "删除回车符"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "wc",
+      "category": "text",
+      "description": "统计行/词/字节",
+      "keywords": [
+        "统计",
+        "wc"
+      ],
+      "examples": [
+        {
+          "cmd": "wc -l f.txt",
+          "desc": "统计行数"
+        },
+        {
+          "cmd": "wc -w f",
+          "desc": "统计词数"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "split",
+      "category": "text",
+      "description": "拆分文件",
+      "keywords": [
+        "拆分",
+        "split"
+      ],
+      "examples": [
+        {
+          "cmd": "split -l 1000 f",
+          "desc": "每 1000 行拆分"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "csplit",
+      "category": "text",
+      "description": "按上下文拆分",
+      "keywords": [
+        "拆分",
+        "csplit"
+      ],
+      "examples": [
+        {
+          "cmd": "csplit f '/pattern/'",
+          "desc": "按模式拆分"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "fmt",
+      "category": "text",
+      "description": "段落格式化",
+      "keywords": [
+        "格式化",
+        "fmt"
+      ],
+      "examples": [
+        {
+          "cmd": "fmt -w 60 f",
+          "desc": "每行 60 列"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "expand",
+      "category": "text",
+      "description": "制表符转空格",
+      "keywords": [
+        "制表符",
+        "expand"
+      ],
+      "examples": [
+        {
+          "cmd": "expand f.txt",
+          "desc": "tab 转空格"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "unexpand",
+      "category": "text",
+      "description": "空格转制表符",
+      "keywords": [
+        "制表符",
+        "unexpand"
+      ],
+      "examples": [
+        {
+          "cmd": "unexpand -a f",
+          "desc": "空格转 tab"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "chmod",
+      "category": "perm",
+      "description": "修改权限",
+      "keywords": [
+        "权限",
+        "chmod"
+      ],
+      "examples": [
+        {
+          "cmd": "chmod 644 f",
+          "desc": "所有者读写他人只读"
+        },
+        {
+          "cmd": "chmod +x script.sh",
+          "desc": "加可执行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "误用 777 会导致全网可写，存在安全风险",
+      "compare": null
+    },
+    {
+      "name": "chown",
+      "category": "perm",
+      "description": "修改属主",
+      "keywords": [
+        "属主",
+        "chown"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo chown u:g f",
+          "desc": "改用户和组"
+        },
+        {
+          "cmd": "chown -R u dir",
+          "desc": "递归修改"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "改他人文件需 sudo；递归 -R 谨慎",
+      "compare": null
+    },
+    {
+      "name": "chgrp",
+      "category": "perm",
+      "description": "修改属组",
+      "keywords": [
+        "属组",
+        "chgrp"
+      ],
+      "examples": [
+        {
+          "cmd": "chgrp dev f",
+          "desc": "改组为 dev"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "umask",
+      "category": "perm",
+      "description": "设置默认权限掩码",
+      "keywords": [
+        "默认权限",
+        "umask"
+      ],
+      "examples": [
+        {
+          "cmd": "umask 022",
+          "desc": "新建文件默认 755/644"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "chattr",
+      "category": "perm",
+      "description": "修改文件扩展属性",
+      "keywords": [
+        "扩展属性",
+        "chattr"
+      ],
+      "examples": [
+        {
+          "cmd": "chattr +i f",
+          "desc": "不可修改/删除（immutable）"
+        },
+        {
+          "cmd": "chattr +a f",
+          "desc": "仅可追加"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "需 root；+i 后连 root 也删不掉，用 -i 解除",
+      "compare": null
+    },
+    {
+      "name": "lsattr",
+      "category": "perm",
+      "description": "查看扩展属性",
+      "keywords": [
+        "扩展属性",
+        "lsattr"
+      ],
+      "examples": [
+        {
+          "cmd": "lsattr f",
+          "desc": "查看 chattr 属性"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "setfacl",
+      "category": "perm",
+      "description": "设置 ACL 细粒度权限",
+      "keywords": [
+        "ACL",
+        "setfacl"
+      ],
+      "examples": [
+        {
+          "cmd": "setfacl -m u:alice:r f",
+          "desc": "给用户 alice 读权限"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "getfacl",
+      "category": "perm",
+      "description": "查看 ACL",
+      "keywords": [
+        "ACL",
+        "getfacl"
+      ],
+      "examples": [
+        {
+          "cmd": "getfacl f",
+          "desc": "查看详细 ACL"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "sudo",
+      "category": "user",
+      "description": "以其他用户（默认 root）执行",
+      "keywords": [
+        "提权",
+        "sudo"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo apt update",
+          "desc": "以 root 执行"
+        },
+        {
+          "cmd": "sudo -u www cmd",
+          "desc": "以 www 执行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "滥用 sudo 有风险；用 sudo -l 查看可执行的命令",
+      "compare": null
+    },
+    {
+      "name": "su",
+      "category": "user",
+      "description": "切换用户",
+      "keywords": [
+        "切换用户",
+        "su"
+      ],
+      "examples": [
+        {
+          "cmd": "su -",
+          "desc": "切换到 root 并加载环境"
+        },
+        {
+          "cmd": "su alice",
+          "desc": "切到 alice"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "su - 加载目标用户环境；su 不加载"
+    },
+    {
+      "name": "useradd",
+      "category": "user",
+      "description": "新建用户",
+      "keywords": [
+        "新建用户",
+        "useradd"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo useradd -m alice",
+          "desc": "建用户并建家目录"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "不加 -m 可能不建家目录；用 useradd -m -s /bin/bash",
+      "compare": null
+    },
+    {
+      "name": "userdel",
+      "category": "user",
+      "description": "删除用户",
+      "keywords": [
+        "删除用户",
+        "userdel"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo userdel -r alice",
+          "desc": "删用户并清家目录"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "-r 才会删家目录，否则残留",
+      "compare": null
+    },
+    {
+      "name": "usermod",
+      "category": "user",
+      "description": "修改用户",
+      "keywords": [
+        "修改用户",
+        "usermod"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo usermod -aG sudo alice",
+          "desc": "加入 sudo 组"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "groupadd",
+      "category": "user",
+      "description": "新建组",
+      "keywords": [
+        "新建组",
+        "groupadd"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo groupadd dev",
+          "desc": "建 dev 组"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "groupdel",
+      "category": "user",
+      "description": "删除组",
+      "keywords": [
+        "删除组",
+        "groupdel"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo groupdel dev",
+          "desc": "删 dev 组"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "passwd",
+      "category": "user",
+      "description": "修改密码",
+      "keywords": [
+        "密码",
+        "passwd"
+      ],
+      "examples": [
+        {
+          "cmd": "passwd",
+          "desc": "改自己密码"
+        },
+        {
+          "cmd": "sudo passwd alice",
+          "desc": "改他人密码"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "chpasswd",
+      "category": "user",
+      "description": "批量改密码",
+      "keywords": [
+        "批量密码",
+        "chpasswd"
+      ],
+      "examples": [
+        {
+          "cmd": "echo 'alice:new' | chpasswd",
+          "desc": "批量设置"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "newgrp",
+      "category": "user",
+      "description": "切换有效组",
+      "keywords": [
+        "切换组",
+        "newgrp"
+      ],
+      "examples": [
+        {
+          "cmd": "newgrp dev",
+          "desc": "临时切换有效组"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "gpasswd",
+      "category": "user",
+      "description": "管理组成员",
+      "keywords": [
+        "组成员",
+        "gpasswd"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo gpasswd -a alice dev",
+          "desc": "加用户到组"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "id",
+      "category": "user",
+      "description": "显示用户/组 ID",
+      "keywords": [
+        "用户ID",
+        "id"
+      ],
+      "examples": [
+        {
+          "cmd": "id",
+          "desc": "看当前 uid/gid"
+        },
+        {
+          "cmd": "id alice",
+          "desc": "看指定用户"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "whoami",
+      "category": "user",
+      "description": "显示当前用户名",
+      "keywords": [
+        "当前用户",
+        "whoami"
+      ],
+      "examples": [
+        {
+          "cmd": "whoami",
+          "desc": "打印当前用户名"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "who",
+      "category": "user",
+      "description": "显示登录用户",
+      "keywords": [
+        "登录用户",
+        "who"
+      ],
+      "examples": [
+        {
+          "cmd": "who",
+          "desc": "看谁在线"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "w",
+      "category": "user",
+      "description": "显示登录用户及进程",
+      "keywords": [
+        "登录用户",
+        "w"
+      ],
+      "examples": [
+        {
+          "cmd": "w",
+          "desc": "看用户与正在运行的命令"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "last",
+      "category": "user",
+      "description": "最近登录记录",
+      "keywords": [
+        "登录记录",
+        "last"
+      ],
+      "examples": [
+        {
+          "cmd": "last",
+          "desc": "查看登录历史"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lastlog",
+      "category": "user",
+      "description": "所有用户最后登录",
+      "keywords": [
+        "最后登录",
+        "lastlog"
+      ],
+      "examples": [
+        {
+          "cmd": "lastlog",
+          "desc": "各用户末次登录"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "groups",
+      "category": "user",
+      "description": "显示用户所属组",
+      "keywords": [
+        "所属组",
+        "groups"
+      ],
+      "examples": [
+        {
+          "cmd": "groups alice",
+          "desc": "看 alice 的组"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "visudo",
+      "category": "user",
+      "description": "安全编辑 sudoers",
+      "keywords": [
+        "sudoers",
+        "visudo"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo visudo",
+          "desc": "编辑 sudo 配置（带语法检查）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "务必用 visudo 而非直接改，避免锁死 sudo",
+      "compare": null
+    },
+    {
+      "name": "finger",
+      "category": "user",
+      "description": "用户信息查询",
+      "keywords": [
+        "用户信息",
+        "finger"
+      ],
+      "examples": [
+        {
+          "cmd": "finger alice",
+          "desc": "查看用户详情"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ps",
+      "category": "proc",
+      "description": "查看进程",
+      "keywords": [
+        "进程",
+        "ps"
+      ],
+      "examples": [
+        {
+          "cmd": "ps aux",
+          "desc": "看全部进程"
+        },
+        {
+          "cmd": "ps -ef | grep nginx",
+          "desc": "查 nginx"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "top",
+      "category": "proc",
+      "description": "实时进程监控",
+      "keywords": [
+        "实时监控",
+        "top"
+      ],
+      "examples": [
+        {
+          "cmd": "top",
+          "desc": "动态查看资源占用"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "top 实时；htop 更友好（需安装）"
+    },
+    {
+      "name": "htop",
+      "category": "proc",
+      "description": "增强版进程监控",
+      "keywords": [
+        "进程监控",
+        "htop"
+      ],
+      "examples": [
+        {
+          "cmd": "htop",
+          "desc": "彩色可交互监控"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "kill",
+      "category": "proc",
+      "description": "发送信号终止进程",
+      "keywords": [
+        "结束进程",
+        "kill"
+      ],
+      "examples": [
+        {
+          "cmd": "kill 1234",
+          "desc": "默认 SIGTERM"
+        },
+        {
+          "cmd": "kill -9 1234",
+          "desc": "强制 SIGKILL"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "先 SIGTERM(-15)，不行再 -9；-9 可能丢数据",
+      "compare": null
+    },
+    {
+      "name": "pkill",
+      "category": "proc",
+      "description": "按名结束进程",
+      "keywords": [
+        "按名结束",
+        "pkill"
+      ],
+      "examples": [
+        {
+          "cmd": "pkill nginx",
+          "desc": "结束所有 nginx"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "误杀同名进程，先 pkill -l 预览",
+      "compare": null
+    },
+    {
+      "name": "killall",
+      "category": "proc",
+      "description": "按名结束全部",
+      "keywords": [
+        "按名结束",
+        "killall"
+      ],
+      "examples": [
+        {
+          "cmd": "killall python",
+          "desc": "结束所有 python"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "pgrep",
+      "category": "proc",
+      "description": "按名查找 PID",
+      "keywords": [
+        "查找PID",
+        "pgrep"
+      ],
+      "examples": [
+        {
+          "cmd": "pgrep nginx",
+          "desc": "找 nginx 的 PID"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "pidof",
+      "category": "proc",
+      "description": "查进程 PID",
+      "keywords": [
+        "PID",
+        "pidof"
+      ],
+      "examples": [
+        {
+          "cmd": "pidof nginx",
+          "desc": "返回 nginx PID"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "jobs",
+      "category": "proc",
+      "description": "查看后台任务",
+      "keywords": [
+        "后台任务",
+        "jobs"
+      ],
+      "examples": [
+        {
+          "cmd": "jobs",
+          "desc": "列出当前 shell 的后台任务"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "bg",
+      "category": "proc",
+      "description": "任务转后台",
+      "keywords": [
+        "后台",
+        "bg"
+      ],
+      "examples": [
+        {
+          "cmd": "bg %1",
+          "desc": "把任务 1 放后台"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "fg",
+      "category": "proc",
+      "description": "任务转前台",
+      "keywords": [
+        "前台",
+        "fg"
+      ],
+      "examples": [
+        {
+          "cmd": "fg %1",
+          "desc": "把任务 1 调回前台"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nohup",
+      "category": "proc",
+      "description": "退出后继续运行",
+      "keywords": [
+        "后台运行",
+        "nohup"
+      ],
+      "examples": [
+        {
+          "cmd": "nohup cmd &",
+          "desc": "断开终端仍运行"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "disown",
+      "category": "proc",
+      "description": "脱离 shell 作业",
+      "keywords": [
+        "脱离作业",
+        "disown"
+      ],
+      "examples": [
+        {
+          "cmd": "disown",
+          "desc": "移除作业防 HUP 信号"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nice",
+      "category": "proc",
+      "description": "调整优先级启动",
+      "keywords": [
+        "优先级",
+        "nice"
+      ],
+      "examples": [
+        {
+          "cmd": "nice -n 10 cmd",
+          "desc": "低优先级运行"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "renice",
+      "category": "proc",
+      "description": "调整运行中优先级",
+      "keywords": [
+        "优先级",
+        "renice"
+      ],
+      "examples": [
+        {
+          "cmd": "renice -n 5 -p 1234",
+          "desc": "改 PID 优先级"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "at",
+      "category": "proc",
+      "description": "定时一次性任务",
+      "keywords": [
+        "定时任务",
+        "at"
+      ],
+      "examples": [
+        {
+          "cmd": "echo 'cmd' | at 18:00",
+          "desc": "18 点执行"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "batch",
+      "category": "proc",
+      "description": "系统空闲时执行",
+      "keywords": [
+        "空闲执行",
+        "batch"
+      ],
+      "examples": [
+        {
+          "cmd": "batch",
+          "desc": "负载低时运行"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "crontab",
+      "category": "proc",
+      "description": "周期性任务",
+      "keywords": [
+        "定时任务",
+        "crontab"
+      ],
+      "examples": [
+        {
+          "cmd": "crontab -e",
+          "desc": "编辑计划任务"
+        },
+        {
+          "cmd": "crontab -l",
+          "desc": "列出任务"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "格式 分 时 日 月 周；注意环境变量可能缺失",
+      "compare": null
+    },
+    {
+      "name": "runlevel",
+      "category": "proc",
+      "description": "查看运行级别",
+      "keywords": [
+        "运行级别",
+        "runlevel"
+      ],
+      "examples": [
+        {
+          "cmd": "runlevel",
+          "desc": "显示当前/上一级别"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "init",
+      "category": "proc",
+      "description": "切换运行级别",
+      "keywords": [
+        "运行级别",
+        "init"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo init 0",
+          "desc": "关机（旧式）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "watch",
+      "category": "proc",
+      "description": "周期执行并刷新",
+      "keywords": [
+        "周期执行",
+        "watch"
+      ],
+      "examples": [
+        {
+          "cmd": "watch -n 1 'ls -l'",
+          "desc": "每秒刷新"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lsof",
+      "category": "proc",
+      "description": "列出打开的文件/端口",
+      "keywords": [
+        "打开文件",
+        "端口",
+        "lsof"
+      ],
+      "examples": [
+        {
+          "cmd": "lsof -i :80",
+          "desc": "看 80 端口占用"
+        },
+        {
+          "cmd": "lsof /var/log",
+          "desc": "谁在写该文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "strace",
+      "category": "proc",
+      "description": "跟踪系统调用",
+      "keywords": [
+        "系统调用",
+        "strace"
+      ],
+      "examples": [
+        {
+          "cmd": "strace -p 1234",
+          "desc": "跟踪进程系统调用"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "time",
+      "category": "proc",
+      "description": "统计命令耗时",
+      "keywords": [
+        "耗时",
+        "time"
+      ],
+      "examples": [
+        {
+          "cmd": "time ./build.sh",
+          "desc": "测运行时间"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "timeout",
+      "category": "proc",
+      "description": "限时运行命令",
+      "keywords": [
+        "超时",
+        "timeout"
+      ],
+      "examples": [
+        {
+          "cmd": "timeout 10 cmd",
+          "desc": "10 秒后终止"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "df",
+      "category": "disk",
+      "description": "查看磁盘空间",
+      "keywords": [
+        "磁盘空间",
+        "df"
+      ],
+      "examples": [
+        {
+          "cmd": "df -h",
+          "desc": "人类可读显示各分区"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "du",
+      "category": "disk",
+      "description": "查看目录/文件大小",
+      "keywords": [
+        "目录大小",
+        "du"
+      ],
+      "examples": [
+        {
+          "cmd": "du -sh *",
+          "desc": "当前各子项总大小"
+        },
+        {
+          "cmd": "du -h --max-depth=1",
+          "desc": "一层深度"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "du 统计文件实际占用；df 看分区整体",
+      "compare": null
+    },
+    {
+      "name": "mount",
+      "category": "disk",
+      "description": "挂载文件系统",
+      "keywords": [
+        "挂载",
+        "mount"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo mount /dev/sdb1 /mnt",
+          "desc": "挂载到 /mnt"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "mount 挂载；umount 卸载"
+    },
+    {
+      "name": "umount",
+      "category": "disk",
+      "description": "卸载文件系统",
+      "keywords": [
+        "卸载",
+        "umount"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo umount /mnt",
+          "desc": "卸载"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "设备忙时无法卸载，先关闭占用进程",
+      "compare": null
+    },
+    {
+      "name": "fdisk",
+      "category": "disk",
+      "description": "磁盘分区工具",
+      "keywords": [
+        "分区",
+        "fdisk"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo fdisk /dev/sdb",
+          "desc": "交互式分区"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "操作分区有数据丢失风险",
+      "compare": null
+    },
+    {
+      "name": "parted",
+      "category": "disk",
+      "description": "分区工具（支持 GPT）",
+      "keywords": [
+        "分区",
+        "parted"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo parted /dev/sdb",
+          "desc": "分区（支持大盘）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lsblk",
+      "category": "disk",
+      "description": "列出块设备",
+      "keywords": [
+        "块设备",
+        "lsblk"
+      ],
+      "examples": [
+        {
+          "cmd": "lsblk",
+          "desc": "树状显示磁盘与分区"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "blkid",
+      "category": "disk",
+      "description": "查看设备 UUID/类型",
+      "keywords": [
+        "设备UUID",
+        "blkid"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo blkid",
+          "desc": "显示设备 UUID/文件系统"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "mkfs",
+      "category": "disk",
+      "description": "格式化文件系统",
+      "keywords": [
+        "格式化",
+        "mkfs"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo mkfs.ext4 /dev/sdb1",
+          "desc": "格式化为 ext4"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "格式化会清空数据！",
+      "compare": null
+    },
+    {
+      "name": "dd",
+      "category": "disk",
+      "description": "按块复制（磁盘镜像）",
+      "keywords": [
+        "块复制",
+        "dd"
+      ],
+      "examples": [
+        {
+          "cmd": "dd if=in of=out bs=4M",
+          "desc": "克隆/备份"
+        },
+        {
+          "cmd": "dd if=/dev/zero of=disk.img",
+          "desc": "造镜像"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "if=/dev/sda 写错 of= 会毁盘，务必核对",
+      "compare": null
+    },
+    {
+      "name": "fsck",
+      "category": "disk",
+      "description": "检查修复文件系统",
+      "keywords": [
+        "文件系统检查",
+        "fsck"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo fsck /dev/sdb1",
+          "desc": "检查并修复"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "需在卸载状态下运行",
+      "compare": null
+    },
+    {
+      "name": "e2fsck",
+      "category": "disk",
+      "description": "ext 文件系统检查",
+      "keywords": [
+        "ext检查",
+        "e2fsck"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo e2fsck -f /dev/sdb1",
+          "desc": "强制检查"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "tune2fs",
+      "category": "disk",
+      "description": "调整 ext 文件系统参数",
+      "keywords": [
+        "ext参数",
+        "tune2fs"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo tune2fs -l /dev/sdb1",
+          "desc": "查看参数"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "badblocks",
+      "category": "disk",
+      "description": "检测坏块",
+      "keywords": [
+        "坏块",
+        "badblocks"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo badblocks -v /dev/sdb",
+          "desc": "扫描坏块"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nvme",
+      "category": "disk",
+      "description": "NVMe 固态管理",
+      "keywords": [
+        "nvme",
+        "nvme"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo nvme list",
+          "desc": "列出 nvme 设备"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "losetup",
+      "category": "disk",
+      "description": "管理回环设备",
+      "keywords": [
+        "回环设备",
+        "losetup"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo losetup -f disk.img",
+          "desc": "挂载镜像为设备"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "sync",
+      "category": "disk",
+      "description": "刷新缓存到磁盘",
+      "keywords": [
+        "同步",
+        "sync"
+      ],
+      "examples": [
+        {
+          "cmd": "sync",
+          "desc": "强制写入磁盘（卸载前用）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "mkswap",
+      "category": "disk",
+      "description": "创建交换分区",
+      "keywords": [
+        "交换分区",
+        "mkswap"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo mkswap /dev/sdb2",
+          "desc": "建 swap"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "swapon",
+      "category": "disk",
+      "description": "启用交换",
+      "keywords": [
+        "启用swap",
+        "swapon"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo swapon /dev/sdb2",
+          "desc": "启用 swap"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "swapoff",
+      "category": "disk",
+      "description": "关闭交换",
+      "keywords": [
+        "关闭swap",
+        "swapoff"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo swapoff /dev/sdb2",
+          "desc": "关闭"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dumpe2fs",
+      "category": "disk",
+      "description": "导出 ext 超级块信息",
+      "keywords": [
+        "ext信息",
+        "dumpe2fs"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo dumpe2fs /dev/sdb1",
+          "desc": "看超级块"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ping",
+      "category": "net",
+      "description": "测试网络连通",
+      "keywords": [
+        "连通测试",
+        "ping"
+      ],
+      "examples": [
+        {
+          "cmd": "ping -c 4 example.com",
+          "desc": "发 4 个包"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "curl",
+      "category": "net",
+      "description": "传输 URL 数据",
+      "keywords": [
+        "下载",
+        "HTTP",
+        "curl"
+      ],
+      "examples": [
+        {
+          "cmd": "curl -O url",
+          "desc": "下载保存"
+        },
+        {
+          "cmd": "curl -fsSL url | sh",
+          "desc": "下载并执行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "管道执行下载脚本前先确认来源可信",
+      "compare": null
+    },
+    {
+      "name": "wget",
+      "category": "net",
+      "description": "下载文件",
+      "keywords": [
+        "下载",
+        "wget"
+      ],
+      "examples": [
+        {
+          "cmd": "wget url",
+          "desc": "下载到当前目录"
+        },
+        {
+          "cmd": "wget -c url",
+          "desc": "断点续传"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ssh",
+      "category": "net",
+      "description": "远程安全登录",
+      "keywords": [
+        "远程登录",
+        "ssh"
+      ],
+      "examples": [
+        {
+          "cmd": "ssh user@host",
+          "desc": "登录远程"
+        },
+        {
+          "cmd": "ssh -p 2222 user@host",
+          "desc": "指定端口"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "scp",
+      "category": "net",
+      "description": "安全复制文件",
+      "keywords": [
+        "远程复制",
+        "scp"
+      ],
+      "examples": [
+        {
+          "cmd": "scp f.txt user@host:/tmp",
+          "desc": "上传"
+        },
+        {
+          "cmd": "scp -r dir user@host:~/",
+          "desc": "递归上传"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "sftp",
+      "category": "net",
+      "description": "交互式安全传输",
+      "keywords": [
+        "安全传输",
+        "sftp"
+      ],
+      "examples": [
+        {
+          "cmd": "sftp user@host",
+          "desc": "交互传文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "rsync",
+      "category": "net",
+      "description": "增量同步",
+      "keywords": [
+        "增量同步",
+        "rsync"
+      ],
+      "examples": [
+        {
+          "cmd": "rsync -avz src/ host:/dst",
+          "desc": "远程增量备份"
+        },
+        {
+          "cmd": "rsync -a --delete src/ dst/",
+          "desc": "镜像同步"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "进阶",
+      "pitfalls": "--delete 会删目标多余文件，先 --dry-run",
+      "compare": null
+    },
+    {
+      "name": "netstat",
+      "category": "net",
+      "description": "网络状态（旧）",
+      "keywords": [
+        "网络状态",
+        "netstat"
+      ],
+      "examples": [
+        {
+          "cmd": "netstat -tunlp",
+          "desc": "看监听端口"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "netstat 已过时，推荐 ss"
+    },
+    {
+      "name": "ss",
+      "category": "net",
+      "description": "查看套接字（新）",
+      "keywords": [
+        "套接字",
+        "ss"
+      ],
+      "examples": [
+        {
+          "cmd": "ss -tunlp",
+          "desc": "看监听端口（替代 netstat）"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "ss 比 netstat 更快更全"
+    },
+    {
+      "name": "ip",
+      "category": "net",
+      "description": "网络配置（新）",
+      "keywords": [
+        "网络配置",
+        "ip"
+      ],
+      "examples": [
+        {
+          "cmd": "ip addr",
+          "desc": "看网卡 IP"
+        },
+        {
+          "cmd": "ip route",
+          "desc": "看路由表"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "ip 取代 ifconfig/route"
+    },
+    {
+      "name": "ifconfig",
+      "category": "net",
+      "description": "网络接口配置（旧）",
+      "keywords": [
+        "网卡配置",
+        "ifconfig"
+      ],
+      "examples": [
+        {
+          "cmd": "ifconfig",
+          "desc": "看接口信息"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "已被 ip 命令取代"
+    },
+    {
+      "name": "traceroute",
+      "category": "net",
+      "description": "路由追踪",
+      "keywords": [
+        "路由追踪",
+        "traceroute"
+      ],
+      "examples": [
+        {
+          "cmd": "traceroute example.com",
+          "desc": "显示路径跳数"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "mtr",
+      "category": "net",
+      "description": "路由实时诊断",
+      "keywords": [
+        "路由诊断",
+        "mtr"
+      ],
+      "examples": [
+        {
+          "cmd": "mtr example.com",
+          "desc": "持续监控路径"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dig",
+      "category": "net",
+      "description": "DNS 查询",
+      "keywords": [
+        "DNS查询",
+        "dig"
+      ],
+      "examples": [
+        {
+          "cmd": "dig example.com",
+          "desc": "查 A 记录"
+        },
+        {
+          "cmd": "dig @8.8.8.8 example.com",
+          "desc": "指定 DNS"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "host",
+      "category": "net",
+      "description": "简易 DNS 查询",
+      "keywords": [
+        "DNS查询",
+        "host"
+      ],
+      "examples": [
+        {
+          "cmd": "host example.com",
+          "desc": "解析域名"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "host 简单；dig 更详细"
+    },
+    {
+      "name": "whois",
+      "category": "net",
+      "description": "域名/IP 注册信息",
+      "keywords": [
+        "whois",
+        "whois"
+      ],
+      "examples": [
+        {
+          "cmd": "whois example.com",
+          "desc": "查注册信息"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nc",
+      "category": "net",
+      "description": "网络瑞士军刀",
+      "keywords": [
+        "网络工具",
+        "nc"
+      ],
+      "examples": [
+        {
+          "cmd": "nc -l 1234",
+          "desc": "监听端口"
+        },
+        {
+          "cmd": "nc host 1234 < f",
+          "desc": "传文件"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nmap",
+      "category": "net",
+      "description": "端口扫描",
+      "keywords": [
+        "端口扫描",
+        "nmap"
+      ],
+      "examples": [
+        {
+          "cmd": "nmap -sV host",
+          "desc": "扫描服务版本"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "扫描他人系统可能违法，仅用于自有资产",
+      "compare": null
+    },
+    {
+      "name": "tcpdump",
+      "category": "net",
+      "description": "抓包分析",
+      "keywords": [
+        "抓包",
+        "tcpdump"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo tcpdump -i eth0 port 80",
+          "desc": "抓 80 端口"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "iptables",
+      "category": "net",
+      "description": "防火墙规则",
+      "keywords": [
+        "防火墙",
+        "iptables"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo iptables -L",
+          "desc": "列出规则"
+        },
+        {
+          "cmd": "sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT",
+          "desc": "放行 22"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "规则改动可能导致断连，谨慎；新系统多用 nftables/ufw",
+      "compare": null
+    },
+    {
+      "name": "ufw",
+      "category": "net",
+      "description": "简易防火墙",
+      "keywords": [
+        "防火墙",
+        "ufw"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo ufw enable",
+          "desc": "启用"
+        },
+        {
+          "cmd": "sudo ufw allow 22",
+          "desc": "放行 22"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "ufw 是 iptables 的友好封装"
+    },
+    {
+      "name": "arp",
+      "category": "net",
+      "description": "查看 ARP 表",
+      "keywords": [
+        "ARP",
+        "arp"
+      ],
+      "examples": [
+        {
+          "cmd": "arp -n",
+          "desc": "看 IP-MAC 映射"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "socat",
+      "category": "net",
+      "description": "多协议中继",
+      "keywords": [
+        "中继",
+        "socat"
+      ],
+      "examples": [
+        {
+          "cmd": "socat TCP-LISTEN:1234,fork TCP:host:80",
+          "desc": "端口转发"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nslookup",
+      "category": "net",
+      "description": "DNS 查询（旧）",
+      "keywords": [
+        "DNS查询",
+        "nslookup"
+      ],
+      "examples": [
+        {
+          "cmd": "nslookup example.com",
+          "desc": "查解析"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "已被 dig/host 取代"
+    },
+    {
+      "name": "tar",
+      "category": "archive",
+      "description": "打包/解包",
+      "keywords": [
+        "打包",
+        "tar"
+      ],
+      "examples": [
+        {
+          "cmd": "tar -czf a.tar.gz dir/",
+          "desc": "打包并 gzip"
+        },
+        {
+          "cmd": "tar -xzf a.tar.gz -C /tmp",
+          "desc": "解压到 /tmp"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "顺序敏感：f 后紧跟文件名；解压先看内容 tar -tzf",
+      "compare": null
+    },
+    {
+      "name": "gzip",
+      "category": "archive",
+      "description": "gzip 压缩",
+      "keywords": [
+        "压缩",
+        "gzip"
+      ],
+      "examples": [
+        {
+          "cmd": "gzip f.txt",
+          "desc": "压缩为 f.txt.gz（删原文件）"
+        },
+        {
+          "cmd": "gzip -k f.txt",
+          "desc": "保留原文件"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "默认删除源文件，保留用 -k 或 gzip -c > ",
+      "compare": null
+    },
+    {
+      "name": "gunzip",
+      "category": "archive",
+      "description": "解压 gzip",
+      "keywords": [
+        "解压",
+        "gunzip"
+      ],
+      "examples": [
+        {
+          "cmd": "gunzip f.gz",
+          "desc": "解压"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "gunzip 即 gzip -d"
+    },
+    {
+      "name": "bzip2",
+      "category": "archive",
+      "description": "bzip2 压缩",
+      "keywords": [
+        "压缩",
+        "bzip2"
+      ],
+      "examples": [
+        {
+          "cmd": "bzip2 f.txt",
+          "desc": "更高压缩率更慢"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "xz",
+      "category": "archive",
+      "description": "xz 压缩",
+      "keywords": [
+        "压缩",
+        "xz"
+      ],
+      "examples": [
+        {
+          "cmd": "xz -9 f.txt",
+          "desc": "极高压缩率"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zip",
+      "category": "archive",
+      "description": "打包为 zip",
+      "keywords": [
+        "zip",
+        "zip"
+      ],
+      "examples": [
+        {
+          "cmd": "zip -r a.zip dir/",
+          "desc": "递归打包"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "unzip",
+      "category": "archive",
+      "description": "解压 zip",
+      "keywords": [
+        "解压zip",
+        "unzip"
+      ],
+      "examples": [
+        {
+          "cmd": "unzip a.zip -d out/",
+          "desc": "解压到 out"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "7z",
+      "category": "archive",
+      "description": "7-Zip 压缩",
+      "keywords": [
+        "7z",
+        "7z"
+      ],
+      "examples": [
+        {
+          "cmd": "7z a a.7z dir/",
+          "desc": "压缩"
+        },
+        {
+          "cmd": "7z x a.7z",
+          "desc": "解压"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zstd",
+      "category": "archive",
+      "description": "Zstandard 压缩",
+      "keywords": [
+        "zstd",
+        "zstd"
+      ],
+      "examples": [
+        {
+          "cmd": "zstd f.txt",
+          "desc": "快速高压缩"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lz4",
+      "category": "archive",
+      "description": "lz4 快速压缩",
+      "keywords": [
+        "lz4",
+        "lz4"
+      ],
+      "examples": [
+        {
+          "cmd": "lz4 f.txt",
+          "desc": "极快压缩"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "compress",
+      "category": "archive",
+      "description": "老式压缩",
+      "keywords": [
+        "压缩",
+        "compress"
+      ],
+      "examples": [
+        {
+          "cmd": "compress f",
+          "desc": "生成 .f.Z"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "unrar",
+      "category": "archive",
+      "description": "解压 rar",
+      "keywords": [
+        "解压rar",
+        "unrar"
+      ],
+      "examples": [
+        {
+          "cmd": "unrar x a.rar",
+          "desc": "解压 rar"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "rar",
+      "category": "archive",
+      "description": "创建 rar",
+      "keywords": [
+        "rar",
+        "rar"
+      ],
+      "examples": [
+        {
+          "cmd": "rar a a.rar dir/",
+          "desc": "打包为 rar（需安装）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zcat",
+      "category": "archive",
+      "description": "查看 gzip 内容",
+      "keywords": [
+        "查看压缩",
+        "zcat"
+      ],
+      "examples": [
+        {
+          "cmd": "zcat f.gz",
+          "desc": "不解压直接看"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "zcat 即 gzip -dc"
+    },
+    {
+      "name": "uname",
+      "category": "sys",
+      "description": "系统内核信息",
+      "keywords": [
+        "内核信息",
+        "uname"
+      ],
+      "examples": [
+        {
+          "cmd": "uname -a",
+          "desc": "全部系统信息"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "uptime",
+      "category": "sys",
+      "description": "运行时长与负载",
+      "keywords": [
+        "运行时长",
+        "uptime"
+      ],
+      "examples": [
+        {
+          "cmd": "uptime",
+          "desc": "看运行时间与负载"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "free",
+      "category": "sys",
+      "description": "内存使用",
+      "keywords": [
+        "内存",
+        "free"
+      ],
+      "examples": [
+        {
+          "cmd": "free -h",
+          "desc": "人类可读内存"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lscpu",
+      "category": "sys",
+      "description": "CPU 信息",
+      "keywords": [
+        "CPU信息",
+        "lscpu"
+      ],
+      "examples": [
+        {
+          "cmd": "lscpu",
+          "desc": "看 CPU 架构/核数"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lsmem",
+      "category": "sys",
+      "description": "内存拓扑",
+      "keywords": [
+        "内存",
+        "lsmem"
+      ],
+      "examples": [
+        {
+          "cmd": "lsmem",
+          "desc": "看内存块布局"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lsusb",
+      "category": "sys",
+      "description": "USB 设备列表",
+      "keywords": [
+        "USB",
+        "lsusb"
+      ],
+      "examples": [
+        {
+          "cmd": "lsusb",
+          "desc": "列出 USB 设备"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lspci",
+      "category": "sys",
+      "description": "PCI 设备列表",
+      "keywords": [
+        "PCI",
+        "lspci"
+      ],
+      "examples": [
+        {
+          "cmd": "lspci",
+          "desc": "列出 PCI 设备"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lshw",
+      "category": "sys",
+      "description": "硬件详情",
+      "keywords": [
+        "硬件",
+        "lshw"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo lshw",
+          "desc": "完整硬件信息"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dmidecode",
+      "category": "sys",
+      "description": "DMI/BIOS 信息",
+      "keywords": [
+        "硬件",
+        "dmidecode"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo dmidecode -t memory",
+          "desc": "内存信息"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dmesg",
+      "category": "sys",
+      "description": "内核环形缓冲",
+      "keywords": [
+        "内核日志",
+        "dmesg"
+      ],
+      "examples": [
+        {
+          "cmd": "dmesg | tail",
+          "desc": "看最近内核消息"
+        },
+        {
+          "cmd": "sudo dmesg -w",
+          "desc": "实时"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "journalctl",
+      "category": "sys",
+      "description": "systemd 日志",
+      "keywords": [
+        "系统日志",
+        "journalctl"
+      ],
+      "examples": [
+        {
+          "cmd": "journalctl -xe",
+          "desc": "看错误日志"
+        },
+        {
+          "cmd": "journalctl -u nginx",
+          "desc": "某服务日志"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "hostnamectl",
+      "category": "sys",
+      "description": "主机名管理",
+      "keywords": [
+        "主机名",
+        "hostnamectl"
+      ],
+      "examples": [
+        {
+          "cmd": "hostnamectl",
+          "desc": "查看/设置主机名"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "timedatectl",
+      "category": "sys",
+      "description": "时间日期管理",
+      "keywords": [
+        "时间",
+        "timedatectl"
+      ],
+      "examples": [
+        {
+          "cmd": "timedatectl",
+          "desc": "看时钟与 NTP"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "localectl",
+      "category": "sys",
+      "description": "本地化设置",
+      "keywords": [
+        "本地化",
+        "localectl"
+      ],
+      "examples": [
+        {
+          "cmd": "localectl",
+          "desc": "看语言/键盘设置"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "loginctl",
+      "category": "sys",
+      "description": "登录会话管理",
+      "keywords": [
+        "会话",
+        "loginctl"
+      ],
+      "examples": [
+        {
+          "cmd": "loginctl",
+          "desc": "查看登录会话"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "iostat",
+      "category": "sys",
+      "description": "CPU/IO 统计",
+      "keywords": [
+        "IO统计",
+        "iostat"
+      ],
+      "examples": [
+        {
+          "cmd": "iostat -x 1",
+          "desc": "每秒扩展 IO 统计"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "vmstat",
+      "category": "sys",
+      "description": "虚拟内存统计",
+      "keywords": [
+        "内存统计",
+        "vmstat"
+      ],
+      "examples": [
+        {
+          "cmd": "vmstat 1",
+          "desc": "每秒系统统计"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "sar",
+      "category": "sys",
+      "description": "系统活动报告",
+      "keywords": [
+        "系统报告",
+        "sar"
+      ],
+      "examples": [
+        {
+          "cmd": "sar -u 1 3",
+          "desc": "CPU 使用率采样"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "mpstat",
+      "category": "sys",
+      "description": "CPU 核心统计",
+      "keywords": [
+        "CPU统计",
+        "mpstat"
+      ],
+      "examples": [
+        {
+          "cmd": "mpstat -P ALL 1",
+          "desc": "每核使用率"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "nproc",
+      "category": "sys",
+      "description": "CPU 核心数",
+      "keywords": [
+        "核心数",
+        "nproc"
+      ],
+      "examples": [
+        {
+          "cmd": "nproc",
+          "desc": "输出逻辑核心数"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "sensors",
+      "category": "sys",
+      "description": "温度监控",
+      "keywords": [
+        "温度",
+        "sensors"
+      ],
+      "examples": [
+        {
+          "cmd": "sensors",
+          "desc": "看 CPU/主板温度"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "shutdown",
+      "category": "power",
+      "description": "关机/重启",
+      "keywords": [
+        "关机",
+        "shutdown"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo shutdown -h now",
+          "desc": "立即关机"
+        },
+        {
+          "cmd": "sudo shutdown -r 20:00",
+          "desc": "20 点重启"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": "远程机器慎用，确认不会断错",
+      "compare": null
+    },
+    {
+      "name": "reboot",
+      "category": "power",
+      "description": "重启",
+      "keywords": [
+        "重启",
+        "reboot"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo reboot",
+          "desc": "立即重启"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "poweroff",
+      "category": "power",
+      "description": "关机",
+      "keywords": [
+        "关机",
+        "poweroff"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo poweroff",
+          "desc": "立即关机"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "halt",
+      "category": "power",
+      "description": "停止系统",
+      "keywords": [
+        "停机",
+        "halt"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo halt",
+          "desc": "停止 CPU（需断电）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "systemctl",
+      "category": "power",
+      "description": "systemd 服务管理",
+      "keywords": [
+        "服务管理",
+        "systemctl"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo systemctl restart nginx",
+          "desc": "重启服务"
+        },
+        {
+          "cmd": "systemctl status nginx",
+          "desc": "看状态"
+        },
+        {
+          "cmd": "systemctl enable nginx",
+          "desc": "开机自启"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "enable 才开机自启；改配置后 daemon-reload",
+      "compare": null
+    },
+    {
+      "name": "telinit",
+      "category": "power",
+      "description": "切换运行级别（旧）",
+      "keywords": [
+        "运行级别",
+        "telinit"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo telinit 3",
+          "desc": "切到多用户"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "现代多用 systemctl 的 target"
+    },
+    {
+      "name": "apt",
+      "category": "pkg",
+      "description": "Debian 系包管理（新）",
+      "keywords": [
+        "包管理",
+        "apt"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo apt update",
+          "desc": "更新索引"
+        },
+        {
+          "cmd": "sudo apt install -y nginx",
+          "desc": "安装"
+        },
+        {
+          "cmd": "sudo apt remove nginx",
+          "desc": "卸载"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "apt-get",
+      "category": "pkg",
+      "description": "底层 apt（脚本用）",
+      "keywords": [
+        "包管理",
+        "apt-get"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo apt-get update",
+          "desc": "更新索引"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "交互/脚本推荐 apt；apt-get 兼容旧脚本"
+    },
+    {
+      "name": "dpkg",
+      "category": "pkg",
+      "description": "Debian 底层包操作",
+      "keywords": [
+        "包管理",
+        "dpkg"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo dpkg -i pkg.deb",
+          "desc": "装本地 deb"
+        },
+        {
+          "cmd": "dpkg -l",
+          "desc": "列出已装包"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "dpkg 不解决依赖；apt 会"
+    },
+    {
+      "name": "yum",
+      "category": "pkg",
+      "description": "RHEL 旧包管理",
+      "keywords": [
+        "包管理",
+        "yum"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo yum install nginx",
+          "desc": "安装"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dnf",
+      "category": "pkg",
+      "description": "RHEL 新包管理",
+      "keywords": [
+        "包管理",
+        "dnf"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo dnf install nginx",
+          "desc": "安装"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "dnf 取代 yum"
+    },
+    {
+      "name": "rpm",
+      "category": "pkg",
+      "description": "RHEL 底层包管理",
+      "keywords": [
+        "包管理",
+        "rpm"
+      ],
+      "examples": [
+        {
+          "cmd": "rpm -qa",
+          "desc": "列出已装包"
+        },
+        {
+          "cmd": "sudo rpm -ivh pkg.rpm",
+          "desc": "装 rpm"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "pacman",
+      "category": "pkg",
+      "description": "Arch 包管理",
+      "keywords": [
+        "包管理",
+        "pacman"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo pacman -Syu",
+          "desc": "更新系统"
+        },
+        {
+          "cmd": "sudo pacman -S pkg",
+          "desc": "安装"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zypper",
+      "category": "pkg",
+      "description": "openSUSE 包管理",
+      "keywords": [
+        "包管理",
+        "zypper"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo zypper install pkg",
+          "desc": "安装"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "apk",
+      "category": "pkg",
+      "description": "Alpine 包管理",
+      "keywords": [
+        "包管理",
+        "apk"
+      ],
+      "examples": [
+        {
+          "cmd": "apk add pkg",
+          "desc": "安装（容器常用）"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "snap",
+      "category": "pkg",
+      "description": "通用快照包",
+      "keywords": [
+        "snap",
+        "snap"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo snap install code",
+          "desc": "安装"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "flatpak",
+      "category": "pkg",
+      "description": "沙盒应用",
+      "keywords": [
+        "flatpak",
+        "flatpak"
+      ],
+      "examples": [
+        {
+          "cmd": "flatpak install app",
+          "desc": "安装"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "brew",
+      "category": "pkg",
+      "description": "macOS/Homebrew",
+      "keywords": [
+        "brew",
+        "brew"
+      ],
+      "examples": [
+        {
+          "cmd": "brew install wget",
+          "desc": "macOS 装包"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "apt-cache",
+      "category": "pkg",
+      "description": "查询包信息",
+      "keywords": [
+        "包查询",
+        "apt-cache"
+      ],
+      "examples": [
+        {
+          "cmd": "apt-cache search nginx",
+          "desc": "搜索包"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "lsmod",
+      "category": "kernel",
+      "description": "列出已加载模块",
+      "keywords": [
+        "内核模块",
+        "lsmod"
+      ],
+      "examples": [
+        {
+          "cmd": "lsmod",
+          "desc": "看已加载模块"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "modprobe",
+      "category": "kernel",
+      "description": "加载/卸载模块",
+      "keywords": [
+        "模块加载",
+        "modprobe"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo modprobe kvm",
+          "desc": "加载模块"
+        },
+        {
+          "cmd": "sudo modprobe -r kvm",
+          "desc": "卸载"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "修改需谨慎，错误模块可致系统不稳",
+      "compare": null
+    },
+    {
+      "name": "insmod",
+      "category": "kernel",
+      "description": "插入模块文件",
+      "keywords": [
+        "模块插入",
+        "insmod"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo insmod drv.ko",
+          "desc": "加载指定 .ko"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": "insmod 不自动解决依赖；modprobe 会"
+    },
+    {
+      "name": "rmmod",
+      "category": "kernel",
+      "description": "移除模块",
+      "keywords": [
+        "模块移除",
+        "rmmod"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo rmmod drv",
+          "desc": "移除模块"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "depmod",
+      "category": "kernel",
+      "description": "生成模块依赖",
+      "keywords": [
+        "模块依赖",
+        "depmod"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo depmod",
+          "desc": "更新依赖映射"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "modinfo",
+      "category": "kernel",
+      "description": "查看模块信息",
+      "keywords": [
+        "模块信息",
+        "modinfo"
+      ],
+      "examples": [
+        {
+          "cmd": "modinfo kvm",
+          "desc": "看模块详情/参数"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "echo",
+      "category": "shell",
+      "description": "输出文本",
+      "keywords": [
+        "输出",
+        "echo"
+      ],
+      "examples": [
+        {
+          "cmd": "echo hello",
+          "desc": "打印文本"
+        },
+        {
+          "cmd": "echo $PATH",
+          "desc": "打印变量"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "printf",
+      "category": "shell",
+      "description": "格式化输出",
+      "keywords": [
+        "格式化输出",
+        "printf"
+      ],
+      "examples": [
+        {
+          "cmd": "printf '%s\n' a b",
+          "desc": "格式输出"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "printf 更可控；echo 简单"
+    },
+    {
+      "name": "export",
+      "category": "shell",
+      "description": "导出环境变量",
+      "keywords": [
+        "环境变量",
+        "export"
+      ],
+      "examples": [
+        {
+          "cmd": "export PATH=$PATH:/opt/bin",
+          "desc": "追加 PATH"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "alias",
+      "category": "shell",
+      "description": "设置命令别名",
+      "keywords": [
+        "别名",
+        "alias"
+      ],
+      "examples": [
+        {
+          "cmd": "alias ll='ls -la'",
+          "desc": "设别名"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "unalias",
+      "category": "shell",
+      "description": "取消别名",
+      "keywords": [
+        "取消别名",
+        "unalias"
+      ],
+      "examples": [
+        {
+          "cmd": "unalias ll",
+          "desc": "删除别名"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "source",
+      "category": "shell",
+      "description": "当前 shell 执行脚本",
+      "keywords": [
+        "执行脚本",
+        "source"
+      ],
+      "examples": [
+        {
+          "cmd": "source ~/.bashrc",
+          "desc": "重载配置"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "source 在当前 shell 执行；./script 在子 shell"
+    },
+    {
+      "name": "history",
+      "category": "shell",
+      "description": "命令历史",
+      "keywords": [
+        "历史",
+        "history"
+      ],
+      "examples": [
+        {
+          "cmd": "history",
+          "desc": "列出历史"
+        },
+        {
+          "cmd": "!123",
+          "desc": "执行第 123 条"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "read",
+      "category": "shell",
+      "description": "读取输入",
+      "keywords": [
+        "读取输入",
+        "read"
+      ],
+      "examples": [
+        {
+          "cmd": "read name",
+          "desc": "读入变量"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "eval",
+      "category": "shell",
+      "description": "执行字符串命令",
+      "keywords": [
+        "执行字符串",
+        "eval"
+      ],
+      "examples": [
+        {
+          "cmd": "eval \"$cmd\"",
+          "desc": "动态执行"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "拼接用户输入执行有注入风险",
+      "compare": null
+    },
+    {
+      "name": "exec",
+      "category": "shell",
+      "description": "替换当前进程",
+      "keywords": [
+        "替换进程",
+        "exec"
+      ],
+      "examples": [
+        {
+          "cmd": "exec bash",
+          "desc": "替换当前 shell"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "trap",
+      "category": "shell",
+      "description": "捕获信号",
+      "keywords": [
+        "信号捕获",
+        "trap"
+      ],
+      "examples": [
+        {
+          "cmd": "trap 'clean' EXIT",
+          "desc": "退出时清理"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "set",
+      "category": "shell",
+      "description": "设置 shell 选项",
+      "keywords": [
+        "shell选项",
+        "set"
+      ],
+      "examples": [
+        {
+          "cmd": "set -e",
+          "desc": "遇错即停"
+        },
+        {
+          "cmd": "set -x",
+          "desc": "打印执行命令"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "unset",
+      "category": "shell",
+      "description": "删除变量/函数",
+      "keywords": [
+        "删除变量",
+        "unset"
+      ],
+      "examples": [
+        {
+          "cmd": "unset VAR",
+          "desc": "删除变量"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "shopt",
+      "category": "shell",
+      "description": "shell 行为选项",
+      "keywords": [
+        "shell选项",
+        "shopt"
+      ],
+      "examples": [
+        {
+          "cmd": "shopt -s globstar",
+          "desc": "启用 ** 递归匹配"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "type",
+      "category": "shell",
+      "description": "显示命令类型",
+      "keywords": [
+        "命令类型",
+        "type"
+      ],
+      "examples": [
+        {
+          "cmd": "type ls",
+          "desc": "显示是别名/内建/文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "command",
+      "category": "shell",
+      "description": "绕过别名执行",
+      "keywords": [
+        "绕过别名",
+        "command"
+      ],
+      "examples": [
+        {
+          "cmd": "command ls",
+          "desc": "忽略 ls 别名"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "builtin",
+      "category": "shell",
+      "description": "调用内建",
+      "keywords": [
+        "内建",
+        "builtin"
+      ],
+      "examples": [
+        {
+          "cmd": "builtin cd",
+          "desc": "强制用内建 cd"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "let",
+      "category": "shell",
+      "description": "算术运算",
+      "keywords": [
+        "算术",
+        "let"
+      ],
+      "examples": [
+        {
+          "cmd": "let x=x+1",
+          "desc": "整数运算"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "wait",
+      "category": "shell",
+      "description": "等待后台作业",
+      "keywords": [
+        "等待",
+        "wait"
+      ],
+      "examples": [
+        {
+          "cmd": "wait %1",
+          "desc": "等任务完成"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ulimit",
+      "category": "shell",
+      "description": "资源限制",
+      "keywords": [
+        "资源限制",
+        "ulimit"
+      ],
+      "examples": [
+        {
+          "cmd": "ulimit -n 65535",
+          "desc": "提高打开文件数上限"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "test",
+      "category": "shell",
+      "description": "条件测试",
+      "keywords": [
+        "条件测试",
+        "test"
+      ],
+      "examples": [
+        {
+          "cmd": "test -f f.txt",
+          "desc": "判断文件存在"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": "test 即 [ ... ]"
+    },
+    {
+      "name": "fc",
+      "category": "shell",
+      "description": "编辑/重放历史",
+      "keywords": [
+        "历史",
+        "fc"
+      ],
+      "examples": [
+        {
+          "cmd": "fc",
+          "desc": "编辑上条命令"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "[",
+      "category": "shell",
+      "description": "条件测试内建",
+      "keywords": [
+        "条件测试",
+        "["
+      ],
+      "examples": [
+        {
+          "cmd": "[ -d dir ]",
+          "desc": "判断目录存在"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": "[ 是 test 的同名内建，注意收尾 ]"
+    },
+    {
+      "name": "vi",
+      "category": "editor",
+      "description": "经典编辑器",
+      "keywords": [
+        "编辑器",
+        "vi"
+      ],
+      "examples": [
+        {
+          "cmd": "vi f.txt",
+          "desc": "打开文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "vim",
+      "category": "editor",
+      "description": "增强 vi",
+      "keywords": [
+        "编辑器",
+        "vim"
+      ],
+      "examples": [
+        {
+          "cmd": "vim f.txt",
+          "desc": "打开（更强）"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "vim 是 vi 的增强版"
+    },
+    {
+      "name": "nano",
+      "category": "editor",
+      "description": "简易编辑器",
+      "keywords": [
+        "编辑器",
+        "nano"
+      ],
+      "examples": [
+        {
+          "cmd": "nano f.txt",
+          "desc": "新手友好编辑"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "emacs",
+      "category": "editor",
+      "description": "Emacs 编辑器",
+      "keywords": [
+        "编辑器",
+        "emacs"
+      ],
+      "examples": [
+        {
+          "cmd": "emacs f.txt",
+          "desc": "打开"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ed",
+      "category": "editor",
+      "description": "行编辑器",
+      "keywords": [
+        "行编辑器",
+        "ed"
+      ],
+      "examples": [
+        {
+          "cmd": "ed f.txt",
+          "desc": "行编辑"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "man",
+      "category": "editor",
+      "description": "查看手册",
+      "keywords": [
+        "手册",
+        "man"
+      ],
+      "examples": [
+        {
+          "cmd": "man ls",
+          "desc": "看 ls 手册"
+        },
+        {
+          "cmd": "man -k keyword",
+          "desc": "按关键词搜手册"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "info",
+      "category": "editor",
+      "description": "GNU 信息文档",
+      "keywords": [
+        "文档",
+        "info"
+      ],
+      "examples": [
+        {
+          "cmd": "info coreutils",
+          "desc": "看 GNU 文档"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "which",
+      "category": "editor",
+      "description": "显示命令路径",
+      "keywords": [
+        "命令路径",
+        "which"
+      ],
+      "examples": [
+        {
+          "cmd": "which python",
+          "desc": "看 python 位置"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "whereis",
+      "category": "editor",
+      "description": "定位命令/源码/手册",
+      "keywords": [
+        "定位",
+        "whereis"
+      ],
+      "examples": [
+        {
+          "cmd": "whereis ls",
+          "desc": "找 ls 相关文件"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "whatis",
+      "category": "editor",
+      "description": "一行命令描述",
+      "keywords": [
+        "描述",
+        "whatis"
+      ],
+      "examples": [
+        {
+          "cmd": "whatis ls",
+          "desc": "看简介"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "locate",
+      "category": "editor",
+      "description": "快速文件搜索（数据库）",
+      "keywords": [
+        "文件搜索",
+        "locate"
+      ],
+      "examples": [
+        {
+          "cmd": "locate nginx.conf",
+          "desc": "从数据库搜"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "依赖 updatedb；新文件可能搜不到",
+      "compare": null
+    },
+    {
+      "name": "updatedb",
+      "category": "editor",
+      "description": "更新搜索数据库",
+      "keywords": [
+        "更新数据库",
+        "updatedb"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo updatedb",
+          "desc": "重建 locate 索引"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "date",
+      "category": "editor",
+      "description": "显示/设置日期",
+      "keywords": [
+        "日期",
+        "date"
+      ],
+      "examples": [
+        {
+          "cmd": "date",
+          "desc": "当前时间"
+        },
+        {
+          "cmd": "date +%Y%m%d",
+          "desc": "格式化"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "cal",
+      "category": "editor",
+      "description": "显示日历",
+      "keywords": [
+        "日历",
+        "cal"
+      ],
+      "examples": [
+        {
+          "cmd": "cal",
+          "desc": "当月日历"
+        },
+        {
+          "cmd": "cal 2026",
+          "desc": "全年"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "sleep",
+      "category": "editor",
+      "description": "暂停指定秒数",
+      "keywords": [
+        "暂停",
+        "sleep"
+      ],
+      "examples": [
+        {
+          "cmd": "sleep 5",
+          "desc": "等 5 秒"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "yes",
+      "category": "editor",
+      "description": "持续输出",
+      "keywords": [
+        "持续输出",
+        "yes"
+      ],
+      "examples": [
+        {
+          "cmd": "yes | cmd",
+          "desc": "自动确认"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "clear",
+      "category": "editor",
+      "description": "清屏",
+      "keywords": [
+        "清屏",
+        "clear"
+      ],
+      "examples": [
+        {
+          "cmd": "clear",
+          "desc": "清屏"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "script",
+      "category": "editor",
+      "description": "记录终端会话",
+      "keywords": [
+        "记录会话",
+        "script"
+      ],
+      "examples": [
+        {
+          "cmd": "script session.log",
+          "desc": "记录全部输出"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "wall",
+      "category": "editor",
+      "description": "向所有终端发消息",
+      "keywords": [
+        "广播",
+        "wall"
+      ],
+      "examples": [
+        {
+          "cmd": "wall '维护通知'",
+          "desc": "群发消息"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "mesg",
+      "category": "editor",
+      "description": "控制消息接收",
+      "keywords": [
+        "消息",
+        "mesg"
+      ],
+      "examples": [
+        {
+          "cmd": "mesg n",
+          "desc": "拒收 wall 消息"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git init",
+      "category": "g_config",
+      "description": "初始化仓库",
+      "keywords": [
+        "初始化",
+        "仓库",
+        "git init"
+      ],
+      "examples": [
+        {
+          "cmd": "git init",
+          "desc": "当前目录建仓库"
+        },
+        {
+          "cmd": "git init --bare",
+          "desc": "建裸仓库（服务端）"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git clone",
+      "category": "g_config",
+      "description": "克隆仓库",
+      "keywords": [
+        "克隆",
+        "git clone"
+      ],
+      "examples": [
+        {
+          "cmd": "git clone url",
+          "desc": "克隆到同名目录"
+        },
+        {
+          "cmd": "git clone -b dev url",
+          "desc": "克隆指定分支"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git config",
+      "category": "g_config",
+      "description": "配置",
+      "keywords": [
+        "配置",
+        "git config"
+      ],
+      "examples": [
+        {
+          "cmd": "git config --global user.name 'x'",
+          "desc": "设用户名"
+        },
+        {
+          "cmd": "git config --list",
+          "desc": "查看配置"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git help",
+      "category": "g_config",
+      "description": "查看帮助",
+      "keywords": [
+        "帮助",
+        "git help"
+      ],
+      "examples": [
+        {
+          "cmd": "git help commit",
+          "desc": "看 commit 手册"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git var",
+      "category": "g_config",
+      "description": "显示 git 变量",
+      "keywords": [
+        "变量",
+        "git var"
+      ],
+      "examples": [
+        {
+          "cmd": "git var GIT_AUTHOR_IDENT",
+          "desc": "看作者身份"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git version",
+      "category": "g_config",
+      "description": "显示版本",
+      "keywords": [
+        "版本",
+        "git version"
+      ],
+      "examples": [
+        {
+          "cmd": "git version",
+          "desc": "查看 git 版本"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git bugreport",
+      "category": "g_config",
+      "description": "生成缺陷报告",
+      "keywords": [
+        "缺陷报告",
+        "git bugreport"
+      ],
+      "examples": [
+        {
+          "cmd": "git bugreport",
+          "desc": "生成环境报告"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git status",
+      "category": "g_commit",
+      "description": "查看状态",
+      "keywords": [
+        "状态",
+        "git status"
+      ],
+      "examples": [
+        {
+          "cmd": "git status",
+          "desc": "看改动"
+        },
+        {
+          "cmd": "git status -s",
+          "desc": "紧凑状态"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git add",
+      "category": "g_commit",
+      "description": "暂存改动",
+      "keywords": [
+        "暂存",
+        "git add"
+      ],
+      "examples": [
+        {
+          "cmd": "git add .",
+          "desc": "暂存全部"
+        },
+        {
+          "cmd": "git add -p",
+          "desc": "交互暂存"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "add . 会暂存所有，含敏感文件，注意 .gitignore",
+      "compare": null
+    },
+    {
+      "name": "git commit",
+      "category": "g_commit",
+      "description": "提交",
+      "keywords": [
+        "提交",
+        "git commit"
+      ],
+      "examples": [
+        {
+          "cmd": "git commit -m 'msg'",
+          "desc": "提交"
+        },
+        {
+          "cmd": "git commit --amend",
+          "desc": "修改上次提交"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git rm",
+      "category": "g_commit",
+      "description": "删除并暂存",
+      "keywords": [
+        "删除",
+        "git rm"
+      ],
+      "examples": [
+        {
+          "cmd": "git rm f.txt",
+          "desc": "删文件并暂存"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git mv",
+      "category": "g_commit",
+      "description": "移动/重命名并暂存",
+      "keywords": [
+        "移动",
+        "git mv"
+      ],
+      "examples": [
+        {
+          "cmd": "git mv a.txt b.txt",
+          "desc": "重命名"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git clean",
+      "category": "g_commit",
+      "description": "删除未跟踪文件",
+      "keywords": [
+        "清理",
+        "git clean"
+      ],
+      "examples": [
+        {
+          "cmd": "git clean -fd",
+          "desc": "删未跟踪文件/目录"
+        },
+        {
+          "cmd": "git clean -n",
+          "desc": "预览"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "-fd 不可恢复，先 -n 预览",
+      "compare": null
+    },
+    {
+      "name": "git stage",
+      "category": "g_commit",
+      "description": "add 别名",
+      "keywords": [
+        "暂存",
+        "git stage"
+      ],
+      "examples": [
+        {
+          "cmd": "git stage .",
+          "desc": "同 add"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "git stage 是 git add 的别名"
+    },
+    {
+      "name": "git log",
+      "category": "g_view",
+      "description": "查看提交历史",
+      "keywords": [
+        "历史",
+        "git log"
+      ],
+      "examples": [
+        {
+          "cmd": "git log",
+          "desc": "默认历史"
+        },
+        {
+          "cmd": "git log --oneline --graph --all",
+          "desc": "图形化"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git show",
+      "category": "g_view",
+      "description": "显示对象内容",
+      "keywords": [
+        "显示",
+        "git show"
+      ],
+      "examples": [
+        {
+          "cmd": "git show",
+          "desc": "看最近提交"
+        },
+        {
+          "cmd": "git show <sha>",
+          "desc": "看某提交"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git diff",
+      "category": "g_view",
+      "description": "查看差异",
+      "keywords": [
+        "差异",
+        "git diff"
+      ],
+      "examples": [
+        {
+          "cmd": "git diff",
+          "desc": "工作区 vs 暂存"
+        },
+        {
+          "cmd": "git diff --staged",
+          "desc": "暂存 vs 上次提交"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git blame",
+      "category": "g_view",
+      "description": "逐行标注作者",
+      "keywords": [
+        "溯源",
+        "git blame"
+      ],
+      "examples": [
+        {
+          "cmd": "git blame f.txt",
+          "desc": "看每行作者"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git grep",
+      "category": "g_view",
+      "description": "仓库内搜索",
+      "keywords": [
+        "搜索",
+        "git grep"
+      ],
+      "examples": [
+        {
+          "cmd": "git grep 'func'",
+          "desc": "在版本库搜"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git shortlog",
+      "category": "g_view",
+      "description": "按作者汇总提交",
+      "keywords": [
+        "汇总",
+        "git shortlog"
+      ],
+      "examples": [
+        {
+          "cmd": "git shortlog -sn",
+          "desc": "各作者提交数"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git describe",
+      "category": "g_view",
+      "description": "用标签描述提交",
+      "keywords": [
+        "描述",
+        "git describe"
+      ],
+      "examples": [
+        {
+          "cmd": "git describe --tags",
+          "desc": "最近标签+偏移"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git reflog",
+      "category": "g_view",
+      "description": "引用日志（含丢失提交）",
+      "keywords": [
+        "引用日志",
+        "git reflog"
+      ],
+      "examples": [
+        {
+          "cmd": "git reflog",
+          "desc": "看 HEAD 变动历史"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": "误删提交可用 reflog 找回",
+      "compare": null
+    },
+    {
+      "name": "git whatchanged",
+      "category": "g_view",
+      "description": "显示提交改动文件",
+      "keywords": [
+        "改动",
+        "git whatchanged"
+      ],
+      "examples": [
+        {
+          "cmd": "git whatchanged -p",
+          "desc": "类 log 加补丁"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "类似 git log 但侧重文件列表"
+    },
+    {
+      "name": "git branch",
+      "category": "g_branch",
+      "description": "分支管理",
+      "keywords": [
+        "分支",
+        "git branch"
+      ],
+      "examples": [
+        {
+          "cmd": "git branch",
+          "desc": "列分支"
+        },
+        {
+          "cmd": "git branch -d feat",
+          "desc": "删已合并分支"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git switch",
+      "category": "g_branch",
+      "description": "切换/新建分支",
+      "keywords": [
+        "切换分支",
+        "git switch"
+      ],
+      "examples": [
+        {
+          "cmd": "git switch main",
+          "desc": "切换"
+        },
+        {
+          "cmd": "git switch -c feat",
+          "desc": "新建并切换"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "switch 专用于分支（2.23+），比 checkout 清晰"
+    },
+    {
+      "name": "git checkout",
+      "category": "g_branch",
+      "description": "切换分支/恢复文件",
+      "keywords": [
+        "检出",
+        "撤销改动",
+        "git checkout"
+      ],
+      "examples": [
+        {
+          "cmd": "git checkout main",
+          "desc": "切分支"
+        },
+        {
+          "cmd": "git checkout -- f.txt",
+          "desc": "丢弃改动"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "checkout -- 丢弃改动不可恢复；切分支用 switch 更安全",
+      "compare": null
+    },
+    {
+      "name": "git merge",
+      "category": "g_branch",
+      "description": "合并分支",
+      "keywords": [
+        "合并",
+        "git merge"
+      ],
+      "examples": [
+        {
+          "cmd": "git merge feat",
+          "desc": "合并 feat 到当前"
+        },
+        {
+          "cmd": "git merge --no-ff feat",
+          "desc": "保留合并点"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git mergetool",
+      "category": "g_branch",
+      "description": "图形化解决冲突",
+      "keywords": [
+        "解决冲突",
+        "git mergetool"
+      ],
+      "examples": [
+        {
+          "cmd": "git mergetool",
+          "desc": "启动合并工具"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git rebase",
+      "category": "g_branch",
+      "description": "变基",
+      "keywords": [
+        "变基",
+        "git rebase"
+      ],
+      "examples": [
+        {
+          "cmd": "git rebase main",
+          "desc": "把当前变基到 main"
+        },
+        {
+          "cmd": "git rebase -i HEAD~3",
+          "desc": "交互整理"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": "已推送的提交勿 rebase，会改写历史",
+      "compare": null
+    },
+    {
+      "name": "git cherry-pick",
+      "category": "g_branch",
+      "description": "复制某次提交",
+      "keywords": [
+        "遴选",
+        "git cherry-pick"
+      ],
+      "examples": [
+        {
+          "cmd": "git cherry-pick <sha>",
+          "desc": "复制到当前分支"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git tag",
+      "category": "g_branch",
+      "description": "打标签",
+      "keywords": [
+        "标签",
+        "git tag"
+      ],
+      "examples": [
+        {
+          "cmd": "git tag v1.0",
+          "desc": "轻量标签"
+        },
+        {
+          "cmd": "git tag -a v1.0 -m 'rel'",
+          "desc": "附注标签"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git range-diff",
+      "category": "g_branch",
+      "description": "比较两个提交区间",
+      "keywords": [
+        "区间差异",
+        "git range-diff"
+      ],
+      "examples": [
+        {
+          "cmd": "git range-diff A..B C..D",
+          "desc": "比较两区间"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git remote",
+      "category": "g_remote",
+      "description": "远程仓库管理",
+      "keywords": [
+        "远程",
+        "git remote"
+      ],
+      "examples": [
+        {
+          "cmd": "git remote add origin url",
+          "desc": "加远程"
+        },
+        {
+          "cmd": "git remote -v",
+          "desc": "看远程"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git fetch",
+      "category": "g_remote",
+      "description": "拉取但不合并",
+      "keywords": [
+        "拉取",
+        "git fetch"
+      ],
+      "examples": [
+        {
+          "cmd": "git fetch origin",
+          "desc": "取远端更新"
+        },
+        {
+          "cmd": "git fetch -p",
+          "desc": "删过时远程分支"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git pull",
+      "category": "g_remote",
+      "description": "拉取并合并",
+      "keywords": [
+        "拉取合并",
+        "git pull"
+      ],
+      "examples": [
+        {
+          "cmd": "git pull",
+          "desc": "拉取并合并"
+        },
+        {
+          "cmd": "git pull --rebase",
+          "desc": "变基式拉取"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "pull 等价于 fetch+merge；用 --rebase 减少合并提交",
+      "compare": null
+    },
+    {
+      "name": "git push",
+      "category": "g_remote",
+      "description": "推送",
+      "keywords": [
+        "推送",
+        "git push"
+      ],
+      "examples": [
+        {
+          "cmd": "git push -u origin main",
+          "desc": "首次推送并关联"
+        },
+        {
+          "cmd": "git push --force-with-lease",
+          "desc": "安全强推"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "已推送的历史勿强推；必须时用 --force-with-lease",
+      "compare": null
+    },
+    {
+      "name": "git submodule",
+      "category": "g_remote",
+      "description": "子模块",
+      "keywords": [
+        "子模块",
+        "git submodule"
+      ],
+      "examples": [
+        {
+          "cmd": "git submodule add url lib",
+          "desc": "加子模块"
+        },
+        {
+          "cmd": "git submodule update --init",
+          "desc": "初始化"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git worktree",
+      "category": "g_remote",
+      "description": "多工作树",
+      "keywords": [
+        "工作树",
+        "git worktree"
+      ],
+      "examples": [
+        {
+          "cmd": "git worktree add ../wt main",
+          "desc": "另开一个分支目录"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git bundle",
+      "category": "g_remote",
+      "description": "打包为单文件",
+      "keywords": [
+        "打包",
+        "git bundle"
+      ],
+      "examples": [
+        {
+          "cmd": "git bundle create r.bundle --all",
+          "desc": "离线传输用"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git request-pull",
+      "category": "g_remote",
+      "description": "生成拉取请求说明",
+      "keywords": [
+        "拉取请求",
+        "git request-pull"
+      ],
+      "examples": [
+        {
+          "cmd": "git request-pull base origin",
+          "desc": "生成说明"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git reset",
+      "category": "g_undo",
+      "description": "重置",
+      "keywords": [
+        "重置",
+        "撤销提交",
+        "git reset"
+      ],
+      "examples": [
+        {
+          "cmd": "git reset --soft HEAD~1",
+          "desc": "撤提交留改动"
+        },
+        {
+          "cmd": "git reset --hard HEAD~1",
+          "desc": "彻底丢弃"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "--hard 丢弃工作区改动，不可恢复；优先 --soft/--mixed",
+      "compare": null
+    },
+    {
+      "name": "git restore",
+      "category": "g_undo",
+      "description": "恢复工作区/暂存",
+      "keywords": [
+        "恢复",
+        "撤销改动",
+        "git restore"
+      ],
+      "examples": [
+        {
+          "cmd": "git restore --staged f",
+          "desc": "移出暂存"
+        },
+        {
+          "cmd": "git restore f",
+          "desc": "丢弃工作区改动"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "restore 专用于恢复（2.23+），语义清晰"
+    },
+    {
+      "name": "git revert",
+      "category": "g_undo",
+      "description": "反向提交",
+      "keywords": [
+        "撤销",
+        "撤销提交",
+        "git revert"
+      ],
+      "examples": [
+        {
+          "cmd": "git revert <sha>",
+          "desc": "生成抵消提交"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "revert 不改历史，适合已推送；reset 改历史"
+    },
+    {
+      "name": "git stash",
+      "category": "g_undo",
+      "description": "暂存快照",
+      "keywords": [
+        "暂存快照",
+        "git stash"
+      ],
+      "examples": [
+        {
+          "cmd": "git stash push -m 'wip'",
+          "desc": "暂存"
+        },
+        {
+          "cmd": "git stash pop",
+          "desc": "恢复并删除"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git format-patch",
+      "category": "g_patch",
+      "description": "生成补丁邮件",
+      "keywords": [
+        "生成补丁",
+        "git format-patch"
+      ],
+      "examples": [
+        {
+          "cmd": "git format-patch origin/main",
+          "desc": "生成一系列 .patch"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git am",
+      "category": "g_patch",
+      "description": "应用邮件补丁",
+      "keywords": [
+        "应用补丁",
+        "git am"
+      ],
+      "examples": [
+        {
+          "cmd": "git am *.patch",
+          "desc": "应用 mbox 补丁"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git apply",
+      "category": "g_patch",
+      "description": "应用 diff 补丁",
+      "keywords": [
+        "应用补丁",
+        "git apply"
+      ],
+      "examples": [
+        {
+          "cmd": "git apply p.patch",
+          "desc": "应用补丁"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "apply 不动提交；am 会创建提交"
+    },
+    {
+      "name": "git send-email",
+      "category": "g_patch",
+      "description": "发送补丁邮件",
+      "keywords": [
+        "发送邮件",
+        "git send-email"
+      ],
+      "examples": [
+        {
+          "cmd": "git send-email *.patch",
+          "desc": "发到邮件列表"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git imap-send",
+      "category": "g_patch",
+      "description": "经 IMAP 发补丁",
+      "keywords": [
+        "IMAP发送",
+        "git imap-send"
+      ],
+      "examples": [
+        {
+          "cmd": "git imap-send *.patch",
+          "desc": "通过 IMAP 发送"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git mailinfo",
+      "category": "g_patch",
+      "description": "提取邮件补丁信息",
+      "keywords": [
+        "邮件信息",
+        "git mailinfo"
+      ],
+      "examples": [
+        {
+          "cmd": "git mailinfo msg patch < m",
+          "desc": "解析邮件"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git bisect",
+      "category": "g_debug",
+      "description": "二分定位引入问题的提交",
+      "keywords": [
+        "二分查找",
+        "git bisect"
+      ],
+      "examples": [
+        {
+          "cmd": "git bisect start",
+          "desc": "开始"
+        },
+        {
+          "cmd": "git bisect bad/good <sha>",
+          "desc": "标记"
+        },
+        {
+          "cmd": "git bisect run ./test.sh",
+          "desc": "自动"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git gc",
+      "category": "g_maint",
+      "description": "垃圾回收",
+      "keywords": [
+        "垃圾回收",
+        "git gc"
+      ],
+      "examples": [
+        {
+          "cmd": "git gc",
+          "desc": "压缩对象"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git fsck",
+      "category": "g_maint",
+      "description": "检查对象库",
+      "keywords": [
+        "检查",
+        "git fsck"
+      ],
+      "examples": [
+        {
+          "cmd": "git fsck",
+          "desc": "校验完整性"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git prune",
+      "category": "g_maint",
+      "description": "删除不可达对象",
+      "keywords": [
+        "清理",
+        "git prune"
+      ],
+      "examples": [
+        {
+          "cmd": "git prune",
+          "desc": "删悬空对象"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git repack",
+      "category": "g_maint",
+      "description": "重新打包对象",
+      "keywords": [
+        "重新打包",
+        "git repack"
+      ],
+      "examples": [
+        {
+          "cmd": "git repack -ad",
+          "desc": "打包并删冗余"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git maintenance",
+      "category": "g_maint",
+      "description": "后台维护",
+      "keywords": [
+        "维护",
+        "git maintenance"
+      ],
+      "examples": [
+        {
+          "cmd": "git maintenance start",
+          "desc": "开启定时维护"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git count-objects",
+      "category": "g_maint",
+      "description": "统计对象",
+      "keywords": [
+        "统计",
+        "git count-objects"
+      ],
+      "examples": [
+        {
+          "cmd": "git count-objects -v",
+          "desc": "详细统计"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git archive",
+      "category": "g_other",
+      "description": "导出快照",
+      "keywords": [
+        "导出",
+        "git archive"
+      ],
+      "examples": [
+        {
+          "cmd": "git archive --format=zip HEAD > t.zip",
+          "desc": "导出当前"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git ls-files",
+      "category": "g_other",
+      "description": "列出跟踪文件",
+      "keywords": [
+        "列出文件",
+        "git ls-files"
+      ],
+      "examples": [
+        {
+          "cmd": "git ls-files",
+          "desc": "看已跟踪文件"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git rev-parse",
+      "category": "g_other",
+      "description": "解析修订/路径",
+      "keywords": [
+        "解析",
+        "git rev-parse"
+      ],
+      "examples": [
+        {
+          "cmd": "git rev-parse HEAD",
+          "desc": "得完整 SHA"
+        },
+        {
+          "cmd": "git rev-parse --show-toplevel",
+          "desc": "仓库根"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git rev-list",
+      "category": "g_other",
+      "description": "列出提交对象",
+      "keywords": [
+        "列出提交",
+        "git rev-list"
+      ],
+      "examples": [
+        {
+          "cmd": "git rev-list --count HEAD",
+          "desc": "提交数"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git cat-file",
+      "category": "g_plumb",
+      "description": "查看对象内容/类型",
+      "keywords": [
+        "对象查看",
+        "git cat-file"
+      ],
+      "examples": [
+        {
+          "cmd": "git cat-file -p <sha>",
+          "desc": "看对象内容"
+        },
+        {
+          "cmd": "git cat-file -t <sha>",
+          "desc": "看类型"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git hash-object",
+      "category": "g_plumb",
+      "description": "计算/写入对象哈希",
+      "keywords": [
+        "哈希",
+        "git hash-object"
+      ],
+      "examples": [
+        {
+          "cmd": "git hash-object f.txt",
+          "desc": "得 SHA-1"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git update-index",
+      "category": "g_plumb",
+      "description": "操作索引",
+      "keywords": [
+        "索引",
+        "git update-index"
+      ],
+      "examples": [
+        {
+          "cmd": "git update-index --add f",
+          "desc": "加入索引"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git write-tree",
+      "category": "g_plumb",
+      "description": "把索引写成树对象",
+      "keywords": [
+        "写树",
+        "git write-tree"
+      ],
+      "examples": [
+        {
+          "cmd": "git write-tree",
+          "desc": "生成树 SHA"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git commit-tree",
+      "category": "g_plumb",
+      "description": "创建提交对象",
+      "keywords": [
+        "创建提交",
+        "git commit-tree"
+      ],
+      "examples": [
+        {
+          "cmd": "git commit-tree <tree> -p <parent> -m 'm'",
+          "desc": "造提交"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git update-ref",
+      "category": "g_plumb",
+      "description": "更新引用",
+      "keywords": [
+        "更新引用",
+        "git update-ref"
+      ],
+      "examples": [
+        {
+          "cmd": "git update-ref refs/heads/x <sha>",
+          "desc": "设分支指向"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git show-ref",
+      "category": "g_plumb",
+      "description": "列出引用",
+      "keywords": [
+        "列出引用",
+        "git show-ref"
+      ],
+      "examples": [
+        {
+          "cmd": "git show-ref",
+          "desc": "看所有引用"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git symbolic-ref",
+      "category": "g_plumb",
+      "description": "读写符号引用",
+      "keywords": [
+        "符号引用",
+        "git symbolic-ref"
+      ],
+      "examples": [
+        {
+          "cmd": "git symbolic-ref HEAD refs/heads/main",
+          "desc": "设 HEAD"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git name-rev",
+      "category": "g_plumb",
+      "description": "把 SHA 映射为引用名",
+      "keywords": [
+        "名称映射",
+        "git name-rev"
+      ],
+      "examples": [
+        {
+          "cmd": "git name-rev <sha>",
+          "desc": "得分支/标签名"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git for-each-ref",
+      "category": "g_plumb",
+      "description": "迭代引用",
+      "keywords": [
+        "引用迭代",
+        "git for-each-ref"
+      ],
+      "examples": [
+        {
+          "cmd": "git for-each-ref --format='%(refname)'",
+          "desc": "列引用"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git verify-pack",
+      "category": "g_plumb",
+      "description": "校验 pack 文件",
+      "keywords": [
+        "校验pack",
+        "git verify-pack"
+      ],
+      "examples": [
+        {
+          "cmd": "git verify-pack -v f.pack",
+          "desc": "详细校验"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git pack-objects",
+      "category": "g_plumb",
+      "description": "打包对象",
+      "keywords": [
+        "打包对象",
+        "git pack-objects"
+      ],
+      "examples": [
+        {
+          "cmd": "git pack-objects out < objs",
+          "desc": "生成 pack"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git index-pack",
+      "category": "g_plumb",
+      "description": "建 pack 索引",
+      "keywords": [
+        "pack索引",
+        "git index-pack"
+      ],
+      "examples": [
+        {
+          "cmd": "git index-pack f.pack",
+          "desc": "生成 idx"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git unpack-objects",
+      "category": "g_plumb",
+      "description": "解包到对象库",
+      "keywords": [
+        "解包",
+        "git unpack-objects"
+      ],
+      "examples": [
+        {
+          "cmd": "git unpack-objects < f.pack",
+          "desc": "解包"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git pack-refs",
+      "category": "g_plumb",
+      "description": "打包引用",
+      "keywords": [
+        "打包引用",
+        "git pack-refs"
+      ],
+      "examples": [
+        {
+          "cmd": "git pack-refs --all",
+          "desc": "压缩 refs"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git read-tree",
+      "category": "g_plumb",
+      "description": "读树到索引",
+      "keywords": [
+        "读树",
+        "git read-tree"
+      ],
+      "examples": [
+        {
+          "cmd": "git read-tree <tree>",
+          "desc": "载入索引"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git ls-tree",
+      "category": "g_plumb",
+      "description": "列树对象内容",
+      "keywords": [
+        "列树",
+        "git ls-tree"
+      ],
+      "examples": [
+        {
+          "cmd": "git ls-tree HEAD",
+          "desc": "看根树"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git mktree",
+      "category": "g_plumb",
+      "description": "由 ls-tree 输出建树",
+      "keywords": [
+        "建树",
+        "git mktree"
+      ],
+      "examples": [
+        {
+          "cmd": "git ls-tree HEAD | git mktree",
+          "desc": "重建树"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git notes",
+      "category": "g_plumb",
+      "description": "给提交加附注",
+      "keywords": [
+        "附注",
+        "git notes"
+      ],
+      "examples": [
+        {
+          "cmd": "git notes add -m 'x' <sha>",
+          "desc": "加注"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git replace",
+      "category": "g_plumb",
+      "description": "替换对象",
+      "keywords": [
+        "替换对象",
+        "git replace"
+      ],
+      "examples": [
+        {
+          "cmd": "git replace <sha> <sha2>",
+          "desc": "临时替换"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git filter-repo",
+      "category": "g_adv",
+      "description": "重写历史（推荐）",
+      "keywords": [
+        "重写历史",
+        "git filter-repo"
+      ],
+      "examples": [
+        {
+          "cmd": "git filter-repo --path dir/",
+          "desc": "只保留某目录历史"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "破坏性操作，先备份；取代已弃用 filter-branch",
+      "compare": null
+    },
+    {
+      "name": "git filter-branch",
+      "category": "g_adv",
+      "description": "重写历史（已弃用）",
+      "keywords": [
+        "重写历史",
+        "git filter-branch"
+      ],
+      "examples": [
+        {
+          "cmd": "git filter-branch --tree-filter '...' HEAD",
+          "desc": "改写"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "已弃用，优先 filter-repo；慢且易错",
+      "compare": null
+    },
+    {
+      "name": "git subtree",
+      "category": "g_adv",
+      "description": "子树合并",
+      "keywords": [
+        "子树",
+        "git subtree"
+      ],
+      "examples": [
+        {
+          "cmd": "git subtree add --prefix=lib url",
+          "desc": "嵌入子项目"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git sparse-checkout",
+      "category": "g_adv",
+      "description": "稀疏检出",
+      "keywords": [
+        "稀疏检出",
+        "git sparse-checkout"
+      ],
+      "examples": [
+        {
+          "cmd": "git sparse-checkout set src/",
+          "desc": "只检某目录"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git rerere",
+      "category": "g_adv",
+      "description": "重用冲突解决",
+      "keywords": [
+        "重用解决",
+        "git rerere"
+      ],
+      "examples": [
+        {
+          "cmd": "git config rerere.enabled true",
+          "desc": "开启"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git instaweb",
+      "category": "g_adv",
+      "description": "启动 Web 界面",
+      "keywords": [
+        "web界面",
+        "git instaweb"
+      ],
+      "examples": [
+        {
+          "cmd": "git instaweb",
+          "desc": "本地起 gitweb"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git credential",
+      "category": "g_adv",
+      "description": "凭证管理",
+      "keywords": [
+        "凭证",
+        "git credential"
+      ],
+      "examples": [
+        {
+          "cmd": "git config credential.helper store",
+          "desc": "明文存密码"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "store 明文存密码不安全，推荐 cache/osxkeychain",
+      "compare": null
+    },
+    {
+      "name": "git fast-export",
+      "category": "g_adv",
+      "description": "导出为流",
+      "keywords": [
+        "导出流",
+        "git fast-export"
+      ],
+      "examples": [
+        {
+          "cmd": "git fast-export --all",
+          "desc": "导出供迁移"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git fast-import",
+      "category": "g_adv",
+      "description": "从流导入",
+      "keywords": [
+        "导入流",
+        "git fast-import"
+      ],
+      "examples": [
+        {
+          "cmd": "git fast-import < stream",
+          "desc": "导入"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git daemon",
+      "category": "g_transport",
+      "description": "匿名 Git 服务",
+      "keywords": [
+        "git服务",
+        "git daemon"
+      ],
+      "examples": [
+        {
+          "cmd": "git daemon --base-path=/repos",
+          "desc": "起只读服务"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git upload-pack",
+      "category": "g_transport",
+      "description": "上传对象（拉取端）",
+      "keywords": [
+        "上传",
+        "git upload-pack"
+      ],
+      "examples": [
+        {
+          "cmd": "git upload-pack repo",
+          "desc": "被 fetch 调用"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git receive-pack",
+      "category": "g_transport",
+      "description": "接收对象（推送端）",
+      "keywords": [
+        "接收",
+        "git receive-pack"
+      ],
+      "examples": [
+        {
+          "cmd": "git receive-pack repo",
+          "desc": "被 push 调用"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git http-backend",
+      "category": "g_transport",
+      "description": "CGI 智能 HTTP",
+      "keywords": [
+        "http后端",
+        "git http-backend"
+      ],
+      "examples": [
+        {
+          "cmd": "git http-backend",
+          "desc": "配合 web 服务器"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git send-pack",
+      "category": "g_transport",
+      "description": "推送引用",
+      "keywords": [
+        "推送",
+        "git send-pack"
+      ],
+      "examples": [
+        {
+          "cmd": "git send-pack origin main",
+          "desc": "底层 push"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git shell",
+      "category": "g_transport",
+      "description": "受限登录 shell",
+      "keywords": [
+        "受限shell",
+        "git shell"
+      ],
+      "examples": [
+        {
+          "cmd": "git shell",
+          "desc": "仅允许 git 操作"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "git upload-archive",
+      "category": "g_transport",
+      "description": "支持 git archive 远程",
+      "keywords": [
+        "archive远程",
+        "git upload-archive"
+      ],
+      "examples": [
+        {
+          "cmd": "git upload-archive repo",
+          "desc": "配合 archive"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    }
+  ]
+};

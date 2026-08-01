@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux &amp; Git 命令速查 · 中文命令查询工具</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <h1>Linux &amp; Git 命令速查</h1>
+        <p class="subtitle">为中文用户打造的免费命令查询工具 · 支持中文关键词搜索、分类导航、使用案例与一键复制</p>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </span>
+        <input id="search" type="search" autocomplete="off"
+          placeholder="搜索命令或中文关键词，如：删除文件 / 撤销提交 / git reset / 端口" />
+      </div>
+      <div class="group-filters" id="groupFilters">
+        <button class="gbtn active" data-group="all">全部</button>
+        <button class="gbtn" data-group="linux">Linux</button>
+        <button class="gbtn" data-group="git">Git</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+
+  <script src="data/commands.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
