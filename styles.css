@@ -190,6 +190,111 @@ body {
 .gbtn:hover { color: var(--ink); background: rgba(11, 18, 32, 0.05); }
 .gbtn.active { background: var(--surface); color: var(--brand); box-shadow: var(--shadow-xs); font-weight: 600; }
 
+/* ---- Top bar actions (GitHub badge + theme toggle) ---- */
+.topbar-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 6px;
+}
+.gh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-secondary);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-xs);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.gh-badge:hover { color: var(--ink); border-color: #cbd5e1; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.gh-badge svg { color: var(--ink); }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px; height: 38px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-secondary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.theme-toggle:hover { color: var(--ink); border-color: #cbd5e1; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.theme-toggle:active { transform: translateY(0) scale(0.96); }
+/* 浅色模式显示月亮（点击切深色），深色模式显示太阳 */
+.icon-sun { display: none; }
+[data-theme="dark"] .icon-moon { display: none; }
+[data-theme="dark"] .icon-sun { display: inline-flex; }
+
+/* ---- Dark theme ---- */
+[data-theme="dark"] {
+  --bg: #0a0f1c;
+  --surface: #131c2e;
+  --surface-raised: #1a2438;
+  --surface-subtle: #0f1830;
+  --ink: #e6edf6;
+  --ink-secondary: #a4b1c4;
+  --ink-tertiary: #6b7a90;
+  --ink-inverse: #0a0f1c;
+  --brand: #60a5fa;
+  --brand-hover: #93c5fd;
+  --brand-soft: #14233f;
+  --brand-soft-hover: #1d2f52;
+  --linux: #2dd4bf;
+  --linux-soft: #0e2b27;
+  --linux-tint: #134e46;
+  --git: #a78bfa;
+  --git-soft: #1e1735;
+  --git-tint: #2a2150;
+  --warn-bg: #2a210b;
+  --warn-line: #b47a16;
+  --warn-ink: #f3c87a;
+  --info-bg: #0f1d33;
+  --info-line: #2f6bd0;
+  --info-ink: #a9c8f5;
+  --code-bg: #060c1a;
+  --code-text: #cbd5e1;
+  --line: #243049;
+  --line-soft: #1b2438;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.35);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.4);
+  --shadow: 0 4px 8px rgba(0,0,0,0.45), 0 12px 24px rgba(0,0,0,0.5);
+  --shadow-hover: 0 8px 12px rgba(0,0,0,0.5), 0 22px 44px rgba(0,0,0,0.55);
+}
+[data-theme="dark"] body {
+  background:
+    radial-gradient(1200px 480px at 100% -10%, rgba(96,165,250,0.10), transparent 60%),
+    radial-gradient(900px 420px at -10% 0%, rgba(167,139,250,0.08), transparent 55%),
+    var(--bg);
+}
+[data-theme="dark"] .topbar { background: rgba(10,15,28,0.82); border-bottom-color: var(--line); }
+[data-theme="dark"] .hero { background: linear-gradient(135deg, #131c2e 0%, #0f1830 100%); }
+[data-theme="dark"] .gbtn:hover { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .cmd-card:hover { border-color: #2f3e57; }
+[data-theme="dark"] #search:hover { border-color: #2f3e57; }
+[data-theme="dark"] .badge.freq-高 { background: #3a1414; color: #fca5a5; border-color: #5c2222; }
+[data-theme="dark"] .badge.freq-中 { background: #3a2c0a; color: #fcd34d; border-color: #5c451a; }
+[data-theme="dark"] .badge.freq-低 { background: #1e2738; color: #94a3b8; border-color: #2f3e57; }
+[data-theme="dark"] .badge.diff-入门 { background: #0e2b22; color: #6ee7b7; border-color: #14533f; }
+[data-theme="dark"] .badge.diff-日常 { background: #14233f; color: #93c5fd; border-color: #1d2f52; }
+[data-theme="dark"] .badge.diff-进阶 { background: #1e1735; color: #c4b5fd; border-color: #2a2150; }
+
 /* ---- Layout ---- */
 .layout {
   display: grid;
@@ -690,6 +795,9 @@ mark { background: #fef08a; color: var(--ink); padding: 0 2px; border-radius: 3p
   .topbar-inner { padding: 0 var(--space-4); }
   .brand h1 { font-size: 22px; }
   .subtitle { font-size: 13px; }
+  .topbar-actions { gap: 8px; padding-top: 4px; }
+  .gh-username { display: none; }
+  .gh-badge { padding: 9px; }
   .layout { padding: var(--space-5) var(--space-4) 72px; }
   .hero { padding: var(--space-6) var(--space-5); border-radius: var(--radius-lg); }
   .hero-stats { grid-template-columns: 1fr; }

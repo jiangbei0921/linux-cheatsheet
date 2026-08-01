@@ -300,6 +300,25 @@
     }
   });
 
+  /* ---------- Theme toggle (light/dark) ---------- */
+  (function setupTheme() {
+    var root = document.documentElement;
+    var toggle = document.getElementById("themeToggle");
+    var saved = null;
+    try { saved = localStorage.getItem("theme"); } catch (e) {}
+    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var theme = saved || (prefersDark ? "dark" : "light");
+    root.setAttribute("data-theme", theme);
+    if (toggle) {
+      toggle.addEventListener("click", function () {
+        var cur = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        var next = cur === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+      });
+    }
+  })();
+
   /* ---------- Init ---------- */
   renderSidebar();
   renderContent();
