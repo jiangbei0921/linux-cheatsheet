@@ -94,7 +94,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---- Top bar ---- */
+/* ---- Top bar (方案C：极简一体化工具栏) ---- */
 .topbar {
   position: sticky;
   top: 0;
@@ -103,35 +103,33 @@ body {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid var(--line);
-  padding: 18px 0 16px;
+  padding: 10px 0;
 }
 
-.topbar-inner {
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
   max-width: var(--content-max);
   margin: 0 auto;
   padding: 0 var(--space-6);
 }
 
-.brand h1 {
-  margin: 0;
-  font-size: clamp(22px, 3vw, 28px);
+.brand-mini {
+  flex-shrink: 0;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
 }
-
-.subtitle {
-  margin: 6px 0 0;
-  color: var(--ink-tertiary);
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 640px;
-}
+.brand-mini .amp { color: var(--brand); margin: 0 1px; }
 
 .search-wrap {
-  margin-top: var(--space-5);
   position: relative;
-  max-width: 720px;
+  flex: 1;
+  min-width: 0;
 }
 
 .search-icon {
@@ -147,7 +145,7 @@ body {
 
 #search {
   width: 100%;
-  padding: 15px 18px 15px 48px;
+  padding: 13px 18px 13px 48px;
   font-size: 15px;
   line-height: 1.4;
   border: 1px solid var(--line);
@@ -167,9 +165,9 @@ body {
 }
 
 .group-filters {
-  margin-top: var(--space-4);
+  flex-shrink: 0;
   display: inline-flex;
-  gap: 6px;
+  gap: 4px;
   padding: 4px;
   background: var(--surface-subtle);
   border: 1px solid var(--line);
@@ -180,7 +178,7 @@ body {
   border: none;
   background: transparent;
   color: var(--ink-secondary);
-  padding: 7px 18px;
+  padding: 7px 16px;
   border-radius: var(--radius-full);
   font-size: 14px;
   font-weight: 500;
@@ -190,37 +188,27 @@ body {
 .gbtn:hover { color: var(--ink); background: rgba(11, 18, 32, 0.05); }
 .gbtn.active { background: var(--surface); color: var(--brand); box-shadow: var(--shadow-xs); font-weight: 600; }
 
-/* ---- Top bar actions (GitHub badge + theme toggle) ---- */
-.topbar-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
+/* ---- Top bar actions (GitHub icon + theme toggle) ---- */
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
-  padding-top: 6px;
 }
-.gh-badge {
+.gh-icon {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
+  justify-content: center;
+  width: 38px; height: 38px;
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink-secondary);
   border-radius: var(--radius-full);
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
   box-shadow: var(--shadow-xs);
   transition: all var(--duration-fast) var(--ease-out);
 }
-.gh-badge:hover { color: var(--ink); border-color: #cbd5e1; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
-.gh-badge svg { color: var(--ink); }
+.gh-icon:hover { color: var(--ink); border-color: #cbd5e1; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
 
 .theme-toggle {
   display: inline-flex;
@@ -309,13 +297,13 @@ body {
 /* ---- Sidebar ---- */
 .sidebar {
   position: sticky;
-  top: 168px;
+  top: 100px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   box-shadow: var(--shadow-sm);
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 132px);
   overflow-y: auto;
 }
 
@@ -791,13 +779,17 @@ mark { background: #fef08a; color: var(--ink); padding: 0 2px; border-radius: 3p
   .side-cat { flex: 0 0 auto; width: auto; }
   .side-cat .cnt { display: none; }
 }
+/* 方案C：窄屏时工具栏换行，搜索框与分组各占一行 */
+@media (max-width: 760px) {
+  .bar { flex-wrap: wrap; gap: var(--space-3); }
+  .topbar-actions { margin-left: auto; }
+  .search-wrap { order: 3; flex-basis: 100%; }
+  .group-filters { order: 4; flex-basis: 100%; justify-content: center; }
+  .brand-mini { font-size: 16px; }
+}
 @media (max-width: 640px) {
-  .topbar-inner { padding: 0 var(--space-4); }
-  .brand h1 { font-size: 22px; }
-  .subtitle { font-size: 13px; }
-  .topbar-actions { gap: 8px; padding-top: 4px; }
-  .gh-username { display: none; }
-  .gh-badge { padding: 9px; }
+  .bar { padding: 0 var(--space-4); gap: var(--space-3); }
+  .topbar-actions { gap: 8px; }
   .layout { padding: var(--space-5) var(--space-4) 72px; }
   .hero { padding: var(--space-6) var(--space-5); border-radius: var(--radius-lg); }
   .hero-stats { grid-template-columns: 1fr; }
