@@ -812,8 +812,47 @@
     };
   }
 
+  /* ---------- GitHub star/fork badge ---------- */
+  var GH_REPO = "jiangbei0921/linux-git-cheatsheet";
+  function fmtCount(n) {
+    if (n == null || isNaN(n)) return "—";
+    if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k";
+    return String(n);
+  }
+  function loadGitHubStats() {
+    var $stars = document.getElementById("ghStars");
+    var $forks = document.getElementById("ghForks");
+    if (!$stars || !$forks) return;
+    try {
+      var cached = JSON.parse(localStorage.getItem("gh_stats_cache") || "null");
+      var now = Date.now();
+      if (cached && cached.t && now - cached.t < 10 * 60 * 1000) {
+        $stars.textContent = fmtCount(cached.stars);
+        $forks.textContent = fmtCount(cached.forks);
+        return;
+      }
+    } catch (e) {}
+    fetch("https://api.github.com/repos/" + GH_REPO, { headers: { "Accept": "application/vnd.github+json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        var stars = d.stargazers_count, forks = d.forks_count;
+        $stars.textContent = fmtCount(stars);
+        $forks.textContent = fmtCount(forks);
+        try {
+          localStorage.setItem("gh_stats_cache", JSON.stringify({ t: Date.now(), stars: stars, forks: forks }));
+        } catch (e) {}
+      })
+      .catch(function () {
+        // 网络/CORS/限流失败时静默保留占位符，链接仍可正常跳转
+      });
+  }
+
   /* ---------- Init ---------- */
   document.body.setAttribute("data-tab", "lookup");
   renderSidebar();
   renderContent();
+  loadGitHubStats();
 })();

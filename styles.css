@@ -195,20 +195,36 @@ body {
   gap: 8px;
   flex-shrink: 0;
 }
-.gh-icon {
+/* ---- GitHub star/fork pill ---- */
+.gh-pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 38px; height: 38px;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px;
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink-secondary);
   border-radius: var(--radius-full);
   text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
   box-shadow: var(--shadow-xs);
   transition: all var(--duration-fast) var(--ease-out);
 }
-.gh-icon:hover { color: var(--ink); border-color: #cbd5e1; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.gh-pill:hover { color: var(--ink); border-color: #cbd5e1; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.gh-logo { color: var(--ink); flex-shrink: 0; }
+.gh-sep { width: 1px; height: 16px; background: var(--line); flex-shrink: 0; }
+.gh-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.gh-metric svg { color: var(--ink-tertiary); flex-shrink: 0; }
+.gh-metric b { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
+.gh-pill:hover .gh-metric b { color: var(--brand); }
 
 .theme-toggle {
   display: inline-flex;

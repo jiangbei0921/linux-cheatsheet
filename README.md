@@ -14,6 +14,7 @@
 - **顶部三大模块**：`命令速查`（原功能）／`熟练度检测`／`模拟面试`，顶部 Tab 一键切换。
 - **指令熟练度检测（纯前端）**：选 Linux 或 Git，随机抽 15 题（回忆 / 场景 / 补全三种题型）测记忆与熟练度，按难度加权评分并给出分类掌握度与薄弱点报告。无需联网。
 - **AI 模拟面试（需自带 Key）**：选 Linux 或 Git，大模型扮演面试官实时追问，结束生成评价报告；内置市面几乎所有主流大模型——OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter(聚合网关)、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together 等，均可浏览器直连，Key 仅存浏览器本地、只发往对应服务商。
+- **GitHub 仓库徽章**：右上角实时显示本项目的 Star 与 Fork 数量（来自 GitHub API，带 10 分钟本地缓存），点击即可跳转到仓库进行 Star / Fork。
 
 ## 使用方式
 
@@ -24,6 +25,12 @@
 ## 更新日志
 
 > 本项目的每一次改动都会记录于此。在线地址：[https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)（GitHub Pages，基于 `main` 分支自动部署，打开即可搜索）。
+
+### 2026-08-02 — 顶栏 GitHub 徽章新增 Star / Fork 计数
+- **改动**：将顶栏原本的纯 GitHub 图标链接升级为 GitHub 风格徽章，实时显示本仓库的 **Star 数** 与 **Fork 数**（取自 GitHub API，带 10 分钟浏览器本地缓存以降低限流风险），点击徽章跳转到仓库即可 Star / Fork。
+- **原因**：用户希望在仓库标识上直接呈现 Star / Fork 等互动数据，增强项目可信度与引流入口。
+- **影响范围**：`index.html`（`.gh-pill` 徽章结构替代原 `.gh-icon`）、`styles.css`（`.gh-pill`/`.gh-metric` 等样式，深浅色主题兼容）、`app.js`（`loadGitHubStats()` 拉取并渲染计数，失败静默降级保留占位符）。
+- **校验**：`node --check` 通过；`styles.css` 无 `.gh-icon` 悬空规则残留；GitHub API 支持浏览器 CORS，未鉴权请求受 60 次/小时/IP 限流，已用本地缓存缓解。
 
 ### 2026-08-02 — AI 模拟面试接入市面所有主流大模型
 - **改动**：将面试模块的 API 服务商从 OpenRouter / Groq / Gemini 三种，扩展为覆盖市面几乎所有主流大模型的 11 家：**OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together**。
