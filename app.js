@@ -8,7 +8,7 @@
   var catMap = {};
   CATS.forEach(function (c) { catMap[c.id] = c; });
 
-  var state = { q: "", group: "all", cat: "all", freq: "all", diff: "all", detail: null };
+  var state = { q: "", group: "linux", cat: "all", freq: "all", diff: "all", detail: null };
 
   var $search = document.getElementById("search");
   var $sidebar = document.getElementById("sidebar");
@@ -52,14 +52,10 @@
   function renderSidebar() {
     var html = "";
     ["linux", "git"].forEach(function (g) {
-      if (state.group !== "all" && state.group !== g) return;
+      if (state.group !== g) return;
       var cats = CATS.filter(function (c) { return c.group === g; });
       if (!cats.length) return;
       html += '<div class="side-group-title ' + g + '"><span class="dot"></span>' + groupLabel(g) + "</div>";
-      var allCount = CMDS.filter(function (c) {
-        return (state.group === "all" || groupOf(c) === g);
-      }).length;
-      html += sideItem("all@" + g, "全部（" + groupLabel(g) + "）", allCount, state.group === g && state.cat === "all");
       cats.forEach(function (c) {
         var n = CMDS.filter(function (x) { return x.category === c.id; }).length;
         if (n === 0) return;
@@ -113,19 +109,8 @@
 
   function renderHome(list) {
     var groups = state.group === "all" ? ["linux", "git"] : [state.group];
-    var total = CMDS.filter(inGroup).length;
-    var catCount = CATS.filter(function (c) {
-      return state.group === "all" || c.group === state.group;
-    }).length;
 
     var html = '<section class="hero">' +
-      '<h1 class="hero-title">读懂每一条命令</h1>' +
-      '<p class="hero-sub">中文搜索、分类导航、使用案例与一键复制，帮你在 AI 生成命令的时代安全执行每一条指令。</p>' +
-      '<div class="hero-stats">' +
-        statCard(total, "条命令") +
-        statCard(catCount, "个分类") +
-        statCard("2", "大类别 · Linux / Git") +
-      "</div>" +
       '<div class="chips" id="chips">' +
         '<span class="chip-label">频率</span>' +
         chip("freq", "高", "高频") +
@@ -157,9 +142,6 @@
     $content.innerHTML = html;
   }
 
-  function statCard(num, label) {
-    return '<div class="stat-card"><div class="stat-num">' + num + '</div><div class="stat-label">' + label + "</div></div>";
-  }
   function chip(kind, val, label) {
     var active = state[kind] === val ? " active" : "";
     return '<button class="chip' + active + '" data-' + kind + '="' + val + '">' + label + "</button>";
@@ -215,6 +197,19 @@
         '<div class="ex-desc">' + esc(ex.desc) + "</div></div>";
     });
     html += "</div>";
+
+    if (c.options && c.options.length) {
+      html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>选项速查</div>' +
+        '<div class="opt-table">';
+      html += '<div class="opt-row opt-head"><div class="opt-flag">选项</div><div class="opt-default">默认值</div><div class="opt-desc">说明（含义 / 适用场景 / 边界）</div></div>';
+      c.options.forEach(function (o) {
+        html += '<div class="opt-row">' +
+          '<div class="opt-flag"><code>' + esc(o.flag) + '</code><button class="copy-btn opt-copy" data-copy="' + esc(o.flag) + '">复制</button></div>' +
+          '<div class="opt-default"><span class="opt-default-tag">' + esc(o.default) + "</span></div>" +
+          '<div class="opt-desc">' + esc(o.desc) + "</div></div>";
+      });
+      html += "</div>";
+    }
 
     if (c.pitfalls) {
       html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>易错警告</div>' +
@@ -274,9 +269,7 @@
   });
   $sidebar.addEventListener("click", function (e) {
     var b = e.target.closest(".side-cat"); if (!b) return;
-    var cat = b.getAttribute("data-cat");
-    if (cat.indexOf("all@") === 0) { state.group = cat.slice(4); state.cat = "all"; }
-    else { state.cat = cat; }
+    state.cat = b.getAttribute("data-cat");
     state.detail = null;
     renderSidebar();
     renderContent();

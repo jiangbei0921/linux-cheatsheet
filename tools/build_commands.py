@@ -9,8 +9,14 @@
 """
 import json
 import os
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+from command_options import OPTIONS  # noqa: E402
+from command_intros import INTROS, PITFALLS, COMPARES  # noqa: E402
+
 ROOT = os.path.dirname(HERE)
 DATA_DIR = os.path.join(ROOT, "data")
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -50,16 +56,20 @@ CATEGORIES = [
 
 
 def c(name, cat, desc, kws, ex, freq, diff, pit=None, cmp=None):
+    opts = OPTIONS.get(name)
     return {
         "name": name,
         "category": cat,
-        "description": desc,
+        "description": INTROS.get(name, desc),
         "keywords": kws,
         "examples": [{"cmd": e[0], "desc": e[1]} for e in ex],
         "frequency": freq,
         "difficulty": diff,
-        "pitfalls": pit,
-        "compare": cmp,
+        "pitfalls": pit if pit is not None else PITFALLS.get(name),
+        "compare": cmp if cmp is not None else COMPARES.get(name),
+        "options": [
+            {"flag": o[0], "default": o[1], "desc": o[2]} for o in opts
+        ] if opts else None,
     }
 
 
@@ -73,10 +83,11 @@ LINUX = [
     c("pwd", "file", "显示当前目录绝对路径", ["当前目录", "路径", "pwd"],
       [("pwd", "打印工作目录"), ("pwd -P", "解析符号链接后的真实路径")], "高", "入门"),
     c("cp", "file", "复制文件或目录", ["复制", "拷贝", "cp"],
-      [("cp a.txt b.txt", "复制文件"), ("cp -r src/ dst/", "递归复制目录")], "高", "入门",
-      "复制目录必须加 -r，否则报错"),
+      [("cp a.txt b.txt", "复制文件"), ("cp -r src/ dst/", "递归复制目录"), ("cp -a src/ dst/", "归档复制保留属性")], "高", "入门",
+      "复制目录必须加 -r；目标同名会被静默覆盖，建议 -i 或 -n"),
     c("mv", "file", "移动或重命名", ["移动", "重命名", "mv"],
-      [("mv a.txt b.txt", "重命名文件"), ("mv f.txt dir/", "移动到目录")], "高", "入门"),
+      [("mv a.txt b.txt", "重命名文件"), ("mv f.txt dir/", "移动到目录"), ("mv -i src dst", "覆盖前询问")], "高", "入门",
+      "跨文件系统移动实为复制后删除，大文件较慢；目标同名会被静默覆盖，建议加 -i"),
     c("rm", "file", "删除文件或目录", ["删除", "移除", "rm"],
       [("rm file.txt", "删除文件"), ("rm -rf dir", "递归强制删除目录（危险）")], "高", "入门",
       "rm -rf / 或 rm -rf ~ 会销毁系统/家目录数据，务必先确认路径"),
@@ -115,6 +126,13 @@ LINUX = [
     c("popd", "file", "弹出目录栈", ["目录栈", "popd"],
       [("popd", "回到上一个目录")], "低", "日常"),
 
+    c("eza", "file", "现代 ls 替代（彩色/图标/树状/Git 状态）", ["列表", "eza", "ls替代"],
+      [("eza -la", "长格式含隐藏文件"), ("eza -T", "树状展示目录"), ("eza -a --git-ignore", "含隐藏但忽略 Git 忽略项")], "中", "日常",
+      "需先安装；等价于增强版 ls，适合日常浏览"),
+    c("fd", "file", "简单快速的 find 替代（默认递归/彩色/智能大小写）", ["查找", "fd", "find替代"],
+      [("fd '*.py'", "按名查找"), ("fd -e rs src/", "按扩展名在 src 查找"), ("fd -i pattern", "忽略大小写")], "中", "日常",
+      "默认递归且彩色输出；比 find 更直观，但需安装"),
+
     # ---- 文件查看 ----
     c("cat", "view", "查看/拼接文件内容", ["查看文件", "拼接", "cat"],
       [("cat f.txt", "打印全部内容"), ("cat a b > c", "拼接两文件")], "高", "入门",
@@ -124,7 +142,8 @@ LINUX = [
     c("more", "view", "逐屏查看文件", ["逐屏查看", "more"],
       [("more f.txt", "逐屏显示")], "中", "入门"),
     c("head", "view", "查看文件开头", ["开头", "head"],
-      [("head -n 20 f", "看前 20 行"), ("head -c 100 f", "看前 100 字节")], "高", "入门"),
+      [("head -n 20 f", "看前 20 行"), ("head -c 100 f", "看前 100 字节")], "高", "入门",
+      "默认显示前 10 行；head -n -5 表示「除末尾 5 行外全部」"),
     c("tail", "view", "查看文件末尾", ["末尾", "tail"],
       [("tail -n 20 f", "看后 20 行"), ("tail -f f", "实时跟踪新增内容")], "高", "入门",
       "跟踪日志首选 tail -f"),
@@ -145,6 +164,10 @@ LINUX = [
     c("pr", "view", "格式化分页输出", ["格式化", "pr"],
       [("pr f.txt", "加页眉分页")], "低", "日常"),
 
+    c("bat", "view", "带语法高亮与行号的 cat 替代", ["查看", "高亮", "bat", "cat替代"],
+      [("bat file.sh", "高亮显示文件"), ("bat -n file", "显示行号"), ("bat --paging=never file", "不分页一次输出")], "中", "日常",
+      "需先安装；可作 man 分页器或配合 --style 控制显示"),
+
     # ---- 文本处理 ----
     c("grep", "text", "文本搜索", ["搜索文本", "匹配", "grep"],
       [("grep -rn 'TODO' src/", "递归搜索含 TODO 的文件"), ("grep -i error log", "忽略大小写")], "高", "入门",
@@ -160,7 +183,8 @@ LINUX = [
       [("awk '{print $1}' f", "打印第一列"), ("awk -F: '$3>100' /etc/passwd", "按 : 分割筛选")], "高", "进阶",
       "默认空格分隔；$0 整行、$1 第一列"),
     c("sort", "text", "排序", ["排序", "sort"],
-      [("sort f.txt", "字典序排序"), ("sort -n -k2 f", "按第 2 列数值排序")], "高", "日常"),
+      [("sort f.txt", "字典序排序"), ("sort -n -k2 f", "按第 2 列数值排序"), ("sort -u f", "排序并去重")], "高", "日常",
+      "默认字典序；数值用 -n、反序 -r、按列 -k、去重 -u（常与 uniq 配合）"),
     c("uniq", "text", "去重（需先排序）", ["去重", "uniq"],
       [("sort f | uniq", "去重"), ("uniq -c", "统计出现次数")], "高", "日常",
       "uniq 只去相邻重复，通常先 sort"),
@@ -180,7 +204,8 @@ LINUX = [
     c("tr", "text", "字符转换/删除", ["字符替换", "tr"],
       [("tr 'a-z' 'A-Z'", "转大写"), ("tr -d '\r'", "删除回车符")], "中", "日常"),
     c("wc", "text", "统计行/词/字节", ["统计", "wc"],
-      [("wc -l f.txt", "统计行数"), ("wc -w f", "统计词数")], "高", "入门"),
+      [("wc -l f.txt", "统计行数"), ("wc -w f", "统计词数"), ("wc -c f", "统计字节数")], "高", "入门",
+      "-l 行 / -w 词 / -c 字节 / -m 字符；不指定选项时依次给出三者"),
     c("split", "text", "拆分文件", ["拆分", "split"],
       [("split -l 1000 f", "每 1000 行拆分")], "低", "日常"),
     c("csplit", "text", "按上下文拆分", ["拆分", "csplit"],
@@ -192,6 +217,13 @@ LINUX = [
     c("unexpand", "text", "空格转制表符", ["制表符", "unexpand"],
       [("unexpand -a f", "空格转 tab")], "低", "日常"),
 
+    c("rg", "text", "极快的递归搜索（ripgrep，默认忽略 .gitignore）", ["搜索", "rg", "ripgrep", "grep替代"],
+      [("rg 'TODO'", "递归搜索当前目录"), ("rg -i 'foo' src", "忽略大小写"), ("rg -n --hidden pat", "含隐藏文件搜索")], "中", "日常",
+      "默认递归且跳过隐藏/忽略文件；-u 取消忽略、-F 按字面量匹配"),
+    c("yq", "text", "命令行 YAML/XML/CSV/JSON 处理器（jq 的 YAML 版）", ["yaml", "yq", "处理"],
+      [("yq '.service.port' f.yaml", "读取字段"), ("yq -i '.x=1' f.yaml", "原地修改"), ("yq -o=json f.yaml", "转 JSON 输出")], "中", "日常",
+      "此处指 mikefarah/yq；与 Python 的 yq（jq 包装）不是同一工具"),
+
     # ---- 文件权限与属性 ----
     c("chmod", "perm", "修改权限", ["权限", "chmod"],
       [("chmod 644 f", "所有者读写他人只读"), ("chmod +x script.sh", "加可执行")], "高", "入门",
@@ -200,7 +232,8 @@ LINUX = [
       [("sudo chown u:g f", "改用户和组"), ("chown -R u dir", "递归修改")], "高", "日常",
       "改他人文件需 sudo；递归 -R 谨慎"),
     c("chgrp", "perm", "修改属组", ["属组", "chgrp"],
-      [("chgrp dev f", "改组为 dev")], "中", "日常"),
+      [("chgrp dev f", "改组为 dev"), ("chgrp -R dev dir", "递归改组")], "中", "日常",
+      "需是目标组成员或用 sudo；递归改组用 -R"),
     c("umask", "perm", "设置默认权限掩码", ["默认权限", "umask"],
       [("umask 022", "新建文件默认 755/644")], "中", "日常"),
     c("chattr", "perm", "修改文件扩展属性", ["扩展属性", "chattr"],
@@ -260,9 +293,14 @@ LINUX = [
     c("finger", "user", "用户信息查询", ["用户信息", "finger"],
       [("finger alice", "查看用户详情")], "低", "日常"),
 
+    c("adduser", "user", "交互式创建用户（Debian 系封装 useradd）", ["新增用户", "adduser"],
+      [("sudo adduser alice", "交互式创建并建家目录"), ("sudo adduser --disabled-login bob", "创建禁登录账户")], "中", "日常",
+      "Red Hat 系常无此命令，改用 useradd -m；比 useradd 更友好"),
+
     # ---- 进程管理 ----
     c("ps", "proc", "查看进程", ["进程", "ps"],
-      [("ps aux", "看全部进程"), ("ps -ef | grep nginx", "查 nginx")], "高", "入门"),
+      [("ps aux", "看全部进程"), ("ps -ef | grep nginx", "查 nginx"), ("ps -u root", "看指定用户进程")], "高", "入门",
+      "aux 为 BSD 风格、-ef 为 UNIX 风格；配合 grep 过滤、--sort 排序"),
     c("top", "proc", "实时进程监控", ["实时监控", "top"],
       [("top", "动态查看资源占用")], "高", "日常", None, "top 实时；htop 更友好（需安装）"),
     c("htop", "proc", "增强版进程监控", ["进程监控", "htop"],
@@ -317,12 +355,13 @@ LINUX = [
 
     # ---- 磁盘与文件系统 ----
     c("df", "disk", "查看磁盘空间", ["磁盘空间", "df"],
-      [("df -h", "人类可读显示各分区")], "高", "入门"),
+      [("df -h", "人类可读显示各分区"), ("df -i", "查看 inode 使用"), ("df -T", "显示文件系统类型")], "高", "入门",
+      "空间满但文件不多时，可能是 inode 耗尽，用 df -i 排查"),
     c("du", "disk", "查看目录/文件大小", ["目录大小", "du"],
       [("du -sh *", "当前各子项总大小"), ("du -h --max-depth=1", "一层深度")], "高", "入门",
       "du 统计文件实际占用；df 看分区整体"),
     c("mount", "disk", "挂载文件系统", ["挂载", "mount"],
-      [("sudo mount /dev/sdb1 /mnt", "挂载到 /mnt")], "中", "日常", None, "mount 挂载；umount 卸载"),
+      [("sudo mount /dev/sdb1 /mnt", "挂载到 /mnt"), ("sudo mount -a", "挂载 fstab 中全部")], "中", "日常", None, "mount 挂载；umount 卸载；可加 -o ro 只读、loop 挂镜像"),
     c("umount", "disk", "卸载文件系统", ["卸载", "umount"],
       [("sudo umount /mnt", "卸载")], "中", "日常",
       "设备忙时无法卸载，先关闭占用进程"),
@@ -339,8 +378,8 @@ LINUX = [
       [("sudo mkfs.ext4 /dev/sdb1", "格式化为 ext4")], "低", "进阶",
       "格式化会清空数据！"),
     c("dd", "disk", "按块复制（磁盘镜像）", ["块复制", "dd"],
-      [("dd if=in of=out bs=4M", "克隆/备份"), ("dd if=/dev/zero of=disk.img", "造镜像")], "低", "进阶",
-      "if=/dev/sda 写错 of= 会毁盘，务必核对"),
+      [("dd if=in of=out bs=4M", "克隆/备份"), ("dd if=/dev/zero of=disk.img", "造镜像"), ("dd if=in of=out bs=4M status=progress", "显示进度")], "低", "进阶",
+      "if=/dev/sda 写错 of= 会毁盘，务必核对；bs 越大越快但更占内存"),
     c("fsck", "disk", "检查修复文件系统", ["文件系统检查", "fsck"],
       [("sudo fsck /dev/sdb1", "检查并修复")], "低", "进阶",
       "需在卸载状态下运行"),
@@ -365,16 +404,29 @@ LINUX = [
     c("dumpe2fs", "disk", "导出 ext 超级块信息", ["ext信息", "dumpe2fs"],
       [("sudo dumpe2fs /dev/sdb1", "看超级块")], "低", "进阶"),
 
+    c("ncdu", "disk", "基于 ncurses 的磁盘用量分析器（交互式找大目录）", ["磁盘分析", "ncdu", "大文件"],
+      [("ncdu /", "扫描根目录用量"), ("ncdu -x /", "不跨文件系统")], "中", "日常",
+      "需先安装；方向键浏览，d 删除、q 退出"),
+    c("duf", "disk", "人性化的 df 替代（列出挂载点与用量）", ["磁盘", "duf", "df替代"],
+      [("duf", "列出所有挂载点")], "低", "日常", "需先安装"),
+    c("dust", "disk", "树状展示目录大小的 du 替代", ["目录大小", "dust", "du替代"],
+      [("dust", "当前目录大小树"), ("dust -d 2", "显示两层")], "低", "日常", "需先安装"),
+    c("quota", "disk", "查看用户/组的磁盘配额", ["配额", "quota"],
+      [("quota -s", "人类可读显示当前用户配额"), ("quota -v user", "查看指定用户")], "低", "日常",
+      "需文件系统启用配额并在挂载时配置（usrquota/grpquota）"),
+
     # ---- 网络 ----
     c("ping", "net", "测试网络连通", ["连通测试", "ping"],
       [("ping -c 4 example.com", "发 4 个包")], "高", "入门"),
     c("curl", "net", "传输 URL 数据", ["下载", "HTTP", "curl"],
-      [("curl -O url", "下载保存"), ("curl -fsSL url | sh", "下载并执行")], "高", "日常",
-      "管道执行下载脚本前先确认来源可信"),
+      [("curl -O url", "下载并保留远程文件名"), ("curl -L -o f url", "跟随重定向下载"), ("curl -I url", "只看响应头")], "高", "日常",
+      "管道执行下载脚本前先确认来源可信；-L 跟随重定向、-sS 静默但显示错误"),
     c("wget", "net", "下载文件", ["下载", "wget"],
-      [("wget url", "下载到当前目录"), ("wget -c url", "断点续传")], "高", "日常"),
+      [("wget url", "下载到当前目录"), ("wget -c url", "断点续传"), ("wget -P /tmp url", "指定保存目录")], "高", "日常",
+      "-O 指定文件名、-P 指定目录、-r 整站镜像（谨慎使用）"),
     c("ssh", "net", "远程安全登录", ["远程登录", "ssh"],
-      [("ssh user@host", "登录远程"), ("ssh -p 2222 user@host", "指定端口")], "高", "日常"),
+      [("ssh user@host", "登录远程"), ("ssh -p 2222 user@host", "指定端口"), ("ssh -i key.pem user@host", "指定密钥")], "高", "日常",
+      "首次连接会确认主机指纹；推荐密钥登录并禁用密码（sshd_config）"),
     c("scp", "net", "安全复制文件", ["远程复制", "scp"],
       [("scp f.txt user@host:/tmp", "上传"), ("scp -r dir user@host:~/", "递归上传")], "高", "日常"),
     c("sftp", "net", "交互式安全传输", ["安全传输", "sftp"],
@@ -409,7 +461,7 @@ LINUX = [
       [("sudo tcpdump -i eth0 port 80", "抓 80 端口")], "低", "进阶"),
     c("iptables", "net", "防火墙规则", ["防火墙", "iptables"],
       [("sudo iptables -L", "列出规则"), ("sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT", "放行 22")], "低", "进阶",
-      "规则改动可能导致断连，谨慎；新系统多用 nftables/ufw"),
+      "规则重启会丢失，需 iptables-save 持久化；改动可能断连，谨慎；新系统多用 nftables/ufw"),
     c("ufw", "net", "简易防火墙", ["防火墙", "ufw"],
       [("sudo ufw enable", "启用"), ("sudo ufw allow 22", "放行 22")], "低", "日常", None, "ufw 是 iptables 的友好封装"),
     c("arp", "net", "查看 ARP 表", ["ARP", "arp"],
@@ -419,10 +471,26 @@ LINUX = [
     c("nslookup", "net", "DNS 查询（旧）", ["DNS查询", "nslookup"],
       [("nslookup example.com", "查解析")], "低", "入门", None, "已被 dig/host 取代"),
 
+    c("iwconfig", "net", "配置无线网卡接口（已逐步被 iw 取代）", ["无线", "iwconfig", "wifi"],
+      [("iwconfig wlan0", "查看无线接口状态"), ("iwconfig wlan0 essid MYWIFI", "连接热点")], "低", "日常",
+      "老旧工具；新系统推荐 iw，部分发行版已不含 iwconfig"),
+    c("iw", "net", "现代无线设备配置工具（取代 iwconfig）", ["无线", "iw", "wifi"],
+      [("iw dev", "列出无线设备"), ("iw dev wlan0 link", "查看连接信息"), ("iw wlan0 scan", "扫描附近热点")], "低", "进阶"),
+    c("sshfs", "net", "通过 SSH 把远程目录挂载到本地（FUSE）", ["挂载", "sshfs", "远程目录"],
+      [("sshfs user@host:/path /mnt", "挂载远程目录"), ("fusermount -u /mnt", "卸载")], "中", "日常",
+      "基于 FUSE，需安装 sshfs；卸载用 fusermount -u（非 umount）"),
+    c("http", "net", "HTTPie：人性化的命令行 HTTP 客户端（curl 友好替代）", ["http", "httpie", "请求"],
+      [("http GET example.com", "发送 GET"), ("http POST example.com name=Joe", "发送 POST 表单"), ("http -a user:pw GET url", "带基本认证")], "中", "日常",
+      "需先安装 httpie；注意与 Python 的 http 模块无关"),
+    c("iftop", "net", "实时显示网络带宽按连接的占用", ["带宽", "iftop", "流量"],
+      [("sudo iftop -i eth0", "监控网卡流量")], "低", "日常", "需 root 且安装；按 h 看帮助、q 退出"),
+    c("nethogs", "net", "按进程显示实时网络流量占用", ["进程流量", "nethogs"],
+      [("sudo nethogs", "按进程查看流量")], "低", "日常", "需 root 且安装"),
+
     # ---- 压缩与归档 ----
     c("tar", "archive", "打包/解包", ["打包", "tar"],
-      [("tar -czf a.tar.gz dir/", "打包并 gzip"), ("tar -xzf a.tar.gz -C /tmp", "解压到 /tmp")], "高", "入门",
-      "顺序敏感：f 后紧跟文件名；解压先看内容 tar -tzf"),
+      [("tar -czf a.tar.gz dir/", "gzip 打包"), ("tar -cjf a.tar.bz2 dir/", "bzip2 打包"), ("tar -xzf a.tar.gz -C /tmp", "解压到 /tmp")], "高", "入门",
+      "z=gzip/j=bzip2/J=xz；顺序敏感：f 后紧跟文件名；解压前先 tar -tzf 看内容"),
     c("gzip", "archive", "gzip 压缩", ["压缩", "gzip"],
       [("gzip f.txt", "压缩为 f.txt.gz（删原文件）"), ("gzip -k f.txt", "保留原文件")], "高", "日常",
       "默认删除源文件，保留用 -k 或 gzip -c > "),
@@ -451,13 +519,23 @@ LINUX = [
     c("zcat", "archive", "查看 gzip 内容", ["查看压缩", "zcat"],
       [("zcat f.gz", "不解压直接看")], "低", "日常", None, "zcat 即 gzip -dc"),
 
+    c("brotli", "archive", "Brotli 压缩（Web 常用，压缩比高）", ["压缩", "brotli"],
+      [("brotli -q 11 -o f.br f", "最高压缩"), ("brotli -d f.br", "解压")], "低", "日常"),
+    c("pigz", "archive", "并行 gzip，利用多核加速压缩", ["并行压缩", "pigz", "gzip"],
+      [("tar -cf - dir | pigz > d.tgz", "并行压缩 tar 流"), ("pigz -d d.tgz", "解压")], "低", "日常",
+      "接口与 gzip 兼容；多文件/大文件时比 gzip 快很多"),
+    c("pax", "archive", "POSIX 标准归档工具（可处理 cpio/tar 格式）", ["归档", "pax"],
+      [("pax -w -f a.pax dir/", "打包目录"), ("pax -r -f a.pax", "解包")], "低", "日常",
+      "可跨 cpio/tar 格式互换；-r 读、-w 写、-f 指定文件"),
+
     # ---- 系统信息与监控 ----
     c("uname", "sys", "系统内核信息", ["内核信息", "uname"],
       [("uname -a", "全部系统信息")], "中", "入门"),
     c("uptime", "sys", "运行时长与负载", ["运行时长", "uptime"],
       [("uptime", "看运行时间与负载")], "中", "入门"),
     c("free", "sys", "内存使用", ["内存", "free"],
-      [("free -h", "人类可读内存")], "高", "入门"),
+      [("free -h", "人类可读内存"), ("free -h -s 2", "每 2 秒刷新")], "高", "入门",
+      "关注 available 列（真正可用内存）；buff/cache 可被回收"),
     c("lscpu", "sys", "CPU 信息", ["CPU信息", "lscpu"],
       [("lscpu", "看 CPU 架构/核数")], "中", "日常"),
     c("lsmem", "sys", "内存拓扑", ["内存", "lsmem"],
@@ -494,6 +572,16 @@ LINUX = [
       [("nproc", "输出逻辑核心数")], "低", "入门"),
     c("sensors", "sys", "温度监控", ["温度", "sensors"],
       [("sensors", "看 CPU/主板温度")], "低", "日常"),
+
+    c("lsb_release", "sys", "显示发行版信息（如 Ubuntu 22.04）", ["发行版", "lsb_release"],
+      [("lsb_release -a", "显示全部信息"), ("lsb_release -cs", "显示代号（如 jammy）")], "中", "日常",
+      "部分精简系统需安装 lsb-release 包"),
+    c("neofetch", "sys", "美观展示系统信息与 ASCII logo", ["系统信息", "neofetch"],
+      [("neofetch", "显示系统概览")], "低", "日常", "需先安装；fastfetch 为更快的替代品"),
+    c("btop", "sys", "现代化资源监控（CPU/内存/网络/磁盘，彩色 UI）", ["监控", "btop", "资源"],
+      [("btop", "启动监控界面")], "低", "日常", "需先安装；htop 的增强版"),
+    c("glances", "sys", "跨平台系统监控，含传感器与告警阈值", ["监控", "glances"],
+      [("glances", "启动监控"), ("glances -w", "开启 Web 模式")], "低", "日常", "需先安装；可配合 -s 作服务端"),
 
     # ---- 关机与系统控制 ----
     c("shutdown", "power", "关机/重启", ["关机", "shutdown"],
@@ -538,6 +626,13 @@ LINUX = [
       [("brew install wget", "macOS 装包")], "低", "日常"),
     c("apt-cache", "pkg", "查询包信息", ["包查询", "apt-cache"],
       [("apt-cache search nginx", "搜索包")], "低", "日常"),
+
+    c("aptitude", "pkg", "Debian/Ubuntu 高级包管理（依赖求解 + TUI）", ["aptitude", "包管理"],
+      [("sudo aptitude install pkg", "安装包"), ("sudo aptitude search kw", "搜索"), ("sudo aptitude safe-upgrade", "安全升级")], "低", "日常",
+      "需安装；能更好地处理依赖冲突，优于 apt-get"),
+    c("emerge", "pkg", "Gentoo 的源码包管理器", ["emerge", "gentoo", "包管理"],
+      [("sudo emerge --ask pkg", "安装包"), ("sudo emerge --sync", "同步 Portage 树"), ("sudo emerge -uDN @world", "更新整个系统")], "低", "进阶",
+      "编译安装耗时；--ask 先预览、--oneshot 不写入 world"),
 
     # ---- 内核模块 ----
     c("lsmod", "kernel", "列出已加载模块", ["内核模块", "lsmod"],
@@ -603,6 +698,10 @@ LINUX = [
     c("[", "shell", "条件测试内建", ["条件测试", "["],
       [("[ -d dir ]", "判断目录存在")], "低", "进阶", None, "[ 是 test 的同名内建，注意收尾 ]"),
 
+    c("fzf", "shell", "通用模糊查找器，可与任意命令管道配合", ["模糊查找", "fzf"],
+      [("fzf", "交互式查找文件"), ("history | fzf", "在历史中查找"), ("vim $(fzf)", "选文件用 vim 打开")], "中", "日常",
+      "需先安装；常配合 **<Tab> 补全与 Ctrl-T 插入文件路径"),
+
     # ---- 编辑器与工具 ----
     c("nano", "editor", "简易编辑器", ["编辑器", "nano"],
       [("nano f.txt", "新手友好编辑")], "中", "入门"),
@@ -641,6 +740,15 @@ LINUX = [
       [("wall '维护通知'", "群发消息")], "低", "日常"),
     c("mesg", "editor", "控制消息接收", ["消息", "mesg"],
       [("mesg n", "拒收 wall 消息")], "低", "日常"),
+
+    c("tldr", "editor", "简化版 man，给出命令的常见示例", ["tldr", "示例", "帮助"],
+      [("tldr tar", "查看 tar 常用示例"), ("tldr -p linux grep", "指定平台")], "中", "日常",
+      "需先安装；覆盖命令的最常用场景，比 man 更直给"),
+    c("cheat", "editor", "查看社区维护的命令速查表", ["cheat", "速查"],
+      [("cheat ssh", "查看 ssh 速查"), ("cheat -l", "列出可用速查表")], "低", "日常", "需先安装"),
+    c("reset", "editor", "重置终端状态（乱码/卡死后恢复）", ["终端重置", "reset"],
+      [("reset", "恢复终端到默认状态")], "中", "日常",
+      "比 clear 更彻底；终端显示异常（如二进制文件刷屏）时可用"),
 
     # ---- Vim 编辑器（启动/退出、模式、移动、编辑、复制粘贴、文本对象、搜索替换、可视、缓冲、窗口、标签、折叠、宏、标记、补全、配置、外部命令） ----
     c("vim", "vim", "启动 Vim 并打开文件", ["启动", "打开文件", "编辑器", "vim"],
@@ -1229,6 +1337,9 @@ GIT = [
       "误删提交可用 reflog 找回"),
     c("git whatchanged", "g_view", "显示提交改动文件", ["改动", "git whatchanged"],
       [("git whatchanged -p", "类 log 加补丁")], "低", "日常", None, "类似 git log 但侧重文件列表"),
+    c("git difftool", "g_view", "用外部对比工具查看差异", ["外部对比", "difftool", "vimdiff", "meld"],
+      [("git difftool", "用工具看工作区与暂存差异"), ("git difftool HEAD~1", "对比上一次提交")], "中", "日常",
+      "需先配置 diff.tool（git config --global diff.tool vimdiff）；可视为图形化的 git diff"),
 
     # ---- 分支与合并 ----
     c("git branch", "g_branch", "分支管理", ["分支", "git branch"],
@@ -1252,6 +1363,9 @@ GIT = [
       [("git tag v1.0", "轻量标签"), ("git tag -a v1.0 -m 'rel'", "附注标签")], "中", "日常"),
     c("git range-diff", "g_branch", "比较两个提交区间", ["区间差异", "git range-diff"],
       [("git range-diff A..B C..D", "比较两区间")], "低", "进阶"),
+    c("git merge-tree", "g_branch", "预览合并结果（不改动仓库）", ["预览合并", "merge-tree", "冲突检测"],
+      [("git merge-tree --write-tree main feat", "计算合并树并报告冲突"), ("git merge-tree main feat", "纯文本合并输出")], "低", "进阶",
+      "常用于 CI 检测能否无冲突合并；不修改工作区与提交历史"),
 
     # ---- 远程协作 ----
     c("git remote", "g_remote", "远程仓库管理", ["远程", "git remote"],
@@ -1272,6 +1386,9 @@ GIT = [
       [("git bundle create r.bundle --all", "离线传输用")], "低", "进阶"),
     c("git request-pull", "g_remote", "生成拉取请求说明", ["拉取请求", "git request-pull"],
       [("git request-pull base origin", "生成说明")], "低", "日常"),
+    c("git ls-remote", "g_remote", "列出远程仓库的引用", ["列出远程", "ls-remote", "查看分支", "查看标签"],
+      [("git ls-remote origin", "看远程分支与标签"), ("git ls-remote --heads origin", "仅看分支")], "中", "日常",
+      "不拉取数据即可查看远端有哪些分支/标签，便于确认远程状态"),
 
     # ---- 撤销与重置 ----
     c("git reset", "g_undo", "重置", ["重置", "撤销提交", "git reset"],
@@ -1317,10 +1434,18 @@ GIT = [
       [("git maintenance start", "开启定时维护")], "低", "日常"),
     c("git count-objects", "g_maint", "统计对象", ["统计", "git count-objects"],
       [("git count-objects -v", "详细统计")], "低", "日常"),
+    c("git check-ignore", "g_maint", "检查文件为何被忽略", ["忽略检查", "check-ignore", ".gitignore", "调试"],
+      [("git check-ignore a.log", "看 a.log 是否被忽略"), ("git check-ignore -v a.log", "显示命中的忽略规则")], "中", "日常",
+      "-v 可定位是 .gitignore 的哪一行生效，调试忽略规则非常实用"),
 
     # ---- 脚本与其他 ----
     c("git archive", "g_other", "导出快照", ["导出", "git archive"],
       [("git archive --format=zip HEAD > t.zip", "导出当前")], "低", "日常"),
+    c("git check-attr", "g_other", "查询文件的 gitattributes 属性", ["属性查询", "check-attr", "gitattributes"],
+      [("git check-attr text a.txt", "查 text 属性值"), ("git check-attr -a a.txt", "查全部属性")], "低", "进阶"),
+    c("git svn", "g_other", "与 Subversion 仓库双向同步", ["svn同步", "git svn", "迁移", "svn"],
+      [("git svn clone svn://host/repo", "克隆 SVN 仓库为 git"), ("git svn fetch", "拉取 SVN 更新"), ("git svn dcommit", "推送提交到 SVN")], "低", "进阶",
+      "用于从 SVN 迁移；dcommit 会把本地提交逐条转为 SVN 提交"),
     c("git ls-files", "g_other", "列出跟踪文件", ["列出文件", "git ls-files"],
       [("git ls-files", "看已跟踪文件")], "低", "日常"),
     c("git rev-parse", "g_other", "解析修订/路径", ["解析", "git rev-parse"],
