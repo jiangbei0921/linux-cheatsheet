@@ -19,7 +19,7 @@
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
-  function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\$]/g, "\\$&"); }
   function hl(text) {
     var q = state.q.trim();
     var e = esc(text);
@@ -119,7 +119,6 @@
     }).length;
 
     var html = '<section class="hero">' +
-      '<span class="hero-badge">免费 · 中文 · 离线可用</span>' +
       '<h1 class="hero-title">读懂每一条命令</h1>' +
       '<p class="hero-sub">中文搜索、分类导航、使用案例与一键复制，帮你在 AI 生成命令的时代安全执行每一条指令。</p>' +
       '<div class="hero-stats">' +
@@ -340,8 +339,229 @@
       renderQuizHome();
     } else if (v === "interview") {
       renderInterviewHome();
+    } else if (v === "explain") {
+      renderExplainHome();
+    } else if (v === "generate") {
+      renderGenerateHome();
     }
     window.scrollTo({ top: 0 });
+  }
+
+  /* ---------- 指令含义查询 ---------- */
+  var explainGroup = "all", genGroup = "all";
+  function segBtn(g, cur) {
+    var label = g === "all" ? "全部" : g === "linux" ? "Linux" : "Git";
+    return '<button type="button" class="seg-btn' + (g === cur ? " on" : "") + '" data-group="' + g + '">' + label + "</button>";
+  }
+  function bindGroupSeg(id, cb) {
+    var $seg = document.getElementById(id);
+    if (!$seg) return;
+    Array.prototype.forEach.call($seg.querySelectorAll(".seg-btn"), function (b) {
+      b.onclick = function () {
+        Array.prototype.forEach.call($seg.querySelectorAll(".seg-btn"), function (x) { x.classList.remove("on"); });
+        b.classList.add("on");
+        cb(b.getAttribute("data-group"));
+      };
+    });
+  }
+  function findCmdByName(name) {
+    var n = (name || "").trim().toLowerCase();
+    if (!n) return null;
+    for (var i = 0; i < CMDS.length; i++) {
+      if (CMDS[i].name.toLowerCase() === n) return CMDS[i];
+    }
+    return null;
+  }
+  function findCmdByTokens(tokens) {
+    var best = null, bestLen = 0, s = "";
+    for (var i = 0; i < tokens.length; i++) {
+      s = (s ? s + " " : "") + tokens[i];
+      var c = findCmdByName(s);
+      if (c && (explainGroup === "all" || groupOf(c) === explainGroup)) { best = c; bestLen = i + 1; }
+    }
+    if (!best) return { cmd: null, args: tokens };
+    return { cmd: best, args: tokens.slice(bestLen) };
+  }
+  function optMatchesExample(o, e) {
+    if ((" " + e.cmd + " ").indexOf(" " + o + " ") !== -1) return true;
+    if (o.length === 2 && o.charAt(0) === "-") {
+      var letter = o.charAt(1);
+      var ts = e.cmd.split(/\s+/);
+      for (var i = 0; i < ts.length; i++) {
+        var t = ts[i];
+        if (t.charAt(0) === "-" && t.charAt(1) !== "-" && t.indexOf(letter) !== -1) return true;
+      }
+    }
+    return false;
+  }
+  function shellTokenize(str) {
+    var tokens = [], cur = "", q = null, i = 0, s = (str || "").trim();
+    while (i < s.length) {
+      var ch = s.charAt(i);
+      if (q) { if (ch === q) q = null; else cur += ch; }
+      else if (ch === '"' || ch === "'") { q = ch; }
+      else if (/\s/.test(ch)) { if (cur) { tokens.push(cur); cur = ""; } }
+      else { cur += ch; }
+      i++;
+    }
+    if (cur) tokens.push(cur);
+    return tokens;
+  }
+  function fuzzySuggest(name, group) {
+    var n = (name || "").trim().toLowerCase();
+    if (!n) return [];
+    return CMDS.filter(function (c) {
+      if (group && group !== "all" && groupOf(c) !== group) return false;
+      return c.name.toLowerCase().indexOf(n) !== -1 ||
+        (c.keywords || []).join(" ").toLowerCase().indexOf(n) !== -1;
+    }).slice(0, 8);
+  }
+  function parseArgs(args, cmd) {
+    var out = [], exs = cmd.examples || [];
+    args.forEach(function (a) {
+      if (/^-/.test(a)) {
+        var opts = [];
+        if (a.charAt(0) === "-" && a.charAt(1) !== "-" && a.length > 2) {
+          for (var i = 1; i < a.length; i++) opts.push("-" + a.charAt(i));
+        } else { opts.push(a); }
+        opts.forEach(function (o) {
+          var matches = exs.filter(function (e) {
+            return optMatchesExample(o, e);
+          });
+          var meaning;
+          if (matches.length) {
+            meaning = "该选项出现在以下用法中：" + matches.slice(0, 3).map(function (m) {
+              return '<code>' + esc(m.cmd) + "</code>（" + esc(m.desc) + "）";
+            }).join("；");
+          } else {
+            meaning = "库内未单独收录该选项的说明，可参考下方「使用案例」理解其作用。";
+          }
+          out.push({ tok: o, meaning: meaning });
+        });
+      } else {
+        out.push({ tok: a, meaning: "位置参数 / 目标（通常是文件、目录或取值）。" });
+      }
+    });
+    return out;
+  }
+  function renderExplainDetail(cmd, args) {
+    var g = groupOf(cmd), cat = catMap[cmd.category];
+    var html = '<div class="detail">' +
+      '<div class="detail-head">' +
+        '<div class="detail-title-wrap">' +
+          '<span class="cmd-group-tag ' + g + '">' + (g === "linux" ? "LINUX" : "GIT") + "</span>" +
+          "<h2>" + esc(cmd.name) + "</h2>" +
+          '<div class="cat-line">' + (cat ? esc(cat.name) : "") + "</div>" +
+        "</div>" +
+        '<button class="copy-cmd-btn" data-copy="' + esc(cmd.name) + '">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制命令</button>' +
+      "</div>" +
+      '<div class="lead">' + esc(cmd.description) + "</div>" +
+      '<div class="badges">' +
+        '<span class="badge freq-' + cmd.frequency + '">使用频率：' + cmd.frequency + "</span>" +
+        '<span class="badge diff-' + cmd.difficulty + '">难度：' + cmd.difficulty + "</span></div>";
+
+    var parsed = parseArgs(args, cmd);
+    if (parsed.length) {
+      html += '<div class="section-title">参数解析（你输入的命令拆解为）</div><div class="ex-args">';
+      parsed.forEach(function (p) {
+        html += '<div class="arg-row"><code class="arg-tok">' + esc(p.tok) + '</code>' +
+          '<div class="arg-mean">' + p.meaning + "</div></div>";
+      });
+      html += "</div>";
+    }
+
+    if (cmd.examples && cmd.examples.length) {
+      html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>使用案例</div><div class="ex-list">';
+      cmd.examples.forEach(function (ex) {
+        html += '<div class="ex-item">' +
+          '<div class="ex-cmd-row"><code class="ex-cmd">' + esc(ex.cmd) + '</code>' +
+          '<button class="copy-btn" data-copy="' + esc(ex.cmd) + '">复制</button></div>' +
+          '<div class="ex-desc">' + esc(ex.desc) + "</div></div>";
+      });
+      html += "</div>";
+    }
+    if (cmd.pitfalls) {
+      html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>易错警告</div>' +
+        '<div class="note-box warn"><b>!</b><span>' + esc(cmd.pitfalls) + "</span></div>";
+    }
+    if (cmd.compare) {
+      html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>命令对比</div>' +
+        '<div class="note-box info"><b>i</b><span>' + esc(cmd.compare) + "</span></div>";
+    }
+    if (cmd.keywords && cmd.keywords.length) {
+      html += '<div class="section-title">相关关键词</div><div class="tags">';
+      cmd.keywords.forEach(function (k) { html += '<span class="tag">' + esc(k) + "</span>"; });
+      html += "</div>";
+    }
+    html += "</div>";
+    return html;
+  }
+  function renderExplainHome() {
+    $content.innerHTML =
+      '<section class="explain">' +
+        '<div class="explain-head">' +
+          "<h2>指令含义查询</h2>" +
+          "<p>粘贴或输入一条完整命令，例如 <code>git commit -m \"init\"</code>、<code>find . -name \"*.log\" -delete</code> 或 <code>chmod 755 app.sh</code>，查看它每一步在做什么、以及各参数的作用。</p>" +
+        "</div>" +
+        '<div class="grp-seg" id="explainSeg">' +
+          segBtn("all", explainGroup) + segBtn("linux", explainGroup) + segBtn("git", explainGroup) +
+        "</div>" +
+        '<div class="explain-bar">' +
+          '<div class="explain-field"><input id="explainInput" class="explain-input" type="text" autocomplete="off" spellcheck="false" placeholder="在此输入一条命令，如 git reset --hard HEAD~1" /></div>' +
+          '<button id="explainBtn" class="btn-primary" type="button">查询含义</button>' +
+        "</div>" +
+        '<div id="explainResult" class="explain-result"></div>' +
+      "</section>";
+    var $input = document.getElementById("explainInput");
+    var $btn = document.getElementById("explainBtn");
+    var run = function () { explainRun($input.value); };
+    $btn.onclick = run;
+    $input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+    bindGroupSeg("explainSeg", function (g) { explainGroup = g; explainRun($input.value); });
+    $input.focus();
+  }
+  function explainRun(raw) {
+    var $res = document.getElementById("explainResult");
+    if (!$res) return;
+    if (!raw || !raw.trim()) {
+      $res.innerHTML = '<div class="explain-hint">请输入一条命令后再点击「查询含义」。</div>';
+      return;
+    }
+    var tokens = shellTokenize(raw);
+    var found = findCmdByTokens(tokens);
+    var cmd = found.cmd;
+    if (!cmd) {
+      var cmdName = tokens[0];
+      var sug = fuzzySuggest(cmdName, explainGroup);
+      var sHtml = sug.length
+        ? '<div class="cmd-grid">' + sug.map(function (c) {
+            var g = groupOf(c);
+            return '<div class="cmd-card ' + g + '" data-name="' + esc(c.name) + '">' +
+              '<div class="cmd-card-top"><span class="cmd-group-tag ' + g + '">' + (g === "linux" ? "LINUX" : "GIT") + "</span></div>" +
+              '<div class="name">' + esc(c.name) + "</div>" +
+              '<div class="desc">' + esc(c.description) + "</div></div>";
+          }).join("") + "</div>"
+        : '<div class="explain-hint">指令库中也没有与「' + esc(cmdName) + '」相关的命令，试试更通用的关键词。</div>';
+      $res.innerHTML = '<div class="explain-notfound">' +
+        '<div class="section-title">未收录命令「' + esc(cmdName) + '」</div>' +
+        '<p class="explain-sub">是否想查询以下相近命令？（点击卡片可查看含义）</p>' +
+        sHtml + "</div>";
+      bindExplainResult();
+      return;
+    }
+    $res.innerHTML = renderExplainDetail(cmd, tokens);
+    bindExplainResult();
+  }
+  function bindExplainResult() {
+    var $res = document.getElementById("explainResult");
+    if (!$res) return;
+    Array.prototype.forEach.call($res.querySelectorAll(".copy-btn, .copy-cmd-btn"), function (btn) {
+      btn.onclick = function (e) { e.stopPropagation(); copyText(btn.getAttribute("data-copy"), btn); };
+    });
+    Array.prototype.forEach.call($res.querySelectorAll(".cmd-card"), function (card) {
+      card.onclick = function () { explainRun(card.getAttribute("data-name")); };
+    });
   }
 
   $tabseg.addEventListener("click", function (e) {
@@ -350,6 +570,266 @@
   });
   if ($settingsBtn) {
     $settingsBtn.addEventListener("click", function () { openSettings(); });
+  }
+
+  /* ---------- 任务 → 指令生成 ---------- */
+  var genIndex = null;
+  var TASK_INTENTS = [
+    ["删除", ["删除", "移除", "清空", "delete", "rm"]],
+    ["查找", "搜索", "找", ["查找", "搜索", "找", "find", "grep", "locate", "search"]],
+    ["复制", "拷贝", ["复制", "拷贝", "copy", "cp"]],
+    ["移动", "重命名", ["移动", "重命名", "rename", "mv"]],
+    ["压缩", ["压缩", "compress", "tar", "gzip", "zip"]],
+    ["解压", "解压缩", ["解压", "解压缩", "extract", "untar", "unzip", "unxz"]],
+    ["查看", "显示", "读", ["查看", "显示", "读", "view", "cat", "show", "less"]],
+    ["编辑", ["编辑", "edit", "vim"]],
+    ["权限", ["权限", "permission", "chmod", "chown"]],
+    ["进程", ["进程", "process", "ps", "kill"]],
+    ["网络", ["网络", "network", "ping", "curl", "wget", "ss", "netstat"]],
+    ["磁盘", "空间", ["磁盘", "空间", "disk", "df", "du"]],
+    ["提交", ["提交", "commit"]],
+    ["分支", ["分支", "branch"]],
+    ["合并", ["合并", "merge"]],
+    ["回滚", "撤销", "复原", ["回滚", "撤销", "复原", "reset", "revert"]],
+    ["暂存", "储藏", ["暂存", "储藏", "stash"]],
+    ["远程", "推送", "拉取", "同步", ["远程", "推送", "拉取", "同步", "remote", "push", "pull"]],
+    ["标签", ["标签", "tag"]],
+    ["日志", "历史", ["日志", "历史", "log"]],
+    ["创建", "新建", ["创建", "新建", "create", "mkdir", "touch"]],
+    ["用户", ["用户", "user", "adduser"]],
+    ["安装", ["安装", "install", "apt", "yum", "dnf"]],
+    ["更新", ["更新", "update", "upgrade"]],
+    ["监控", ["监控", "monitor", "top", "htop", "watch"]],
+    ["关机和重启", ["关机", "重启", "shutdown", "reboot", "poweroff"]],
+    ["环境变量", ["环境变量", "environment", "export", "env"]],
+    ["定时", "计划任务", ["定时", "计划任务", "cron", "schedule"]],
+    ["端口", ["端口", "port"]],
+    ["连接", ["连接", "ssh", "connect"]],
+    ["下载", ["下载", "download", "wget", "curl"]],
+    ["上传", ["上传", "upload", "scp"]],
+    ["对比", ["对比", "比较", "diff"]],
+    ["统计", ["统计", "计数", "count", "wc"]],
+    ["排序", ["排序", "sort"]],
+    ["去重", ["去重", "unique", "uniq"]],
+    ["截取", ["截取", "截取行", "head", "tail"]],
+    ["替换", ["替换", "sed", "replace"]],
+    ["提权", ["提权", "sudo"]],
+    ["打包", ["打包", "archive", "tar"]]
+  ];
+  function cjkBigrams(s) {
+    var runs = [], cur = "";
+    for (var i = 0; i < s.length; i++) {
+      var code = s.charCodeAt(i);
+      if (code >= 0x4e00 && code <= 0x9fff) { cur += s.charAt(i); }
+      else { if (cur) { runs.push(cur); cur = ""; } }
+    }
+    if (cur) runs.push(cur);
+    var out = [];
+    runs.forEach(function (r) {
+      for (var i = 0; i + 1 < r.length; i++) out.push(r.substr(i, 2));
+    });
+    return out;
+  }
+  function buildGenIndex() {
+    if (genIndex) return genIndex;
+    genIndex = CMDS.map(function (c) {
+      var cat = catMap[c.category];
+      var text = [c.name, c.description, (c.keywords || []).join(" "), cat ? cat.name : "",
+        (c.examples || []).map(function (e) { return e.cmd + " " + e.desc; }).join(" ")
+      ].join(" ").toLowerCase();
+      return { c: c, text: text, bg: cjkBigrams(text) };
+    });
+    return genIndex;
+  }
+  function genScore(item, qBg, qLower, qTokens) {
+    var s = 0, c = item.c;
+    (c.keywords || []).forEach(function (kw) {
+      if (qLower.indexOf(kw.toLowerCase()) !== -1) s += 3;
+    });
+    // 抑制与当前任务无关的 Vim 单字符动作命令（a/b/o/O/G/0 等及 /pattern）造成的噪声
+    if (c.name.length === 1 || c.name.charAt(0) === "/" || c.name.charAt(0) === ":") {
+      if (qLower.indexOf("vim") === -1 && qLower.indexOf("编辑") === -1 && qLower.indexOf("vi") === -1) s -= 6;
+    }
+    if (qLower.indexOf(c.name.toLowerCase()) !== -1) s += 6;
+    var cat = catMap[c.category];
+    if (cat && qLower.indexOf(cat.name.toLowerCase()) !== -1) s += 1;
+    TASK_INTENTS.forEach(function (grp) {
+      var triggers = grp.slice(0, grp.length - 1);
+      var targets = grp[grp.length - 1];
+      var hit = triggers.some(function (t) { return qLower.indexOf(String(t).toLowerCase()) !== -1; });
+      if (hit) {
+        targets.forEach(function (tg) {
+          if (item.text.indexOf(String(tg).toLowerCase()) !== -1) s += 2;
+        });
+      }
+    });
+    (c.examples || []).forEach(function (e) {
+      e.cmd.toLowerCase().split(/\s+/).forEach(function (t) {
+        if (t && qTokens.indexOf(t) !== -1) s += 2;
+      });
+    });
+    var overlap = 0;
+    item.bg.forEach(function (b) { if (qBg.indexOf(b) !== -1) overlap++; });
+    s += overlap;
+    return s;
+  }
+  function extractTarget(query) {
+    var m = query.match(/"([^"]+)"/) || query.match(/'([^']+)'/);
+    if (m) return m[1];
+    var toks = shellTokenize(query);
+    for (var i = 0; i < toks.length; i++) {
+      if (/[\/.]/.test(toks[i]) && !/^-/.test(toks[i])) return toks[i];
+    }
+    return null;
+  }
+  function buildSuggestion(cmd, query) {
+    var exs = cmd.examples || [];
+    if (!exs.length) return { cmd: cmd.name, filled: false, base: "" };
+    var qBg = cjkBigrams(query.toLowerCase());
+    var best = exs[0], bestScore = -1;
+    exs.forEach(function (e) {
+      var bg = cjkBigrams(e.desc.toLowerCase());
+      var ov = 0; bg.forEach(function (b) { if (qBg.indexOf(b) !== -1) ov++; });
+      if (ov > bestScore) { bestScore = ov; best = e; }
+    });
+    var cmdStr = best.cmd;
+    var target = extractTarget(query);
+    if (target) {
+      var parts = cmdStr.split(/(\s+)/);
+      var ph = [];
+      parts.forEach(function (p, i) {
+        if (p && /^[\u4e00-\u9fff]+$/.test(p)) ph.push(i);
+      });
+      if (ph.length === 1) {
+        parts[ph[0]] = target;
+        return { cmd: parts.join(""), filled: true, base: best.cmd };
+      }
+    }
+    return { cmd: cmdStr, filled: false, base: best.cmd };
+  }
+  function genChip(t) {
+    return '<button class="gen-chip" type="button" data-task="' + esc(t) + '">' + esc(t) + "</button>";
+  }
+  function renderGenerateHome() {
+    $content.innerHTML =
+      '<section class="generate">' +
+        '<div class="generate-head">' +
+          "<h2>任务 → 指令生成</h2>" +
+          "<p>用一句话描述你想完成的任务，例如「删除当前目录所有 .log 文件」「把本地修改提交并推送到远程」，系统会从全库命令中匹配最相关的指令，并给出可直接执行的示例。</p>" +
+        "</div>" +
+        '<div class="grp-seg" id="genSeg">' +
+          segBtn("all", genGroup) + segBtn("linux", genGroup) + segBtn("git", genGroup) +
+        "</div>" +
+        '<div class="generate-bar">' +
+          '<div class="generate-field"><input id="genInput" class="generate-input" type="text" autocomplete="off" spellcheck="false" placeholder="描述你的任务，例如：查找包含 error 的日志文件" /></div>' +
+          '<button id="genBtn" class="btn-primary" type="button">生成指令</button>' +
+        "</div>" +
+        '<div class="gen-chips">' +
+          genChip("删除当前目录所有 .log 文件") +
+          genChip("查看大文件占用空间") +
+          genChip("把修改提交并推送到远程") +
+          genChip("查找包含 error 的日志") +
+          genChip("解压 tar.gz 到当前目录") +
+          genChip("修改文件权限为 755") +
+        "</div>" +
+        '<div id="genResult" class="generate-result"></div>' +
+      "</section>";
+    var $input = document.getElementById("genInput");
+    var $btn = document.getElementById("genBtn");
+    var run = function () { generateRun($input.value); };
+    $btn.onclick = run;
+    $input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+    Array.prototype.forEach.call($content.querySelectorAll(".gen-chip"), function (ch) {
+      ch.onclick = function () { $input.value = ch.getAttribute("data-task"); generateRun($input.value); };
+    });
+    bindGroupSeg("genSeg", function (g) { genGroup = g; generateRun($input.value); });
+    $input.focus();
+  }
+  function generateRun(raw) {
+    var $res = document.getElementById("genResult");
+    if (!$res) return;
+    if (!raw || !raw.trim()) {
+      $res.innerHTML = '<div class="generate-hint">请先描述你想完成的任务，再点击「生成指令」。</div>';
+      return;
+    }
+    var idx = buildGenIndex();
+    var qLower = raw.toLowerCase();
+    var qTokens = shellTokenize(raw).map(function (t) { return t.toLowerCase(); });
+    var qBg = cjkBigrams(qLower);
+    var scored = idx.map(function (item) {
+      return { item: item, score: genScore(item, qBg, qLower, qTokens) };
+    }).filter(function (x) { return x.score > 0; })
+      .filter(function (x) { return genGroup === "all" || groupOf(x.item.c) === genGroup; })
+      .sort(function (a, b) { return b.score - a.score; })
+      .slice(0, 6);
+    if (!scored.length) {
+      var sug = fuzzySuggest(qTokens[0] || raw, genGroup);
+      var sHtml = sug.length
+        ? '<div class="cmd-grid">' + sug.map(function (c) {
+            var g = groupOf(c);
+            return '<div class="cmd-card ' + g + '" data-name="' + esc(c.name) + '">' +
+              '<div class="cmd-card-top"><span class="cmd-group-tag ' + g + '">' + (g === "linux" ? "LINUX" : "GIT") + "</span></div>" +
+              '<div class="name">' + esc(c.name) + "</div>" +
+              '<div class="desc">' + esc(c.description) + "</div></div>";
+          }).join("") + "</div>"
+        : '<div class="generate-hint">指令库中也没有与「' + esc(raw) + '」相关的命令，试试更具体的动词（如 删除 / 查找 / 压缩 / 提交）。</div>';
+      $res.innerHTML = '<div class="generate-notfound">' +
+        '<div class="section-title">未匹配到合适的命令</div>' +
+        '<p class="gen-sub">没有找到与「' + esc(raw) + '」相关的指令，可试着换更具体的说法。</p>' +
+        sHtml + "</div>";
+      bindGenerateResult();
+      return;
+    }
+    var html = '<div class="gen-summary">共匹配到 <b>' + scored.length + '</b> 条相关命令，按相关度排序（点击「查看含义」可展开完整说明）：</div>';
+    scored.forEach(function (x, i) {
+      var c = x.item.c;
+      var g = groupOf(c);
+      var sug = buildSuggestion(c, raw);
+      var cls = i === 0 ? "gen-card top" : "gen-card";
+      html += '<div class="' + cls + '">' +
+        '<div class="gen-card-head">' +
+          '<span class="gen-rank">#' + (i + 1) + '</span>' +
+          '<span class="cmd-group-tag ' + g + '">' + (g === "linux" ? "LINUX" : "GIT") + '</span>' +
+          '<span class="gen-name">' + esc(c.name) + '</span>' +
+          '<button class="copy-cmd-btn" data-copy="' + esc(sug.cmd) + '">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制命令</button>' +
+          '<button class="gen-detail-btn" data-name="' + esc(c.name) + '">查看含义 ›</button>' +
+        "</div>" +
+        '<div class="lead">' + esc(c.description) + "</div>" +
+        '<div class="badges"><span class="badge freq-' + c.frequency + '">使用频率：' + c.frequency + '</span>' +
+          '<span class="badge diff-' + c.difficulty + '">难度：' + c.difficulty + '</span></div>' +
+        '<div class="gen-reco">' +
+          '<div class="gen-reco-label">推荐命令' + (sug.filled ? '（已按你的任务填充参数）' : '') + '</div>' +
+          '<div class="gen-cmd-row"><code class="gen-cmd">' + esc(sug.cmd) + '</code>' +
+          '<button class="copy-btn" data-copy="' + esc(sug.cmd) + '">复制</button></div>' +
+        "</div>";
+      var others = (c.examples || []).filter(function (e) { return e.cmd !== sug.base; });
+      if (others.length) {
+        html += '<div class="gen-examples"><div class="gen-ex-label">其它常见用法</div>';
+        others.slice(0, 3).forEach(function (e) {
+          html += '<div class="gen-ex-item"><code class="gen-ex-cmd">' + esc(e.cmd) + '</code><span class="gen-ex-desc">' + esc(e.desc) + "</span></div>";
+        });
+        html += "</div>";
+      }
+      html += "</div>";
+    });
+    $res.innerHTML = html;
+    bindGenerateResult();
+  }
+  function bindGenerateResult() {
+    var $res = document.getElementById("genResult");
+    if (!$res) return;
+    Array.prototype.forEach.call($res.querySelectorAll(".copy-btn, .copy-cmd-btn"), function (btn) {
+      btn.onclick = function (e) { e.stopPropagation(); copyText(btn.getAttribute("data-copy"), btn); };
+    });
+    function openExplain(name) {
+      setView("explain");
+      var $in = document.getElementById("explainInput");
+      if ($in) { $in.value = name; explainRun(name); }
+    }
+    Array.prototype.forEach.call($res.querySelectorAll(".gen-detail-btn, .cmd-card"), function (el) {
+      el.onclick = function (e) { e.stopPropagation(); openExplain(el.getAttribute("data-name")); };
+    });
   }
 
   /* ---------- 熟练度检测（A 自测清单 + B 实战任务） ---------- */
@@ -684,13 +1164,21 @@
     try { return JSON.parse(localStorage.getItem("ivSettings") || "null"); } catch (e) { return null; }
   }
   function saveSettings(s) { try { localStorage.setItem("ivSettings", JSON.stringify(s)); } catch (e) {} }
+  // 归一化：容忍旧配置里过期的服务商/模型名，避免直接访问 PROVIDERS[x].models 时崩溃
+  function safeSettings(raw) {
+    if (!raw || !raw.key) return null;
+    var p = PROVIDERS[raw.provider];
+    if (!p) p = PROVIDERS.openrouter;
+    var model = (raw.model && p.models.indexOf(raw.model) !== -1) ? raw.model : p.models[0];
+    return { provider: (PROVIDERS[raw.provider] ? raw.provider : "openrouter"), model: model, key: raw.key };
+  }
 
   var ivState = null;
 
   function renderInterviewHome() {
-    var s = loadSettings();
+    var s = safeSettings(loadSettings());
     var note = (s && s.key)
-      ? '<div class="mod-note ok">已配置：' + PROVIDERS[s.provider].name + "（" + esc(s.model) + "）</div>"
+      ? '<div class="mod-note ok">已配置：' + ((PROVIDERS[s.provider] && PROVIDERS[s.provider].name) || s.provider || "未配置") + "（" + esc(s.model || "") + "）</div>"
       : '<div class="mod-note warn">尚未配置 API Key，点击右上角 ⚙ 设置后开始。</div>';
     $content.innerHTML = '<div class="mod-home">' +
       '<div class="mod-head"><h2>AI 模拟面试</h2>' +
@@ -794,8 +1282,13 @@
   }
 
   function callLLM(s, messages, onToken, onDone, onError) {
+    if (!s || !s.key) { onError("尚未配置 API Key"); return; }
     var p = PROVIDERS[s.provider];
     if (!p) { onError("未知服务商"); return; }
+    // 容忍旧配置中过期的模型名：回退到该服务商首个可用模型，避免直接 4xx
+    if (p.models.indexOf(s.model) === -1) {
+      s = { provider: s.provider, model: p.models[0], key: s.key };
+    }
     var sysText = (messages.filter(function (m) { return m.role === "system"; })[0] || {}).content || "";
     var chat = messages.filter(function (m) { return m.role !== "system"; });
     var headers = { "Content-Type": "application/json" };
@@ -832,14 +1325,22 @@
       return (json.delta && json.delta.text) || ""; // anthropic
     }
 
-    fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) }).then(function (r) {
+    var ctrl = null, timer = null;
+    function cleanup() { if (timer) { clearTimeout(timer); timer = null; } }
+    if (typeof AbortController !== "undefined") {
+      ctrl = new AbortController();
+      timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 90000);
+    }
+    var reqOpts = { method: "POST", headers: headers, body: JSON.stringify(body) };
+    if (ctrl) reqOpts.signal = ctrl.signal;
+    fetch(url, reqOpts).then(function (r) {
       if (!r.ok) { return r.text().then(function (t) { throw new Error("HTTP " + r.status + " " + t.slice(0, 300)); }); }
       var reader = r.body.getReader();
       var dec = new TextDecoder();
       var buf = "";
       function pump() {
         return reader.read().then(function (res) {
-          if (res.done) { onDone(); return; }
+          if (res.done) { cleanup(); onDone(); return; }
           buf += dec.decode(res.value, { stream: true });
           var lines = buf.split("\n");
           buf = lines.pop();
@@ -858,12 +1359,16 @@
         });
       }
       return pump();
-    }).catch(function (e) { onError(e.message || String(e)); });
+    }).catch(function (e) {
+      cleanup();
+      if (e && e.name === "AbortError") onError("请求超时（90 秒），请检查网络或服务商状态");
+      else onError(e.message || String(e));
+    });
   }
 
   /* ---------- 设置弹窗 ---------- */
   function openSettings() {
-    var s = loadSettings() || { provider: "openrouter", model: PROVIDERS.openrouter.models[0], key: "" };
+    var s = safeSettings(loadSettings()) || { provider: "openrouter", model: PROVIDERS.openrouter.models[0], key: "" };
     var providerOpts = Object.keys(PROVIDERS).map(function (k) {
       return '<option value="' + k + '"' + (k === s.provider ? " selected" : "") + ">" + PROVIDERS[k].name + "</option>";
     }).join("");
@@ -915,47 +1420,8 @@
     };
   }
 
-  /* ---------- GitHub star/fork badge ---------- */
-  var GH_REPO = "jiangbei0921/linux-git-cheatsheet";
-  function fmtCount(n) {
-    if (n == null || isNaN(n)) return "—";
-    if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k";
-    return String(n);
-  }
-  function loadGitHubStats() {
-    var $stars = document.getElementById("ghStars");
-    var $forks = document.getElementById("ghForks");
-    if (!$stars || !$forks) return;
-    try {
-      var cached = JSON.parse(localStorage.getItem("gh_stats_cache") || "null");
-      var now = Date.now();
-      if (cached && cached.t && now - cached.t < 10 * 60 * 1000) {
-        $stars.textContent = fmtCount(cached.stars);
-        $forks.textContent = fmtCount(cached.forks);
-        return;
-      }
-    } catch (e) {}
-    fetch("https://api.github.com/repos/" + GH_REPO, { headers: { "Accept": "application/vnd.github+json" } })
-      .then(function (r) {
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.json();
-      })
-      .then(function (d) {
-        var stars = d.stargazers_count, forks = d.forks_count;
-        $stars.textContent = fmtCount(stars);
-        $forks.textContent = fmtCount(forks);
-        try {
-          localStorage.setItem("gh_stats_cache", JSON.stringify({ t: Date.now(), stars: stars, forks: forks }));
-        } catch (e) {}
-      })
-      .catch(function () {
-        // 网络/CORS/限流失败时静默保留占位符，链接仍可正常跳转
-      });
-  }
-
   /* ---------- Init ---------- */
   document.body.setAttribute("data-tab", "lookup");
   renderSidebar();
   renderContent();
-  loadGitHubStats();
 })();

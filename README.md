@@ -6,25 +6,40 @@
 
 ## 功能特性
 
-- **483 条命令**：Linux 386 条（含 Vim 编辑器 133 条）+ Git 97 条，每条含中文说明、常用参数示例、典型场景、易错警告与命令对比。
+- **579 条命令**：Linux 478 条（含 Vim 编辑器 133 条）+ Git 101 条，每条含中文说明、常用参数示例、典型场景、易错警告与命令对比。
 - **中文关键词搜索**：输入"删除文件""撤销提交""查看日志"等自然语言片段即可匹配对应命令，同时支持命令名检索。
 - **分类导航**：文件操作、进程管理、网络、Vim 编辑器、版本控制等 29 个分类，按 Linux / Git 分组浏览。
 - **频率 × 难度双标注**：用 `高/中/低` × `入门/日常/进阶` 帮你区分优先级，初学者先看高频入门。
 - **一键复制**：每条命令与示例均可一键复制，界面全中文，离线可用。
-- **顶部三大模块**：`命令速查`（原功能）／`熟练度检测`／`模拟面试`，顶部 Tab 一键切换。
+- **顶部五大模块**：`命令速查`（原功能）／`熟练度检测`／`模拟面试`／`指令查询`／`指令生成`，顶部 Tab 一键切换。
 - **指令熟练度检测（纯前端，A+B 双模式）**：选 Linux 或 Git，在「自测清单」中逐条自评（已掌握 / 模糊 / 不会）实时生成掌握度地图与分类进度、薄弱点；或在「实战任务」中面对中文场景亲手写命令，按关键令牌即时校验并给出正确率与薄弱点。无需联网或 Key。
 - **AI 模拟面试（需自带 Key）**：选 Linux 或 Git，大模型扮演面试官实时追问，结束生成评价报告；内置市面几乎所有主流大模型——OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter(聚合网关)、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together 等，均可浏览器直连，Key 仅存浏览器本地、只发往对应服务商。
-- **GitHub 仓库徽章**：右上角 GitHub 标识 + 独立的 **Star / Fork** 两张迷你卡片（图标在上、英文标识在下，悬停/选中变黑色，Star 与 Fork 之间无连线），实时显示 Star 与 Fork 数量（来自 GitHub API，带 10 分钟本地缓存），点击即可跳转 Star / Fork。
+- **指令含义查询（纯前端，离线）**：粘贴或输入一条完整命令（如 `git commit -m "init"`、`find . -name "*.log" -delete`、`chmod 755 app.sh`），自动拆解命令名与各参数/选项的作用，并展示使用案例、易错警告与命令对比；支持「全部 / Linux / Git」切换。
+- **任务 → 指令生成（纯前端，离线）**：用一句话描述你想完成的任务（如"删除当前目录所有 .log 文件""把本地修改提交并推送到远程"），从全库匹配最相关指令并给出可直接执行的示例与「查看含义」跳转；支持「全部 / Linux / Git」切换。
+- **GitHub 仓库链接**：右上角 GitHub 图标，点击直达仓库（Star / Fork 实时计数已不再展示，减少外部依赖与隐私顾虑）。
 
 ## 使用方式
 
 - **在线（推荐）**：直接访问 👉 [https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)，打开即可在浏览器中搜索、浏览、复制所有命令，无需任何安装或配置。
 - **本地**：直接双击 `index.html`，即可在浏览器中离线使用（数据通过 `data/commands.js` 注入，无需服务器）。
 - **源码仓库**：[https://github.com/jiangbei0921/linux-git-cheatsheet](https://github.com/jiangbei0921/linux-git-cheatsheet)
+- **五大模块入口**：顶部 Tab 切换「命令速查 / 熟练度检测 / 模拟面试 / 指令查询 / 指令生成」。其中「指令查询」与「指令生成」为纯本地离线模块，输入命令或任务即可获得解析与推荐；「熟练度检测」与「模拟面试」按 Linux / Git 分组。
 
 ## 更新日志
 
 > 本项目的每一次改动都会记录于此。在线地址：[https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)（GitHub Pages，基于 `main` 分支自动部署，打开即可搜索）。
+
+### 2026-08-02 — 整合近期改动：移除 Star/Fork 与 Hero 标签、扩充指令库、新增指令查询与指令生成模块（含 Linux/Git 切换）
+- **改动**（整合此前 6 次本地修改，统一写入文档）：
+  1. **移除 Star/Fork 功能**：删除顶栏 GitHub 徽章中的 Star / Fork 实时计数卡片及其全部逻辑（`loadGitHubStats`/`GH_REPO`/`fmtCount`），仅保留 GitHub 仓库跳转链接。
+  2. **删除 Hero 标签**：移除首页 Hero 区的「免费 · 中文 · 离线可用」标签及其样式。
+  3. **扩充指令库（+96 条）**：全网检索常用 Git/Linux 命令补充进 `tools/build_commands.py`，总量由 483 增至 **579**（Linux 478 含 Vim 133 + Git 101），严格沿用既有字段结构与命名，已去重；修复 3 处 `c()` 多传 `None` 的参数错位。
+  4. **新增「指令查询」模块**（顶部第 4 个 Tab）：输入完整命令查询其含义，自动拆解命令名与参数、结合使用示例解释各选项作用，未命中给出模糊建议；支持「全部 / Linux / Git」切换。
+  5. **新增「指令生成」模块**（顶部第 5 个 Tab）：输入任务描述，离线匹配最相关指令并给出可直接执行的示例与「查看含义」跳转；支持「全部 / Linux / Git」切换。
+  6. **为上述两模块加 Linux/Git 切换**：分段控件按组过滤查询与生成结果。
+- **原因**：清理与"初学者友好、纯本地、零干扰"定位不符的实时计数与营销式标签；补齐常用命令覆盖面；补齐"读懂 / 生成命令"的学习闭环。
+- **影响范围**：`index.html`（Tab 增至 5 个；`.gh-badge`→仅 `.gh-brand`）、`styles.css`（移除 `.gh-stat` 等悬空规则与 `.hero-badge`；新增 `.explain*`/`.generate*`/`.grp-seg`/`.seg-btn`）、`app.js`（移除 Star/Fork 逻辑；新增指令查询/生成与分组切换；扩充 `TASK_INTENTS` 意图词表）、`tools/build_commands.py` 与 `data/commands.js` / `data/commands.json`（+96 条）、`README.md`（本次更新）。
+- **校验**：`node --check` 通过；命令数 579 / 29 类；`(category,name)` 无重复；`build_commands.py` 复现无差异；代码 grep 确认无 star/fork 与 hero-badge 残留；指令查询多词命令名与组合短选项（如 `git commit`、`-la`）解析正确；指令生成对 12 类中文任务的 top-1 命中位均正确；Linux/Git 切换过滤符合预期；并发起一次基于 DOM 桩的运行时冒烟测试（26 项，含三种 LLM 流式分支、无效/失效服务商配置不崩溃）全部通过。
 
 ### 2026-08-02 — 熟练度检测重构为 A+B（自测清单 + 实战任务）并重绘 GitHub 徽章
 - **改动**：
@@ -32,7 +47,7 @@
     - **A 自测清单**：列出该组全部命令，逐条自评 `已掌握 / 模糊 / 不会`，实时计算掌握度（已掌握 100% · 模糊 50% · 不会 0%），可按分类「全标已掌握 / 不会」快速自评，一键生成掌握度地图（总掌握度 + 各分类进度条 + 薄弱命令清单）。
     - **B 实战任务**：给出中文场景，由用户手写完整命令，按「核心命令令牌 + 必要参数令牌」即时校验，逐题反馈并给出正确率与薄弱点报告；每轮随机 10 题，可提前结束出报告。
   - GitHub 徽章重绘：原单条连接式 pill 改为「GitHub 标识 + 独立的 Star / Fork 两张迷你卡片」，图标在上、英文标识（Star / Fork）在下，**Star 与 Fork 之间不再用线连接**，悬停 / 选中（hover / focus / active）整体变为黑色（`var(--ink)`），数量实时显示。
-- **原因**：用户认为选择题式检测不够贴近真实掌握程度，要求换一种方式；同时希望徽章上 Star / Fork 视觉分离、选中变黑、带英文标识。
+- **原因**：用户认为选择题式检测不够贴近真实掌握程度，要求换一种方式；同时希望徽章上 Star / Fork 视觉分离、选中变黑、带英文标识。（注：该 Star/Fork 实时计数已在后续整合改动中移除，现仅保留 GitHub 仓库跳转链接。）
 - **影响范围**：`index.html`（`.gh-badge` 结构替代 `.gh-pill`）、`styles.css`（`.gh-badge`/`.gh-stat` 等替代 `.gh-pill`/`.gh-metric`；新增 A+B 组件样式与深浅色适配）、`app.js`（移除 `buildQuizPool`/`startQuiz`/择题渲染，新增 `renderProfPanel`/`renderSelfCheck`/`renderSelfReport`/`renderPractice`/`renderPracticeReport`）。
 - **校验**：`node --check` 通过；`styles.css` 无 `.gh-pill`/`.quiz-opt` 悬空规则残留；`loadGitHubStats()` 仍写入 `#ghStars`/`#ghForks`，元素 id 保持不变；命令数为 483 条 / 29 类，自测清单按分类渲染，实战任务每轮抽取 10 题。
 
