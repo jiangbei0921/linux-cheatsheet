@@ -319,7 +319,422 @@
     }
   })();
 
+  /* ============================================================
+     新增：顶部 Tab 路由 / 熟练度检测 / AI 模拟面试 / 设置
+     ============================================================ */
+
+  var $tabseg = document.getElementById("tabseg");
+  var $settingsBtn = document.getElementById("settingsBtn");
+  var pendingIvGroup = null;
+
+  function setView(v) {
+    document.body.setAttribute("data-tab", v);
+    Array.prototype.forEach.call($tabseg.children, function (b) {
+      b.classList.toggle("active", b.getAttribute("data-tab") === v);
+    });
+    if (v === "lookup") {
+      state.detail = null;
+      renderSidebar();
+      renderContent();
+    } else if (v === "quiz") {
+      renderQuizHome();
+    } else if (v === "interview") {
+      renderInterviewHome();
+    }
+    window.scrollTo({ top: 0 });
+  }
+
+  $tabseg.addEventListener("click", function (e) {
+    var b = e.target.closest(".tab"); if (!b) return;
+    setView(b.getAttribute("data-tab"));
+  });
+  if ($settingsBtn) {
+    $settingsBtn.addEventListener("click", function () { openSettings(); });
+  }
+
+  /* ---------- 熟练度检测 ---------- */
+  function cmdsByGroup(g) { return CMDS.filter(function (c) { return groupOf(c) === g; }); }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function dedupe(a) { var seen = {}, out = []; a.forEach(function (x) { if (!seen[x]) { seen[x] = 1; out.push(x); } }); return out; }
+  function pickDistinct(pool, correct, n) {
+    return shuffle(pool.filter(function (x) { return x !== correct; })).slice(0, n);
+  }
+  function diffWeight(d) { return d === "入门" ? 1 : d === "日常" ? 1.2 : 1.5; }
+
+  function buildQuizPool(g) {
+    var cmds = cmdsByGroup(g);
+    var pool = [];
+    cmds.forEach(function (c) {
+      if (c.description) {
+        pool.push({
+          type: "回忆",
+          stem: "命令 <code>" + esc(c.name) + "</code> 的作用是？",
+          answer: c.description,
+          options: shuffle(dedupe([c.description].concat(pickDistinct(cmds.map(function (x) { return x.description; }), c.description, 3)))),
+          cmd: c
+        });
+        pool.push({
+          type: "场景",
+          stem: esc(c.description) + '<br><span class="q-hint">应选用哪条命令？</span>',
+          answer: c.name,
+          options: shuffle(dedupe([c.name].concat(pickDistinct(cmds.map(function (x) { return x.name; }), c.name, 3)))),
+          cmd: c
+        });
+      }
+      (c.examples || []).forEach(function (ex) {
+        var toks = ex.cmd.split(/\s+/);
+        var fi = -1;
+        for (var i = 0; i < toks.length; i++) { if (/^-/.test(toks[i]) && toks[i] !== "-") { fi = i; break; } }
+        if (fi < 0) return;
+        var correct = toks[fi];
+        var masked = toks.slice(); masked[fi] = "____";
+        var flags = [];
+        cmds.forEach(function (x) {
+          (x.examples || []).forEach(function (e) {
+            e.cmd.split(/\s+/).forEach(function (t) { if (/^-/.test(t) && t !== correct) flags.push(t); });
+          });
+        });
+        if (!flags.length) return;
+        pool.push({
+          type: "补全",
+          stem: "补全命令：<code>" + esc(masked.join(" ")) + "</code>",
+          answer: correct,
+          options: shuffle(dedupe([correct].concat(pickDistinct(flags, correct, 3)))),
+          cmd: c
+        });
+      });
+    });
+    return pool;
+  }
+
+  var quizState = null;
+
+  function renderQuizHome() {
+    var html = '<div class="mod-home">' +
+      '<div class="mod-head"><h2>指令熟练度检测</h2>' +
+      '<p>从题库随机抽题，测你对命令的记忆与熟练度。纯本地运行，无需联网或 Key。</p></div>' +
+      '<div class="grp-pick">' +
+        grpPickBtn("linux", "Linux 检测", "测试 Linux（含 Vim）命令") +
+        grpPickBtn("git", "Git 检测", "测试 Git 命令") +
+      '</div>' +
+      '<div class="mod-note">每次随机抽取 15 题，覆盖回忆 / 场景 / 补全三种题型，按难度加权评分并给出薄弱点。</div>' +
+      '</div>';
+    $content.innerHTML = html;
+    Array.prototype.forEach.call($content.querySelectorAll(".grp-pick-btn"), function (b) {
+      b.onclick = function () { startQuiz(b.getAttribute("data-g")); };
+    });
+  }
+  function grpPickBtn(g, title, sub) {
+    return '<button class="grp-pick-btn ' + g + '" data-g="' + g + '">' +
+      '<span class="gp-title">' + title + '</span><span class="gp-sub">' + sub + '</span></button>';
+  }
+  function startQuiz(g) {
+    var pool = buildQuizPool(g);
+    if (!pool.length) { $content.innerHTML = '<div class="empty">该分组暂无可用题目。</div>'; return; }
+    var qs = shuffle(pool).slice(0, Math.min(15, pool.length));
+    qs.forEach(function (q) { q.user = null; });
+    quizState = { g: g, qs: qs, idx: 0, correct: 0, weighted: 0, totalWeight: 0, wrong: [], answered: false };
+    renderQuizQuestion();
+  }
+  function renderQuizQuestion() {
+    var q = quizState.qs[quizState.idx];
+    var n = quizState.idx + 1, total = quizState.qs.length;
+    var opts = q.options.map(function (o, i) {
+      return '<button class="quiz-opt" data-o="' + i + '"><span class="opt-k">' + String.fromCharCode(65 + i) + '</span>' +
+        '<span class="opt-v">' + esc(o) + "</span></button>";
+    }).join("");
+    $content.innerHTML = '<div class="quiz-q">' +
+      '<div class="quiz-progress">第 ' + n + ' / ' + total + ' 题<span class="q-type type-' + q.type + '">' + q.type + "题</span></div>" +
+      '<div class="quiz-stem">' + q.stem + "</div>" +
+      '<div class="quiz-opts">' + opts + "</div>" +
+      '<div class="quiz-foot"><button class="btn-ghost" id="quizQuit">退出检测</button></div>' +
+      "</div>";
+    var optBtns = $content.querySelectorAll(".quiz-opt");
+    Array.prototype.forEach.call(optBtns, function (b) {
+      b.onclick = function () {
+        if (quizState.answered) return;
+        quizState.answered = true;
+        var chosen = q.options[+b.getAttribute("data-o")];
+        var correct = chosen === q.answer;
+        Array.prototype.forEach.call(optBtns, function (ob) {
+          var ov = q.options[+ob.getAttribute("data-o")];
+          if (ov === q.answer) ob.classList.add("correct");
+          else if (ob === b) ob.classList.add("wrong");
+          ob.disabled = true;
+        });
+        var w = diffWeight(q.cmd.difficulty);
+        quizState.totalWeight += w;
+        if (correct) { quizState.correct++; quizState.weighted += w; }
+        else { quizState.wrong.push(q); }
+        setTimeout(function () {
+          quizState.idx++; quizState.answered = false;
+          if (quizState.idx >= quizState.qs.length) renderQuizReport();
+          else renderQuizQuestion();
+        }, 900);
+      };
+    });
+    var quit = document.getElementById("quizQuit");
+    if (quit) quit.onclick = function () { quizState = null; renderQuizHome(); };
+  }
+  function renderQuizReport() {
+    var acc = quizState.totalWeight ? Math.round(quizState.weighted / quizState.totalWeight * 100) : 0;
+    var level = acc >= 85 ? "精通" : acc >= 65 ? "熟练" : acc >= 40 ? "了解" : "初学者";
+    var byCat = {};
+    quizState.qs.forEach(function (q) {
+      byCat[q.cmd.category] = byCat[q.cmd.category] || { c: 0, t: 0 };
+      byCat[q.cmd.category].t++;
+      if (quizState.wrong.indexOf(q) < 0) byCat[q.cmd.category].c++;
+    });
+    var catHtml = Object.keys(byCat).map(function (cid) {
+      var s = byCat[cid]; var pct = s.t ? Math.round(s.c / s.t * 100) : 0;
+      var cat = catMap[cid];
+      return '<div class="cat-bar"><span class="cb-name">' + esc(cat ? cat.name : cid) + "</span>" +
+        '<span class="cb-track"><span class="cb-fill" style="width:' + pct + '%"></span></span>' +
+        '<span class="cb-pct">' + pct + "%</span></div>";
+    }).join("");
+    var weakHtml = quizState.wrong.length
+      ? quizState.wrong.map(function (q) {
+          return '<div class="weak-item"><code>' + esc(q.cmd.name) + "</code><span>" + esc(q.cmd.description) + "</span></div>";
+        }).join("")
+      : '<div class="weak-none">本题组无薄弱点，掌握扎实。</div>';
+    $content.innerHTML = '<div class="quiz-report">' +
+      '<div class="rep-head"><div class="rep-level">' + level + "</div>" +
+        '<div class="rep-score">正确率（难度加权）<b>' + acc + '%</b><br><span class="rep-sub">答对 ' + quizState.correct + " / " + quizState.qs.length + " 题</span></div></div>" +
+      '<div class="rep-section"><h4>分类掌握度</h4>' + catHtml + "</div>" +
+      '<div class="rep-section"><h4>薄弱命令（建议复习）</h4>' + weakHtml + "</div>" +
+      '<div class="rep-actions"><button class="btn-primary" id="quizAgain">再来一次（' + (quizState.g === "linux" ? "Linux" : "Git") + '）</button>' +
+        '<button class="btn-ghost" id="quizBack">返回选择</button></div>' +
+      "</div>";
+    document.getElementById("quizAgain").onclick = function () { startQuiz(quizState.g); };
+    document.getElementById("quizBack").onclick = function () { quizState = null; renderQuizHome(); };
+  }
+
+  /* ---------- AI 模拟面试 ---------- */
+  var PROVIDERS = {
+    openrouter: { name: "OpenRouter", url: "https://openrouter.ai/api/v1/chat/completions", kind: "openai", models: ["anthropic/claude-3.5-sonnet", "openai/gpt-4o-mini", "google/gemini-pro-1.5"] },
+    groq: { name: "Groq", url: "https://api.groq.com/openai/v1/chat/completions", kind: "openai", models: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"] },
+    gemini: { name: "Google Gemini", url: "https://generativelanguage.googleapis.com/v1beta/models/", kind: "gemini", models: ["gemini-1.5-flash", "gemini-1.5-pro"] }
+  };
+  function loadSettings() {
+    try { return JSON.parse(localStorage.getItem("ivSettings") || "null"); } catch (e) { return null; }
+  }
+  function saveSettings(s) { try { localStorage.setItem("ivSettings", JSON.stringify(s)); } catch (e) {} }
+
+  var ivState = null;
+
+  function renderInterviewHome() {
+    var s = loadSettings();
+    var note = (s && s.key)
+      ? '<div class="mod-note ok">已配置：' + PROVIDERS[s.provider].name + "（" + esc(s.model) + "）</div>"
+      : '<div class="mod-note warn">尚未配置 API Key，点击右上角 ⚙ 设置后开始。</div>';
+    $content.innerHTML = '<div class="mod-home">' +
+      '<div class="mod-head"><h2>AI 模拟面试</h2>' +
+      '<p>大模型扮演面试官，围绕 Linux / Git 实时追问。需你自带 LLM API Key（浏览器直连，Key 仅发往对应服务商，站点不收集）。</p></div>' +
+      '<div class="grp-pick">' +
+        grpPickBtn("linux", "Linux 面试", "命令行 / 系统 / Vim 方向") +
+        grpPickBtn("git", "Git 面试", "版本控制 / 协作方向") +
+      "</div>" + note + "</div>";
+    Array.prototype.forEach.call($content.querySelectorAll(".grp-pick-btn"), function (b) {
+      b.onclick = function () { startInterview(b.getAttribute("data-g")); };
+    });
+  }
+  function startInterview(g) {
+    var s = loadSettings();
+    if (!s || !s.key) { pendingIvGroup = g; openSettings(); return; }
+    ivState = { g: g, messages: [], ended: false };
+    var dir = g === "linux" ? "Linux" : "Git";
+    var sys = "你是一位资深的 " + dir + " 技术面试官，面向初学者与日常使用者。" +
+      "请基于常见 " + dir + " 命令与原理，循序渐进地提问并追问，考察对方对命令的记忆、理解与实际排错能力。" +
+      "每次只问一个问题，等对方回答后再追问。用简体中文，语气专业但友好。不要直接给答案，引导思考。";
+    ivState.messages.push({ role: "system", content: sys });
+    ivState.messages.push({ role: "user", content: "（请开始面试，提出第一个问题）" });
+    $content.innerHTML = '<div class="iv-wrap">' +
+      '<div class="iv-bar"><span class="iv-dir">' + dir + ' 模拟面试</span>' +
+        '<button class="btn-ghost sm" id="ivEnd">结束并生成报告</button>' +
+        '<button class="btn-ghost sm" id="ivQuit">退出</button></div>' +
+      '<div class="iv-chat" id="ivChat"></div>' +
+      '<div class="iv-inputbar"><textarea id="ivInput" rows="1" placeholder="输入你的回答…"></textarea>' +
+        '<button class="btn-primary" id="ivSend">发送</button></div>' +
+      "</div>";
+    document.getElementById("ivEnd").onclick = endInterview;
+    document.getElementById("ivQuit").onclick = function () { ivState = null; renderInterviewHome(); };
+    var input = document.getElementById("ivInput");
+    var send = document.getElementById("ivSend");
+    function doSend() {
+      var v = input.value.trim(); if (!v) return;
+      input.value = "";
+      appendMsg("user", v);
+      ivState.messages.push({ role: "user", content: v });
+      streamBot();
+    }
+    send.onclick = doSend;
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); doSend(); }
+    });
+    streamBot();
+  }
+  function appendMsg(role, text) {
+    var chat = document.getElementById("ivChat");
+    var div = document.createElement("div");
+    div.className = "iv-msg " + role;
+    div.innerHTML = '<div class="iv-bubble">' + (role === "bot" ? "" : esc(text)) + "</div>";
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div.querySelector(".iv-bubble");
+  }
+  function streamBot() {
+    var s = loadSettings();
+    var btn = document.getElementById("ivSend"); if (btn) btn.disabled = true;
+    var bubble = appendMsg("bot", "");
+    var full = "";
+    callLLM(s, ivState.messages, function (token) {
+      full += token; bubble.textContent = full;
+      var chat = document.getElementById("ivChat"); if (chat) chat.scrollTop = chat.scrollHeight;
+    }, function () {
+      ivState.messages.push({ role: "assistant", content: full });
+      if (btn) btn.disabled = false;
+    }, function (err) {
+      bubble.textContent = "出错了：" + err;
+      if (btn) btn.disabled = false;
+    });
+  }
+  function endInterview() {
+    if (!ivState || ivState.ended) return;
+    ivState.ended = true;
+    var input = document.getElementById("ivInput");
+    var send = document.getElementById("ivSend");
+    var endBtn = document.getElementById("ivEnd");
+    if (input) input.disabled = true;
+    if (send) send.disabled = true;
+    if (endBtn) endBtn.style.display = "none";
+    ivState.messages.push({ role: "user", content: "面试到此结束。请基于上面的对话，给出一份评价报告，包含：1) 技术深度评分（0-100）；2) 知识盲区；3) 表达与思路建议。用中文，分点列出。" });
+    var chat = document.getElementById("ivChat");
+    var wrap = document.createElement("div");
+    wrap.className = "iv-msg bot";
+    wrap.innerHTML = '<div class="iv-bubble iv-report-bubble">生成评价报告中…</div>';
+    chat.appendChild(wrap);
+    var bubble = wrap.querySelector(".iv-bubble");
+    chat.scrollTop = chat.scrollHeight;
+    var full = "";
+    callLLM(loadSettings(), ivState.messages, function (token) {
+      full += token; bubble.textContent = full; chat.scrollTop = chat.scrollHeight;
+    }, function () {
+      bubble.classList.add("report");
+      var back = document.createElement("button");
+      back.className = "btn-ghost sm"; back.textContent = "返回";
+      back.onclick = function () { ivState = null; renderInterviewHome(); };
+      bubble.appendChild(document.createElement("br"));
+      bubble.appendChild(back);
+    }, function (err) { bubble.textContent = "出错了：" + err; });
+  }
+
+  function callLLM(s, messages, onToken, onDone, onError) {
+    var p = PROVIDERS[s.provider];
+    if (!p) { onError("未知服务商"); return; }
+    var body, url = p.url, headers = { "Content-Type": "application/json" };
+    if (p.kind === "openai") {
+      headers["Authorization"] = "Bearer " + s.key;
+      body = { model: s.model, messages: messages, stream: true, temperature: 0.7 };
+    } else {
+      var sysText = (messages.filter(function (m) { return m.role === "system"; })[0] || {}).content || "";
+      var contents = messages.filter(function (m) { return m.role !== "system"; })
+        .map(function (m) { return { role: m.role === "user" ? "user" : "model", parts: [{ text: m.content }] }; });
+      body = {
+        contents: contents,
+        systemInstruction: { parts: [{ text: sysText }] },
+        generationConfig: { temperature: 0.7 }
+      };
+      url = p.url + s.model + ":streamGenerateContent?alt=sse&key=" + encodeURIComponent(s.key);
+    }
+    fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) }).then(function (r) {
+      if (!r.ok) { return r.text().then(function (t) { throw new Error("HTTP " + r.status + " " + t.slice(0, 200)); }); }
+      var reader = r.body.getReader();
+      var dec = new TextDecoder();
+      var buf = "";
+      function pump() {
+        return reader.read().then(function (res) {
+          if (res.done) { onDone(); return; }
+          buf += dec.decode(res.value, { stream: true });
+          var lines = buf.split("\n");
+          buf = lines.pop();
+          lines.forEach(function (line) {
+            line = line.trim();
+            if (line.indexOf("data:") !== 0) return;
+            var data = line.slice(5).trim();
+            if (data === "[DONE]") return;
+            try {
+              var json = JSON.parse(data);
+              var tok = "";
+              if (p.kind === "openai") {
+                tok = (json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content) || "";
+              } else {
+                tok = (json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text) || "";
+              }
+              if (tok) onToken(tok);
+            } catch (e) {}
+          });
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (e) { onError(e.message || String(e)); });
+  }
+
+  /* ---------- 设置弹窗 ---------- */
+  function openSettings() {
+    var s = loadSettings() || { provider: "openrouter", model: PROVIDERS.openrouter.models[0], key: "" };
+    var providerOpts = Object.keys(PROVIDERS).map(function (k) {
+      return '<option value="' + k + '"' + (k === s.provider ? " selected" : "") + ">" + PROVIDERS[k].name + "</option>";
+    }).join("");
+    var modelOpts = PROVIDERS[s.provider].models.map(function (m) {
+      return '<option value="' + m + '"' + (m === s.model ? " selected" : "") + ">" + m + "</option>";
+    }).join("");
+    var mask = document.createElement("div");
+    mask.innerHTML = '<div class="modal-mask" id="modalMask"><div class="modal-card">' +
+      '<div class="modal-head"><h3>面试设置（API Key）</h3><button class="modal-x" id="modalX" aria-label="关闭">×</button></div>' +
+      '<p class="modal-desc">Key 仅保存在你的浏览器本地，只发往你选择的服务商，站点不收集。支持浏览器直连的服务商：</p>' +
+      '<div class="field"><label>服务商</label><select id="setProvider">' + providerOpts + "</select></div>" +
+      '<div class="field"><label>模型</label><select id="setModel">' + modelOpts + "</select></div>" +
+      '<div class="field"><label>API Key</label><input id="setKey" type="password" placeholder="粘贴你的 API Key" value="' + esc(s.key) + '"></div>' +
+      '<div class="modal-help">获取 Key：OpenRouter → openrouter.ai/keys · Groq → console.groq.com · Gemini → aistudio.google.com/apikey</div>' +
+      '<div class="modal-actions"><button class="btn-ghost" id="setCancel">取消</button><button class="btn-primary" id="setSave">保存</button></div>' +
+      "</div></div>";
+    document.body.appendChild(mask.firstChild);
+    var maskEl = document.getElementById("modalMask");
+    function removeMask() { if (maskEl && maskEl.parentNode) maskEl.parentNode.removeChild(maskEl); }
+    function onCancel() {
+      removeMask();
+      pendingIvGroup = null;
+      if (document.body.getAttribute("data-tab") === "interview") renderInterviewHome();
+    }
+    document.getElementById("modalX").onclick = onCancel;
+    document.getElementById("setCancel").onclick = onCancel;
+    maskEl.addEventListener("click", function (e) { if (e.target === maskEl) onCancel(); });
+    document.getElementById("setProvider").onchange = function () {
+      var p = PROVIDERS[this.value];
+      document.getElementById("setModel").innerHTML = p.models.map(function (m) { return '<option value="' + m + '">' + m + "</option>"; }).join("");
+    };
+    document.getElementById("setSave").onclick = function () {
+      var prov = document.getElementById("setProvider").value;
+      var mdl = document.getElementById("setModel").value;
+      var key = document.getElementById("setKey").value.trim();
+      if (!key) { alert("请填写 API Key"); return; }
+      saveSettings({ provider: prov, model: mdl, key: key });
+      removeMask();
+      if (pendingIvGroup) { var g = pendingIvGroup; pendingIvGroup = null; startInterview(g); }
+      else if (document.body.getAttribute("data-tab") === "interview") renderInterviewHome();
+    };
+  }
+
   /* ---------- Init ---------- */
+  document.body.setAttribute("data-tab", "lookup");
   renderSidebar();
   renderContent();
 })();
