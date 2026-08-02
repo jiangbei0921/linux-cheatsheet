@@ -18,6 +18,16 @@
 - **本地**：直接双击 `index.html`，即可在浏览器中离线使用（数据通过 `data/commands.js` 注入，无需服务器）。
 - **源码仓库**：[https://github.com/jiangbei0921/linux-git-cheatsheet](https://github.com/jiangbei0921/linux-git-cheatsheet)
 
+## 更新日志
+
+> 本项目的每一次改动都会记录于此。在线地址：[https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)（GitHub Pages，基于 `main` 分支自动部署，打开即可搜索）。
+
+### 2026-08-02 — 头部重构（方案 C）与全局代码检查
+- **改动**：顶部重构为单条紧凑 sticky 工具栏——Logo 缩小、搜索框加宽上移、分组胶囊与 GitHub/主题图标同排；副标题收进搜索框 placeholder；调整侧边栏吸顶偏移（168px → 100px）；新增窄屏（≤760px）换行与品牌/图标左右分布规则；`.gitignore` 忽略 `__pycache__`。
+- **原因**：原头部视觉沉闷、缺乏层次，且向下浏览时搜索入口不够触手可及。
+- **影响范围**：`index.html`、`styles.css`、`.gitignore`；`app.js` 与 `tools/build_commands.py` 未改动。
+- **校验**：全局代码检查（语法 / 逻辑 / 未用变量 / 命名一致性 / 兼容性）无新增缺陷；数据产物 483 条 / 29 类校验通过。
+
 ## 目录结构
 
 | 文件 | 说明 |
