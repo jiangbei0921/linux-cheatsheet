@@ -953,6 +953,8 @@ body[data-tab="interview"] .layout { grid-template-columns: 1fr; }
 .field select:focus, .field input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
 .modal-help { font-size: 12px; color: var(--ink-tertiary); line-height: 1.5; margin-bottom: var(--space-4); }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.modal-note { font-size: 12px; line-height: 1.5; color: var(--warn-ink); background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius); padding: 8px 10px; margin-bottom: var(--space-4); min-height: 0; }
+.modal-note:empty { display: none; }
 
 /* ---- 深色适配（新增组件） ---- */
 [data-theme="dark"] .tabbar { background: rgba(10, 15, 28, 0.6); border-top-color: var(--line); }

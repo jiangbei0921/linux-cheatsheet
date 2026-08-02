@@ -517,10 +517,65 @@
   }
 
   /* ---------- AI 模拟面试 ---------- */
+  // 已内置市面上几乎所有主流大模型。kind: openai=OpenAI 兼容接口 / gemini=Google 原生 / anthropic=Anthropic 原生
   var PROVIDERS = {
-    openrouter: { name: "OpenRouter", url: "https://openrouter.ai/api/v1/chat/completions", kind: "openai", models: ["anthropic/claude-3.5-sonnet", "openai/gpt-4o-mini", "google/gemini-pro-1.5"] },
-    groq: { name: "Groq", url: "https://api.groq.com/openai/v1/chat/completions", kind: "openai", models: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"] },
-    gemini: { name: "Google Gemini", url: "https://generativelanguage.googleapis.com/v1beta/models/", kind: "gemini", models: ["gemini-1.5-flash", "gemini-1.5-pro"] }
+    openrouter: {
+      name: "OpenRouter（聚合网关 · 覆盖几乎所有模型）",
+      url: "https://openrouter.ai/api/v1/chat/completions", kind: "openai",
+      models: ["anthropic/claude-3.5-sonnet", "openai/gpt-4o", "openai/gpt-4o-mini", "google/gemini-2.0-flash-001", "meta-llama/llama-3.3-70b-instruct", "deepseek/deepseek-chat", "mistralai/mixtral-8x7b-instruct", "qwen/qwen-72b-instruct"]
+    },
+    openai: {
+      name: "OpenAI（GPT-4o / o1 等）",
+      url: "https://api.openai.com/v1/chat/completions", kind: "openai",
+      models: ["gpt-4o", "gpt-4o-mini", "o1-mini", "o3-mini", "gpt-4-turbo"],
+      note: "官方 API 默认禁止浏览器跨域，如遇 CORS 错误请改用 OpenRouter 或经代理中转"
+    },
+    anthropic: {
+      name: "Anthropic（Claude）",
+      url: "https://api.anthropic.com/v1/messages", kind: "anthropic",
+      models: ["claude-3-5-sonnet-latest", "claude-3-5-haiku-latest", "claude-3-opus-latest"],
+      note: "需 anthropic-version 头，浏览器直连可能受 CORS 限制"
+    },
+    deepseek: {
+      name: "DeepSeek（深度求索）",
+      url: "https://api.deepseek.com/v1/chat/completions", kind: "openai",
+      models: ["deepseek-chat", "deepseek-reasoner"]
+    },
+    moonshot: {
+      name: "Moonshot（Kimi）",
+      url: "https://api.moonshot.cn/v1/chat/completions", kind: "openai",
+      models: ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"]
+    },
+    qwen: {
+      name: "通义千问（阿里 Qwen）",
+      url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", kind: "openai",
+      models: ["qwen-plus", "qwen-max", "qwen-turbo", "qwen2.5-72b-instruct"]
+    },
+    zhipu: {
+      name: "智谱 GLM（Zhipu）",
+      url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", kind: "openai",
+      models: ["glm-4-plus", "glm-4-air", "glm-4-flash"]
+    },
+    groq: {
+      name: "Groq（Llama 高速推理）",
+      url: "https://api.groq.com/openai/v1/chat/completions", kind: "openai",
+      models: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]
+    },
+    gemini: {
+      name: "Google Gemini",
+      url: "https://generativelanguage.googleapis.com/v1beta/models/", kind: "gemini",
+      models: ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"]
+    },
+    mistral: {
+      name: "Mistral AI",
+      url: "https://api.mistral.ai/v1/chat/completions", kind: "openai",
+      models: ["mistral-large-latest", "mistral-small-latest", "open-mistral-7b"]
+    },
+    together: {
+      name: "Together AI（聚合）",
+      url: "https://api.together.xyz/v1/chat/completions", kind: "openai",
+      models: ["meta-llama/Llama-3.3-70B-Instruct-Turbo", "deepseek-ai/DeepSeek-V3", "Qwen/Qwen2.5-72B-Instruct-Turbo"]
+    }
   };
   function loadSettings() {
     try { return JSON.parse(localStorage.getItem("ivSettings") || "null"); } catch (e) { return null; }
@@ -638,23 +693,44 @@
   function callLLM(s, messages, onToken, onDone, onError) {
     var p = PROVIDERS[s.provider];
     if (!p) { onError("未知服务商"); return; }
-    var body, url = p.url, headers = { "Content-Type": "application/json" };
+    var sysText = (messages.filter(function (m) { return m.role === "system"; })[0] || {}).content || "";
+    var chat = messages.filter(function (m) { return m.role !== "system"; });
+    var headers = { "Content-Type": "application/json" };
+    var url = p.url, body;
+
     if (p.kind === "openai") {
       headers["Authorization"] = "Bearer " + s.key;
       body = { model: s.model, messages: messages, stream: true, temperature: 0.7 };
-    } else {
-      var sysText = (messages.filter(function (m) { return m.role === "system"; })[0] || {}).content || "";
-      var contents = messages.filter(function (m) { return m.role !== "system"; })
-        .map(function (m) { return { role: m.role === "user" ? "user" : "model", parts: [{ text: m.content }] }; });
+    } else if (p.kind === "gemini") {
+      var contents = chat.map(function (m) {
+        return { role: m.role === "user" ? "user" : "model", parts: [{ text: m.content }] };
+      });
       body = {
         contents: contents,
         systemInstruction: { parts: [{ text: sysText }] },
         generationConfig: { temperature: 0.7 }
       };
       url = p.url + s.model + ":streamGenerateContent?alt=sse&key=" + encodeURIComponent(s.key);
+    } else { // anthropic
+      headers["x-api-key"] = s.key;
+      headers["anthropic-version"] = "2023-06-01";
+      var anthropicMsgs = chat.map(function (m) {
+        return { role: m.role === "user" ? "user" : "assistant", content: m.content };
+      });
+      body = { model: s.model, max_tokens: 2048, system: sysText, messages: anthropicMsgs, stream: true };
     }
+
+    function tokenFromJson(json) {
+      if (p.kind === "openai") {
+        return (json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content) || "";
+      } else if (p.kind === "gemini") {
+        return (json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text) || "";
+      }
+      return (json.delta && json.delta.text) || ""; // anthropic
+    }
+
     fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) }).then(function (r) {
-      if (!r.ok) { return r.text().then(function (t) { throw new Error("HTTP " + r.status + " " + t.slice(0, 200)); }); }
+      if (!r.ok) { return r.text().then(function (t) { throw new Error("HTTP " + r.status + " " + t.slice(0, 300)); }); }
       var reader = r.body.getReader();
       var dec = new TextDecoder();
       var buf = "";
@@ -671,12 +747,7 @@
             if (data === "[DONE]") return;
             try {
               var json = JSON.parse(data);
-              var tok = "";
-              if (p.kind === "openai") {
-                tok = (json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content) || "";
-              } else {
-                tok = (json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text) || "";
-              }
+              var tok = tokenFromJson(json);
               if (tok) onToken(tok);
             } catch (e) {}
           });
@@ -699,11 +770,12 @@
     var mask = document.createElement("div");
     mask.innerHTML = '<div class="modal-mask" id="modalMask"><div class="modal-card">' +
       '<div class="modal-head"><h3>面试设置（API Key）</h3><button class="modal-x" id="modalX" aria-label="关闭">×</button></div>' +
-      '<p class="modal-desc">Key 仅保存在你的浏览器本地，只发往你选择的服务商，站点不收集。支持浏览器直连的服务商：</p>' +
+      '<p class="modal-desc">Key 仅保存在你的浏览器本地，只发往你选择的服务商，站点不收集。已内置 OpenAI / Anthropic / Google / DeepSeek / 通义千问 / 智谱 / Kimi / Groq / Mistral / Together 等市面主流大模型。</p>' +
       '<div class="field"><label>服务商</label><select id="setProvider">' + providerOpts + "</select></div>" +
+      '<div class="modal-note" id="setNote"></div>' +
       '<div class="field"><label>模型</label><select id="setModel">' + modelOpts + "</select></div>" +
       '<div class="field"><label>API Key</label><input id="setKey" type="password" placeholder="粘贴你的 API Key" value="' + esc(s.key) + '"></div>' +
-      '<div class="modal-help">获取 Key：OpenRouter → openrouter.ai/keys · Groq → console.groq.com · Gemini → aistudio.google.com/apikey</div>' +
+      '<div class="modal-help">获取 Key：OpenRouter → openrouter.ai/keys · OpenAI → platform.openai.com/api-keys · Anthropic → console.anthropic.com · Gemini → aistudio.google.com/apikey · DeepSeek → platform.deepseek.com · Moonshot/Kimi → platform.moonshot.cn · 通义千问 → dashscope.console.aliyun.com · 智谱 GLM → open.bigmodel.cn</div>' +
       '<div class="modal-actions"><button class="btn-ghost" id="setCancel">取消</button><button class="btn-primary" id="setSave">保存</button></div>' +
       "</div></div>";
     document.body.appendChild(mask.firstChild);
@@ -720,7 +792,14 @@
     document.getElementById("setProvider").onchange = function () {
       var p = PROVIDERS[this.value];
       document.getElementById("setModel").innerHTML = p.models.map(function (m) { return '<option value="' + m + '">' + m + "</option>"; }).join("");
+      var noteEl = document.getElementById("setNote");
+      if (noteEl) noteEl.textContent = p.note || "";
     };
+    (function initNote() {
+      var p = PROVIDERS[s.provider];
+      var noteEl = document.getElementById("setNote");
+      if (noteEl) noteEl.textContent = p.note || "";
+    })();
     document.getElementById("setSave").onclick = function () {
       var prov = document.getElementById("setProvider").value;
       var mdl = document.getElementById("setModel").value;

@@ -13,7 +13,7 @@
 - **一键复制**：每条命令与示例均可一键复制，界面全中文，离线可用。
 - **顶部三大模块**：`命令速查`（原功能）／`熟练度检测`／`模拟面试`，顶部 Tab 一键切换。
 - **指令熟练度检测（纯前端）**：选 Linux 或 Git，随机抽 15 题（回忆 / 场景 / 补全三种题型）测记忆与熟练度，按难度加权评分并给出分类掌握度与薄弱点报告。无需联网。
-- **AI 模拟面试（需自带 Key）**：选 Linux 或 Git，大模型扮演面试官实时追问，结束生成评价报告；支持 OpenRouter / Groq / Gemini 浏览器直连，Key 仅存浏览器本地、只发往对应服务商。
+- **AI 模拟面试（需自带 Key）**：选 Linux 或 Git，大模型扮演面试官实时追问，结束生成评价报告；内置市面几乎所有主流大模型——OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter(聚合网关)、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together 等，均可浏览器直连，Key 仅存浏览器本地、只发往对应服务商。
 
 ## 使用方式
 
@@ -24,6 +24,14 @@
 ## 更新日志
 
 > 本项目的每一次改动都会记录于此。在线地址：[https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)（GitHub Pages，基于 `main` 分支自动部署，打开即可搜索）。
+
+### 2026-08-02 — AI 模拟面试接入市面所有主流大模型
+- **改动**：将面试模块的 API 服务商从 OpenRouter / Groq / Gemini 三种，扩展为覆盖市面几乎所有主流大模型的 11 家：**OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together**。
+  - 统一三种接入协议：`openai`（OpenAI 兼容接口）、`gemini`（Google 原生）、`anthropic`（Anthropic 原生，含 `x-api-key` + `anthropic-version` 头与 SSE `delta.text` 解析）。
+  - 设置弹窗补全各厂商 API Key 获取链接；对 OpenAI / Anthropic 增加"官方 API 默认禁止浏览器跨域直连"的 CORS 提示，建议改用 OpenRouter 或经代理中转。
+- **原因**：原仅支持 3 家服务商，无法满足"接入所有大模型"的需求，且未覆盖国内主流模型（通义千问、智谱、Kimi、DeepSeek）。
+- **影响范围**：`app.js`（`PROVIDERS` 数据结构、`callLLM` 流式解析分支）、`styles.css`（新增 `.modal-note` 提示样式）、设置弹窗文案。
+- **校验**：`node --check` 通过；脚本校验 11 家服务商 `kind` 全部合法（openai/gemini/anthropic）；`styles.css` 复用既有 `--warn-ink/--warn-bg/--warn-line` 变量，无新增悬空规则。
 
 ### 2026-08-02 — 新增「熟练度检测」与「AI 模拟面试」模块（保留命令速查）
 - **改动**：在顶部新增 Tab 导航（命令速查 / 熟练度检测 / 模拟面试），**完整保留**原有命令速查全部功能；新增两大模块，均按 git/linux 分离。
