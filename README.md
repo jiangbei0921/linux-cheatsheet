@@ -12,9 +12,9 @@
 - **频率 × 难度双标注**：用 `高/中/低` × `入门/日常/进阶` 帮你区分优先级，初学者先看高频入门。
 - **一键复制**：每条命令与示例均可一键复制，界面全中文，离线可用。
 - **顶部三大模块**：`命令速查`（原功能）／`熟练度检测`／`模拟面试`，顶部 Tab 一键切换。
-- **指令熟练度检测（纯前端）**：选 Linux 或 Git，随机抽 15 题（回忆 / 场景 / 补全三种题型）测记忆与熟练度，按难度加权评分并给出分类掌握度与薄弱点报告。无需联网。
+- **指令熟练度检测（纯前端，A+B 双模式）**：选 Linux 或 Git，在「自测清单」中逐条自评（已掌握 / 模糊 / 不会）实时生成掌握度地图与分类进度、薄弱点；或在「实战任务」中面对中文场景亲手写命令，按关键令牌即时校验并给出正确率与薄弱点。无需联网或 Key。
 - **AI 模拟面试（需自带 Key）**：选 Linux 或 Git，大模型扮演面试官实时追问，结束生成评价报告；内置市面几乎所有主流大模型——OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter(聚合网关)、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together 等，均可浏览器直连，Key 仅存浏览器本地、只发往对应服务商。
-- **GitHub 仓库徽章**：右上角实时显示本项目的 Star 与 Fork 数量（来自 GitHub API，带 10 分钟本地缓存），点击即可跳转到仓库进行 Star / Fork。
+- **GitHub 仓库徽章**：右上角 GitHub 标识 + 独立的 **Star / Fork** 两张迷你卡片（图标在上、英文标识在下，悬停/选中变黑色，Star 与 Fork 之间无连线），实时显示 Star 与 Fork 数量（来自 GitHub API，带 10 分钟本地缓存），点击即可跳转 Star / Fork。
 
 ## 使用方式
 
@@ -26,11 +26,15 @@
 
 > 本项目的每一次改动都会记录于此。在线地址：[https://jiangbei0921.github.io/linux-git-cheatsheet/](https://jiangbei0921.github.io/linux-git-cheatsheet/)（GitHub Pages，基于 `main` 分支自动部署，打开即可搜索）。
 
-### 2026-08-02 — 顶栏 GitHub 徽章新增 Star / Fork 计数
-- **改动**：将顶栏原本的纯 GitHub 图标链接升级为 GitHub 风格徽章，实时显示本仓库的 **Star 数** 与 **Fork 数**（取自 GitHub API，带 10 分钟浏览器本地缓存以降低限流风险），点击徽章跳转到仓库即可 Star / Fork。
-- **原因**：用户希望在仓库标识上直接呈现 Star / Fork 等互动数据，增强项目可信度与引流入口。
-- **影响范围**：`index.html`（`.gh-pill` 徽章结构替代原 `.gh-icon`）、`styles.css`（`.gh-pill`/`.gh-metric` 等样式，深浅色主题兼容）、`app.js`（`loadGitHubStats()` 拉取并渲染计数，失败静默降级保留占位符）。
-- **校验**：`node --check` 通过；`styles.css` 无 `.gh-icon` 悬空规则残留；GitHub API 支持浏览器 CORS，未鉴权请求受 60 次/小时/IP 限流，已用本地缓存缓解。
+### 2026-08-02 — 熟练度检测重构为 A+B（自测清单 + 实战任务）并重绘 GitHub 徽章
+- **改动**：
+  - 熟练度检测**弃用选择题形式**，重构为 A+B 双模式（顶部子标签切换，按 Linux / Git 分组）：
+    - **A 自测清单**：列出该组全部命令，逐条自评 `已掌握 / 模糊 / 不会`，实时计算掌握度（已掌握 100% · 模糊 50% · 不会 0%），可按分类「全标已掌握 / 不会」快速自评，一键生成掌握度地图（总掌握度 + 各分类进度条 + 薄弱命令清单）。
+    - **B 实战任务**：给出中文场景，由用户手写完整命令，按「核心命令令牌 + 必要参数令牌」即时校验，逐题反馈并给出正确率与薄弱点报告；每轮随机 10 题，可提前结束出报告。
+  - GitHub 徽章重绘：原单条连接式 pill 改为「GitHub 标识 + 独立的 Star / Fork 两张迷你卡片」，图标在上、英文标识（Star / Fork）在下，**Star 与 Fork 之间不再用线连接**，悬停 / 选中（hover / focus / active）整体变为黑色（`var(--ink)`），数量实时显示。
+- **原因**：用户认为选择题式检测不够贴近真实掌握程度，要求换一种方式；同时希望徽章上 Star / Fork 视觉分离、选中变黑、带英文标识。
+- **影响范围**：`index.html`（`.gh-badge` 结构替代 `.gh-pill`）、`styles.css`（`.gh-badge`/`.gh-stat` 等替代 `.gh-pill`/`.gh-metric`；新增 A+B 组件样式与深浅色适配）、`app.js`（移除 `buildQuizPool`/`startQuiz`/择题渲染，新增 `renderProfPanel`/`renderSelfCheck`/`renderSelfReport`/`renderPractice`/`renderPracticeReport`）。
+- **校验**：`node --check` 通过；`styles.css` 无 `.gh-pill`/`.quiz-opt` 悬空规则残留；`loadGitHubStats()` 仍写入 `#ghStars`/`#ghForks`，元素 id 保持不变；命令数为 483 条 / 29 类，自测清单按分类渲染，实战任务每轮抽取 10 题。
 
 ### 2026-08-02 — AI 模拟面试接入市面所有主流大模型
 - **改动**：将面试模块的 API 服务商从 OpenRouter / Groq / Gemini 三种，扩展为覆盖市面几乎所有主流大模型的 11 家：**OpenAI、Anthropic(Claude)、Google Gemini、OpenRouter、DeepSeek、通义千问、智谱 GLM、Kimi(Moonshot)、Groq、Mistral、Together**。

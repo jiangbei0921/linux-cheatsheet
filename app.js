@@ -352,7 +352,7 @@
     $settingsBtn.addEventListener("click", function () { openSettings(); });
   }
 
-  /* ---------- 熟练度检测 ---------- */
+  /* ---------- 熟练度检测（A 自测清单 + B 实战任务） ---------- */
   function cmdsByGroup(g) { return CMDS.filter(function (c) { return groupOf(c) === g; }); }
   function shuffle(arr) {
     var a = arr.slice();
@@ -363,157 +363,260 @@
     return a;
   }
   function dedupe(a) { var seen = {}, out = []; a.forEach(function (x) { if (!seen[x]) { seen[x] = 1; out.push(x); } }); return out; }
-  function pickDistinct(pool, correct, n) {
-    return shuffle(pool.filter(function (x) { return x !== correct; })).slice(0, n);
-  }
-  function diffWeight(d) { return d === "入门" ? 1 : d === "日常" ? 1.2 : 1.5; }
 
-  function buildQuizPool(g) {
-    var cmds = cmdsByGroup(g);
-    var pool = [];
-    cmds.forEach(function (c) {
-      if (c.description) {
-        pool.push({
-          type: "回忆",
-          stem: "命令 <code>" + esc(c.name) + "</code> 的作用是？",
-          answer: c.description,
-          options: shuffle(dedupe([c.description].concat(pickDistinct(cmds.map(function (x) { return x.description; }), c.description, 3)))),
-          cmd: c
-        });
-        pool.push({
-          type: "场景",
-          stem: esc(c.description) + '<br><span class="q-hint">应选用哪条命令？</span>',
-          answer: c.name,
-          options: shuffle(dedupe([c.name].concat(pickDistinct(cmds.map(function (x) { return x.name; }), c.name, 3)))),
-          cmd: c
-        });
-      }
-      (c.examples || []).forEach(function (ex) {
-        var toks = ex.cmd.split(/\s+/);
-        var fi = -1;
-        for (var i = 0; i < toks.length; i++) { if (/^-/.test(toks[i]) && toks[i] !== "-") { fi = i; break; } }
-        if (fi < 0) return;
-        var correct = toks[fi];
-        var masked = toks.slice(); masked[fi] = "____";
-        var flags = [];
-        cmds.forEach(function (x) {
-          (x.examples || []).forEach(function (e) {
-            e.cmd.split(/\s+/).forEach(function (t) { if (/^-/.test(t) && t !== correct) flags.push(t); });
-          });
-        });
-        if (!flags.length) return;
-        pool.push({
-          type: "补全",
-          stem: "补全命令：<code>" + esc(masked.join(" ")) + "</code>",
-          answer: correct,
-          options: shuffle(dedupe([correct].concat(pickDistinct(flags, correct, 3)))),
-          cmd: c
-        });
-      });
-    });
-    return pool;
-  }
-
-  var quizState = null;
+  var profState = { g: null, mode: "self", marks: {} };
 
   function renderQuizHome() {
     var html = '<div class="mod-home">' +
       '<div class="mod-head"><h2>指令熟练度检测</h2>' +
-      '<p>从题库随机抽题，测你对命令的记忆与熟练度。纯本地运行，无需联网或 Key。</p></div>' +
+      '<p>不打选择题——用「自测清单」逐条自评，或用「实战任务」在场景里手写命令，真正测出你会不会。</p></div>' +
       '<div class="grp-pick">' +
-        grpPickBtn("linux", "Linux 检测", "测试 Linux（含 Vim）命令") +
-        grpPickBtn("git", "Git 检测", "测试 Git 命令") +
+        grpPickBtn("linux", "Linux 自测", "Linux（含 Vim）命令") +
+        grpPickBtn("git", "Git 自测", "Git 命令") +
       '</div>' +
-      '<div class="mod-note">每次随机抽取 15 题，覆盖回忆 / 场景 / 补全三种题型，按难度加权评分并给出薄弱点。</div>' +
+      '<div class="mod-note">两种模式均纯本地运行，无需联网或 Key：<b>自测清单</b>帮你生成掌握度地图；<b>实战任务</b>给出中文场景，由你手写命令并即时校验。</div>' +
       '</div>';
     $content.innerHTML = html;
     Array.prototype.forEach.call($content.querySelectorAll(".grp-pick-btn"), function (b) {
-      b.onclick = function () { startQuiz(b.getAttribute("data-g")); };
+      b.onclick = function () { profState.g = b.getAttribute("data-g"); profState.mode = "self"; renderProfPanel(); };
     });
   }
   function grpPickBtn(g, title, sub) {
     return '<button class="grp-pick-btn ' + g + '" data-g="' + g + '">' +
       '<span class="gp-title">' + title + '</span><span class="gp-sub">' + sub + '</span></button>';
   }
-  function startQuiz(g) {
-    var pool = buildQuizPool(g);
-    if (!pool.length) { $content.innerHTML = '<div class="empty">该分组暂无可用题目。</div>'; return; }
-    var qs = shuffle(pool).slice(0, Math.min(15, pool.length));
-    qs.forEach(function (q) { q.user = null; });
-    quizState = { g: g, qs: qs, idx: 0, correct: 0, weighted: 0, totalWeight: 0, wrong: [], answered: false };
-    renderQuizQuestion();
+
+  function renderProfPanel() {
+    var gLabel = profState.g === "linux" ? "Linux" : "Git";
+    $content.innerHTML = '<div class="mod-home">' +
+      '<div class="prof-bar">' +
+        '<button class="prof-back" id="profBack">← 返回选择</button>' +
+        '<span class="prof-tag">当前分组：' + gLabel + '</span>' +
+      '</div>' +
+      '<div class="prof-subtabs">' +
+        '<button class="subtab ' + (profState.mode === "self" ? "active" : "") + '" data-mode="self">自测清单</button>' +
+        '<button class="subtab ' + (profState.mode === "practice" ? "active" : "") + '" data-mode="practice">实战任务</button>' +
+      '</div>' +
+      '<div id="profBody"></div>' +
+      '</div>';
+    document.getElementById("profBack").onclick = function () { profState.g = null; renderQuizHome(); };
+    Array.prototype.forEach.call($content.querySelectorAll(".subtab"), function (b) {
+      b.onclick = function () { profState.mode = b.getAttribute("data-mode"); renderProfPanel(); };
+    });
+    if (profState.mode === "self") renderSelfCheck();
+    else { practiceState = null; renderPractice(); }
   }
-  function renderQuizQuestion() {
-    var q = quizState.qs[quizState.idx];
-    var n = quizState.idx + 1, total = quizState.qs.length;
-    var opts = q.options.map(function (o, i) {
-      return '<button class="quiz-opt" data-o="' + i + '"><span class="opt-k">' + String.fromCharCode(65 + i) + '</span>' +
-        '<span class="opt-v">' + esc(o) + "</span></button>";
+
+  /* ===== A 自测清单 + 掌握度地图 ===== */
+  function selfWeight(v) { return v === "known" ? 1 : v === "fuzzy" ? 0.5 : 0; }
+  function renderSelfCheck() {
+    var g = profState.g;
+    var cmds = cmdsByGroup(g);
+    var total = cmds.length, marked = 0, sum = 0;
+    cmds.forEach(function (c) { var v = profState.marks[c.id]; if (v) { marked++; sum += selfWeight(v); } });
+    var mastery = total ? Math.round(sum / total * 100) : 0;
+
+    var byCat = {};
+    cmds.forEach(function (c) { (byCat[c.category] = byCat[c.category] || []).push(c); });
+    var catOrder = CATS.filter(function (c) { return c.group === g; });
+
+    var catHtml = catOrder.map(function (cat) {
+      var list = byCat[cat.id] || [];
+      if (!list.length) return "";
+      var rows = list.map(function (c) {
+        var v = profState.marks[c.id];
+        return '<div class="self-row" data-id="' + esc(c.id) + '">' +
+          '<div class="self-cmd"><code>' + esc(c.name) + '</code><span>' + esc(c.description || "") + '</span></div>' +
+          '<div class="mk-btns">' +
+            '<button class="mk-btn ' + (v === "known" ? "on-known" : "") + '" data-v="known">已掌握</button>' +
+            '<button class="mk-btn ' + (v === "fuzzy" ? "on-fuzzy" : "") + '" data-v="fuzzy">模糊</button>' +
+            '<button class="mk-btn ' + (v === "unknown" ? "on-unknown" : "") + '" data-v="unknown">不会</button>' +
+          '</div></div>';
+      }).join("");
+      return '<div class="self-cat"><div class="self-cat-head"><h4>' + esc(cat.name) + '</h4>' +
+        '<span class="cat-count">' + list.length + ' 条</span>' +
+        '<span class="cat-quick"><button class="mini-btn" data-catall="' + esc(cat.id) + '" data-v="known">全标已掌握</button>' +
+        '<button class="mini-btn" data-catall="' + esc(cat.id) + '" data-v="unknown">全标不会</button></span></div>' +
+        rows + '</div>';
     }).join("");
-    $content.innerHTML = '<div class="quiz-q">' +
-      '<div class="quiz-progress">第 ' + n + ' / ' + total + ' 题<span class="q-type type-' + q.type + '">' + q.type + "题</span></div>" +
-      '<div class="quiz-stem">' + q.stem + "</div>" +
-      '<div class="quiz-opts">' + opts + "</div>" +
-      '<div class="quiz-foot"><button class="btn-ghost" id="quizQuit">退出检测</button></div>' +
-      "</div>";
-    var optBtns = $content.querySelectorAll(".quiz-opt");
-    Array.prototype.forEach.call(optBtns, function (b) {
+
+    var body = document.getElementById("profBody");
+    body.innerHTML = '<div class="self-summary">' +
+      '<div class="self-ring">' + mastery + '<small>% 掌握度</small></div>' +
+      '<div class="self-meta">已自评 ' + marked + ' / ' + total + ' 条<br>已掌握=100% · 模糊=50% · 不会=0%</div>' +
+      '<div class="self-actions">' +
+        (marked ? '<button class="btn-primary" id="selfReport">生成掌握度地图</button>' : '') +
+        '<button class="btn-ghost sm" id="selfReset">重置</button>' +
+      '</div></div>' + catHtml;
+    if (marked) document.getElementById("selfReport").onclick = renderSelfReport;
+    document.getElementById("selfReset").onclick = function () { profState.marks = {}; renderSelfCheck(); };
+
+    Array.prototype.forEach.call(body.querySelectorAll(".mk-btn"), function (b) {
       b.onclick = function () {
-        if (quizState.answered) return;
-        quizState.answered = true;
-        var chosen = q.options[+b.getAttribute("data-o")];
-        var correct = chosen === q.answer;
-        Array.prototype.forEach.call(optBtns, function (ob) {
-          var ov = q.options[+ob.getAttribute("data-o")];
-          if (ov === q.answer) ob.classList.add("correct");
-          else if (ob === b) ob.classList.add("wrong");
-          ob.disabled = true;
-        });
-        var w = diffWeight(q.cmd.difficulty);
-        quizState.totalWeight += w;
-        if (correct) { quizState.correct++; quizState.weighted += w; }
-        else { quizState.wrong.push(q); }
-        setTimeout(function () {
-          quizState.idx++; quizState.answered = false;
-          if (quizState.idx >= quizState.qs.length) renderQuizReport();
-          else renderQuizQuestion();
-        }, 900);
+        var row = b.closest(".self-row"); var id = row.getAttribute("data-id");
+        var v = b.getAttribute("data-v");
+        if (profState.marks[id] === v) delete profState.marks[id]; else profState.marks[id] = v;
+        renderSelfCheck();
       };
     });
-    var quit = document.getElementById("quizQuit");
-    if (quit) quit.onclick = function () { quizState = null; renderQuizHome(); };
-  }
-  function renderQuizReport() {
-    var acc = quizState.totalWeight ? Math.round(quizState.weighted / quizState.totalWeight * 100) : 0;
-    var level = acc >= 85 ? "精通" : acc >= 65 ? "熟练" : acc >= 40 ? "了解" : "初学者";
-    var byCat = {};
-    quizState.qs.forEach(function (q) {
-      byCat[q.cmd.category] = byCat[q.cmd.category] || { c: 0, t: 0 };
-      byCat[q.cmd.category].t++;
-      if (quizState.wrong.indexOf(q) < 0) byCat[q.cmd.category].c++;
+    Array.prototype.forEach.call(body.querySelectorAll(".mini-btn"), function (b) {
+      b.onclick = function () {
+        var catId = b.getAttribute("data-catall"); var v = b.getAttribute("data-v");
+        (byCat[catId] || []).forEach(function (c) { profState.marks[c.id] = v; });
+        renderSelfCheck();
+      };
     });
-    var catHtml = Object.keys(byCat).map(function (cid) {
-      var s = byCat[cid]; var pct = s.t ? Math.round(s.c / s.t * 100) : 0;
-      var cat = catMap[cid];
-      return '<div class="cat-bar"><span class="cb-name">' + esc(cat ? cat.name : cid) + "</span>" +
+  }
+  function renderSelfReport() {
+    var g = profState.g;
+    var cmds = cmdsByGroup(g);
+    var total = cmds.length, sum = 0, mastered = 0, covered = 0;
+    cmds.forEach(function (c) {
+      var v = profState.marks[c.id];
+      if (v) { covered++; sum += selfWeight(v); if (v === "known") mastered++; }
+    });
+    var mastery = total ? Math.round(sum / total * 100) : 0;
+    var level = mastery >= 85 ? "精通" : mastery >= 65 ? "熟练" : mastery >= 40 ? "了解" : "初学者";
+
+    var byCat = {};
+    cmds.forEach(function (c) {
+      byCat[c.category] = byCat[c.category] || { t: 0, c: 0 };
+      byCat[c.category].t++;
+      if (profState.marks[c.id] === "known") byCat[c.category].c++;
+    });
+    var catOrder = CATS.filter(function (c) { return c.group === g; });
+    var catHtml = catOrder.map(function (cat) {
+      var s = byCat[cat.id]; if (!s || !s.t) return "";
+      var pct = Math.round(s.c / s.t * 100);
+      return '<div class="cat-bar"><span class="cb-name">' + esc(cat.name) + '</span>' +
         '<span class="cb-track"><span class="cb-fill" style="width:' + pct + '%"></span></span>' +
-        '<span class="cb-pct">' + pct + "%</span></div>";
+        '<span class="cb-pct">' + pct + '%</span></div>';
     }).join("");
-    var weakHtml = quizState.wrong.length
-      ? quizState.wrong.map(function (q) {
-          return '<div class="weak-item"><code>' + esc(q.cmd.name) + "</code><span>" + esc(q.cmd.description) + "</span></div>";
+
+    var weak = cmds.filter(function (c) { var v = profState.marks[c.id]; return v === "fuzzy" || v === "unknown"; });
+    var weakHtml = weak.length
+      ? weak.map(function (c) {
+          var tag = profState.marks[c.id] === "fuzzy" ? "模糊" : "不会";
+          return '<div class="weak-item"><code>' + esc(c.name) + '</code><span>[' + tag + '] ' + esc(c.description || "") + '</span></div>';
         }).join("")
-      : '<div class="weak-none">本题组无薄弱点，掌握扎实。</div>';
+      : '<div class="weak-none">自评无薄弱点，掌握扎实。</div>';
+
     $content.innerHTML = '<div class="quiz-report">' +
-      '<div class="rep-head"><div class="rep-level">' + level + "</div>" +
-        '<div class="rep-score">正确率（难度加权）<b>' + acc + '%</b><br><span class="rep-sub">答对 ' + quizState.correct + " / " + quizState.qs.length + " 题</span></div></div>" +
-      '<div class="rep-section"><h4>分类掌握度</h4>' + catHtml + "</div>" +
-      '<div class="rep-section"><h4>薄弱命令（建议复习）</h4>' + weakHtml + "</div>" +
-      '<div class="rep-actions"><button class="btn-primary" id="quizAgain">再来一次（' + (quizState.g === "linux" ? "Linux" : "Git") + '）</button>' +
-        '<button class="btn-ghost" id="quizBack">返回选择</button></div>' +
-      "</div>";
-    document.getElementById("quizAgain").onclick = function () { startQuiz(quizState.g); };
-    document.getElementById("quizBack").onclick = function () { quizState = null; renderQuizHome(); };
+      '<div class="rep-head"><div class="rep-level">' + level + '</div>' +
+        '<div class="rep-score">掌握度（按自评加权）<b>' + mastery + '%</b><br><span class="rep-sub">已掌握 ' + mastered + ' / ' + total + ' 条 · 自评覆盖 ' + covered + ' 条</span></div></div>' +
+      '<div class="rep-section"><h4>分类掌握度（已掌握占比）</h4>' + catHtml + '</div>' +
+      '<div class="rep-section"><h4>薄弱命令（建议复习）</h4>' + weakHtml + '</div>' +
+      '<div class="rep-actions"><button class="btn-primary" id="selfBack">返回清单继续自评</button>' +
+        '<button class="btn-ghost" id="selfHome">返回选择</button></div>' +
+      '</div>';
+    document.getElementById("selfBack").onclick = function () { renderSelfCheck(); };
+    document.getElementById("selfHome").onclick = function () { profState.g = null; renderQuizHome(); };
+  }
+
+  /* ===== B 实战任务模拟 ===== */
+  function taskTokens(c) {
+    var base = (c.name || "").trim();
+    var primary = [];
+    if (c.examples && c.examples[0]) {
+      c.examples[0].cmd.split(/\s+/).forEach(function (t) { if (/^-/.test(t)) primary.push(t); });
+    }
+    primary = dedupe(primary);
+    return { base: base, primary: primary };
+  }
+  function validateCmd(input, tk) {
+    var s = (input || "").trim().toLowerCase();
+    if (!s) return { ok: false, reason: "未输入命令" };
+    var tokens = s.split(/\s+/);
+    var baseToks = tk.base.toLowerCase().split(/\s+/).filter(Boolean);
+    var missBase = baseToks.filter(function (t) { return tokens.indexOf(t) < 0; });
+    if (missBase.length) return { ok: false, reason: "缺少核心命令：" + missBase.join(" ") };
+    var missFlag = tk.primary.filter(function (f) { return tokens.indexOf(f.toLowerCase()) < 0; });
+    if (missFlag.length) return { ok: false, reason: "命令正确，但缺少必要参数：" + missFlag.join(" ") };
+    return { ok: true, reason: "正确" };
+  }
+
+  var practiceState = null;
+  function buildPracticePool(g) {
+    var cmds = cmdsByGroup(g).filter(function (c) { return c.description; });
+    return shuffle(cmds).slice(0, Math.min(10, cmds.length)).map(function (c) {
+      return { cmd: c, tk: taskTokens(c), scenario: c.description, answered: false, result: null };
+    });
+  }
+  function renderPractice() {
+    if (!practiceState || practiceState.g !== profState.g) {
+      practiceState = { g: profState.g, tasks: buildPracticePool(profState.g), idx: 0, correct: 0, results: [] };
+    }
+    if (!practiceState.tasks.length) { document.getElementById("profBody").innerHTML = '<div class="empty">该分组暂无可用场景任务。</div>'; return; }
+    if (practiceState.idx >= practiceState.tasks.length) { renderPracticeReport(); return; }
+    var t = practiceState.tasks[practiceState.idx];
+    var n = practiceState.idx + 1, total = practiceState.tasks.length;
+    var body = document.getElementById("profBody");
+    body.innerHTML = '<div class="practice-q">' +
+      '<div class="practice-progress">第 ' + n + ' / ' + total + ' 题 · 已答对 ' + practiceState.correct + '</div>' +
+      '<div class="practice-scenario">请在下方写出完成该任务的命令：<br><b>' + esc(t.scenario) + '</b></div>' +
+      '<input class="practice-input" id="pInput" type="text" autocomplete="off" placeholder="例如：' + esc(t.tk.base) + (t.tk.primary.length ? ' ' + t.tk.primary.join(' ') : '') + ' …" />' +
+      '<div class="practice-foot">' +
+        '<button class="btn-primary" id="pSubmit">提交</button>' +
+        '<button class="btn-ghost sm" id="pSkip">跳过</button>' +
+        '<button class="btn-ghost sm" id="pEnd">结束并出报告</button>' +
+      '</div>' +
+      '<div id="pFeedback"></div>' +
+      '</div>';
+    var $input = document.getElementById("pInput");
+    $input.focus();
+    function next() {
+      practiceState.idx++;
+      if (practiceState.idx >= practiceState.tasks.length) renderPracticeReport();
+      else renderPractice();
+    }
+    function submit() {
+      if (t.answered) return;
+      t.answered = true;
+      var res = validateCmd($input.value, t.tk);
+      t.result = res;
+      if (res.ok) practiceState.correct++;
+      practiceState.results.push({ cmd: t.cmd, input: $input.value, res: res });
+      var fb = document.getElementById("pFeedback");
+      fb.className = "practice-feedback " + (res.ok ? "ok" : "bad");
+      fb.innerHTML = (res.ok ? "✓ 正确！" : "✗ " + esc(res.reason)) +
+        '<div class="practice-hint">参考命令：<code>' + esc(t.cmd.name) + (t.tk.primary.length ? ' ' + t.tk.primary.join(' ') : '') + '</code>' +
+        (t.cmd.examples && t.cmd.examples[0] ? ' &nbsp;示例：<code>' + esc(t.cmd.examples[0].cmd) + '</code>' : '') + '</div>';
+      $input.disabled = true;
+      document.getElementById("pSubmit").disabled = true;
+      var skip = document.getElementById("pSkip");
+      skip.textContent = "下一题 →";
+      skip.onclick = next;
+    }
+    function skip() {
+      if (t.answered) { next(); return; }
+      t.answered = true;
+      practiceState.results.push({ cmd: t.cmd, input: $input.value, res: { ok: false, reason: "已跳过" } });
+      next();
+    }
+    document.getElementById("pSubmit").onclick = submit;
+    $input.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
+    document.getElementById("pSkip").onclick = skip;
+    document.getElementById("pEnd").onclick = renderPracticeReport;
+  }
+  function renderPracticeReport() {
+    var total = practiceState.results.length;
+    var acc = total ? Math.round(practiceState.correct / total * 100) : 0;
+    var level = acc >= 85 ? "精通" : acc >= 65 ? "熟练" : acc >= 40 ? "了解" : "初学者";
+    var weak = practiceState.results.filter(function (r) { return !r.res.ok; });
+    var weakHtml = weak.length
+      ? weak.map(function (r) {
+          return '<div class="weak-item"><code>' + esc(r.cmd.name) + '</code><span>你的输入：' + esc(r.input || "（跳过）") + ' · ' + esc(r.res.reason) + '</span></div>';
+        }).join("")
+      : '<div class="weak-none">实战任务全部答对，命令运用熟练。</div>';
+    $content.innerHTML = '<div class="quiz-report">' +
+      '<div class="rep-head"><div class="rep-level">' + level + '</div>' +
+        '<div class="rep-score">正确率<b>' + acc + '%</b><br><span class="rep-sub">答对 ' + practiceState.correct + ' / ' + total + ' 题</span></div></div>' +
+      '<div class="rep-section"><h4>薄弱命令（建议复习）</h4>' + weakHtml + '</div>' +
+      '<div class="rep-actions"><button class="btn-primary" id="pAgain">再来一组（' + (practiceState.g === "linux" ? "Linux" : "Git") + '）</button>' +
+        '<button class="btn-ghost" id="pHome">返回选择</button></div>' +
+      '</div>';
+    document.getElementById("pAgain").onclick = function () { practiceState = null; renderPractice(); };
+    document.getElementById("pHome").onclick = function () { profState.g = null; practiceState = null; renderQuizHome(); };
   }
 
   /* ---------- AI 模拟面试 ---------- */
