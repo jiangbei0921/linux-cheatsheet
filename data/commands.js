@@ -76,6 +76,11 @@ window.COMMAND_DATA = {
       "group": "linux"
     },
     {
+      "id": "vim",
+      "name": "Vim 编辑器",
+      "group": "linux"
+    },
+    {
       "id": "g_config",
       "name": "仓库与配置",
       "group": "git"
@@ -4882,44 +4887,6 @@ window.COMMAND_DATA = {
       "compare": "[ 是 test 的同名内建，注意收尾 ]"
     },
     {
-      "name": "vi",
-      "category": "editor",
-      "description": "经典编辑器",
-      "keywords": [
-        "编辑器",
-        "vi"
-      ],
-      "examples": [
-        {
-          "cmd": "vi f.txt",
-          "desc": "打开文件"
-        }
-      ],
-      "frequency": "中",
-      "difficulty": "入门",
-      "pitfalls": null,
-      "compare": null
-    },
-    {
-      "name": "vim",
-      "category": "editor",
-      "description": "增强 vi",
-      "keywords": [
-        "编辑器",
-        "vim"
-      ],
-      "examples": [
-        {
-          "cmd": "vim f.txt",
-          "desc": "打开（更强）"
-        }
-      ],
-      "frequency": "中",
-      "difficulty": "日常",
-      "pitfalls": null,
-      "compare": "vim 是 vi 的增强版"
-    },
-    {
       "name": "nano",
       "category": "editor",
       "description": "简易编辑器",
@@ -5270,6 +5237,2635 @@ window.COMMAND_DATA = {
       ],
       "frequency": "低",
       "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "vim",
+      "category": "vim",
+      "description": "启动 Vim 并打开文件",
+      "keywords": [
+        "启动",
+        "打开文件",
+        "编辑器",
+        "vim"
+      ],
+      "examples": [
+        {
+          "cmd": "vim file.txt",
+          "desc": "打开文件"
+        },
+        {
+          "cmd": "vim +42 file.txt",
+          "desc": "打开并跳到第 42 行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": ":q! 强制退出不保存会丢失改动；只读可用 vim -R",
+      "compare": "vim 是 vi 的增强版；nano 更简单但功能弱"
+    },
+    {
+      "name": "vim -d",
+      "category": "vim",
+      "description": "以差异比对模式打开（vimdiff）",
+      "keywords": [
+        "差异",
+        "比对",
+        "vimdiff",
+        "vim -d"
+      ],
+      "examples": [
+        {
+          "cmd": "vim -d a.txt b.txt",
+          "desc": "并排对比两个文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "vim -R",
+      "category": "vim",
+      "description": "只读模式打开文件",
+      "keywords": [
+        "只读",
+        "view",
+        "vim -R"
+      ],
+      "examples": [
+        {
+          "cmd": "vim -R file.txt",
+          "desc": "只读防误写"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "view",
+      "category": "vim",
+      "description": "只读模式查看文件（等同 vim -R）",
+      "keywords": [
+        "只读",
+        "view"
+      ],
+      "examples": [
+        {
+          "cmd": "view file.txt",
+          "desc": "只读查看"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "vim -r",
+      "category": "vim",
+      "description": "恢复交换文件",
+      "keywords": [
+        "恢复",
+        "交换文件",
+        "vim -r"
+      ],
+      "examples": [
+        {
+          "cmd": "vim -r .file.txt.swp",
+          "desc": "崩溃后恢复未保存内容"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "i",
+      "category": "vim",
+      "description": "进入插入模式（光标前）",
+      "keywords": [
+        "插入",
+        "输入",
+        "i"
+      ],
+      "examples": [
+        {
+          "cmd": "i",
+          "desc": "在光标前开始输入"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "a",
+      "category": "vim",
+      "description": "进入插入模式（光标后）",
+      "keywords": [
+        "插入后",
+        "a"
+      ],
+      "examples": [
+        {
+          "cmd": "a",
+          "desc": "在光标后开始输入"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "I",
+      "category": "vim",
+      "description": "在行首（首个非空白）插入",
+      "keywords": [
+        "行首插入",
+        "I"
+      ],
+      "examples": [
+        {
+          "cmd": "I",
+          "desc": "跳到行首非空白处插入"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "A",
+      "category": "vim",
+      "description": "在行尾插入",
+      "keywords": [
+        "行尾插入",
+        "A"
+      ],
+      "examples": [
+        {
+          "cmd": "A",
+          "desc": "跳到行尾插入"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "o",
+      "category": "vim",
+      "description": "在下方新建一行并插入",
+      "keywords": [
+        "新行",
+        "下方",
+        "o"
+      ],
+      "examples": [
+        {
+          "cmd": "o",
+          "desc": "下方开新行输入"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "O",
+      "category": "vim",
+      "description": "在上方新建一行并插入",
+      "keywords": [
+        "新行",
+        "上方",
+        "O"
+      ],
+      "examples": [
+        {
+          "cmd": "O",
+          "desc": "上方开新行输入"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "s",
+      "category": "vim",
+      "description": "删除光标字符并插入",
+      "keywords": [
+        "替换字符",
+        "s"
+      ],
+      "examples": [
+        {
+          "cmd": "s",
+          "desc": "删字符并插入"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "S",
+      "category": "vim",
+      "description": "删除整行并插入",
+      "keywords": [
+        "替换行",
+        "S"
+      ],
+      "examples": [
+        {
+          "cmd": "S",
+          "desc": "删整行并插入"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "S 等同 cc（修改整行）"
+    },
+    {
+      "name": "cc",
+      "category": "vim",
+      "description": "修改整行（删除并插入）",
+      "keywords": [
+        "修改行",
+        "cc"
+      ],
+      "examples": [
+        {
+          "cmd": "cc",
+          "desc": "清空当前行并插入"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "cc 等同 S；与 dd 区别：cc 保留行、进入插入"
+    },
+    {
+      "name": "R",
+      "category": "vim",
+      "description": "进入替换模式（逐字符覆盖）",
+      "keywords": [
+        "替换模式",
+        "R"
+      ],
+      "examples": [
+        {
+          "cmd": "R",
+          "desc": "覆盖输入而非插入"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "R 与 r 区别：R 持续替换，r 只换一个字符"
+    },
+    {
+      "name": "Esc",
+      "category": "vim",
+      "description": "返回普通模式",
+      "keywords": [
+        "退出插入",
+        "普通模式",
+        "Esc"
+      ],
+      "examples": [
+        {
+          "cmd": "Esc",
+          "desc": "从任意模式回到普通模式"
+        },
+        {
+          "cmd": "Ctrl+[",
+          "desc": "Esc 的等价键"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "插入模式下忘了按 Esc 会直接把字母写进文件",
+      "compare": null
+    },
+    {
+      "name": "v",
+      "category": "vim",
+      "description": "进入字符可视化模式",
+      "keywords": [
+        "选择",
+        "可视化",
+        "v"
+      ],
+      "examples": [
+        {
+          "cmd": "v",
+          "desc": "逐字符选择"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "V",
+      "category": "vim",
+      "description": "进入行可视化模式",
+      "keywords": [
+        "行选择",
+        "V"
+      ],
+      "examples": [
+        {
+          "cmd": "V",
+          "desc": "整行选择"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+v",
+      "category": "vim",
+      "description": "进入块（列）可视化模式",
+      "keywords": [
+        "列选择",
+        "块选择",
+        "Ctrl+v"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+v",
+          "desc": "按列选择矩形区域"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": "Windows 下 Ctrl+v 可能被剪贴板占用，可用 Ctrl+q 代替",
+      "compare": null
+    },
+    {
+      "name": "h",
+      "category": "vim",
+      "description": "光标左移",
+      "keywords": [
+        "左移",
+        "h"
+      ],
+      "examples": [
+        {
+          "cmd": "h",
+          "desc": "←"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "j",
+      "category": "vim",
+      "description": "光标下移",
+      "keywords": [
+        "下移",
+        "j"
+      ],
+      "examples": [
+        {
+          "cmd": "j",
+          "desc": "↓"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "k",
+      "category": "vim",
+      "description": "光标上移",
+      "keywords": [
+        "上移",
+        "k"
+      ],
+      "examples": [
+        {
+          "cmd": "k",
+          "desc": "↑"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "l",
+      "category": "vim",
+      "description": "光标右移",
+      "keywords": [
+        "右移",
+        "l"
+      ],
+      "examples": [
+        {
+          "cmd": "l",
+          "desc": "→"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "w（移动）",
+      "category": "vim",
+      "description": "跳到下一个词首",
+      "keywords": [
+        "词首",
+        "移动",
+        "w"
+      ],
+      "examples": [
+        {
+          "cmd": "w",
+          "desc": "下一词开头"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "w 按标点分词；W 按空格分 WORD"
+    },
+    {
+      "name": "W",
+      "category": "vim",
+      "description": "跳到下一个 WORD 首（空白分隔）",
+      "keywords": [
+        "WORD",
+        "W"
+      ],
+      "examples": [
+        {
+          "cmd": "W",
+          "desc": "跳过标点，按空格跳"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "b",
+      "category": "vim",
+      "description": "跳到上一个词首",
+      "keywords": [
+        "上一词",
+        "b"
+      ],
+      "examples": [
+        {
+          "cmd": "b",
+          "desc": "回退一词"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "e",
+      "category": "vim",
+      "description": "跳到词尾",
+      "keywords": [
+        "词尾",
+        "e"
+      ],
+      "examples": [
+        {
+          "cmd": "e",
+          "desc": "到词末尾"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "0",
+      "category": "vim",
+      "description": "跳到行首",
+      "keywords": [
+        "行首",
+        "0"
+      ],
+      "examples": [
+        {
+          "cmd": "0",
+          "desc": "绝对行首"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": "0 到行首；^ 到首个非空白字符"
+    },
+    {
+      "name": "^",
+      "category": "vim",
+      "description": "跳到行首首个非空白字符",
+      "keywords": [
+        "软行首",
+        "^"
+      ],
+      "examples": [
+        {
+          "cmd": "^",
+          "desc": "跳过行首缩进"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "$",
+      "category": "vim",
+      "description": "跳到行尾",
+      "keywords": [
+        "行尾",
+        "$"
+      ],
+      "examples": [
+        {
+          "cmd": "$",
+          "desc": "到行末"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "g_",
+      "category": "vim",
+      "description": "跳到行尾最后一个非空白字符",
+      "keywords": [
+        "行尾非空白",
+        "g_"
+      ],
+      "examples": [
+        {
+          "cmd": "g_",
+          "desc": "到最末非空字符"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "gg",
+      "category": "vim",
+      "description": "跳到文件首行",
+      "keywords": [
+        "文件首",
+        "gg"
+      ],
+      "examples": [
+        {
+          "cmd": "gg",
+          "desc": "到第一行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "G",
+      "category": "vim",
+      "description": "跳到文件尾行",
+      "keywords": [
+        "文件尾",
+        "G"
+      ],
+      "examples": [
+        {
+          "cmd": "G",
+          "desc": "到最后一行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":n",
+      "category": "vim",
+      "description": "跳到第 n 行",
+      "keywords": [
+        "跳行",
+        "行号",
+        ":n"
+      ],
+      "examples": [
+        {
+          "cmd": ":42",
+          "desc": "跳到第 42 行"
+        },
+        {
+          "cmd": "42G",
+          "desc": "等价写法"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "H",
+      "category": "vim",
+      "description": "光标移到屏幕顶部",
+      "keywords": [
+        "屏幕顶",
+        "H"
+      ],
+      "examples": [
+        {
+          "cmd": "H",
+          "desc": "到屏幕第一行"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "M",
+      "category": "vim",
+      "description": "光标移到屏幕中部",
+      "keywords": [
+        "屏幕中",
+        "M"
+      ],
+      "examples": [
+        {
+          "cmd": "M",
+          "desc": "到屏幕中间行"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "L",
+      "category": "vim",
+      "description": "光标移到屏幕底部",
+      "keywords": [
+        "屏幕底",
+        "L"
+      ],
+      "examples": [
+        {
+          "cmd": "L",
+          "desc": "到屏幕最后行"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "%",
+      "category": "vim",
+      "description": "在匹配的括号/引号间跳转",
+      "keywords": [
+        "匹配括号",
+        "%"
+      ],
+      "examples": [
+        {
+          "cmd": "%",
+          "desc": "在 () [] {} 间跳转"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "{",
+      "category": "vim",
+      "description": "跳到上一段落",
+      "keywords": [
+        "上一段",
+        "{"
+      ],
+      "examples": [
+        {
+          "cmd": "{",
+          "desc": "到前一段开头"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "}",
+      "category": "vim",
+      "description": "跳到下一段落",
+      "keywords": [
+        "下一段",
+        "}"
+      ],
+      "examples": [
+        {
+          "cmd": "}",
+          "desc": "到后一段开头"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "(",
+      "category": "vim",
+      "description": "跳到上一句",
+      "keywords": [
+        "上一句",
+        "("
+      ],
+      "examples": [
+        {
+          "cmd": "(",
+          "desc": "到前一句"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ")",
+      "category": "vim",
+      "description": "跳到下一句",
+      "keywords": [
+        "下一句",
+        ")"
+      ],
+      "examples": [
+        {
+          "cmd": ")",
+          "desc": "到后一句"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+f",
+      "category": "vim",
+      "description": "向下翻一页",
+      "keywords": [
+        "下页",
+        "Ctrl+f"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+f",
+          "desc": "整页下翻"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+b",
+      "category": "vim",
+      "description": "向上翻一页",
+      "keywords": [
+        "上页",
+        "Ctrl+b"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+b",
+          "desc": "整页上翻"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+d",
+      "category": "vim",
+      "description": "向下翻半页",
+      "keywords": [
+        "下半页",
+        "Ctrl+d"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+d",
+          "desc": "半页下翻"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+u",
+      "category": "vim",
+      "description": "向上翻半页",
+      "keywords": [
+        "上半页",
+        "Ctrl+u"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+u",
+          "desc": "半页上翻"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zz",
+      "category": "vim",
+      "description": "把当前行滚到屏幕中央",
+      "keywords": [
+        "居中",
+        "zz"
+      ],
+      "examples": [
+        {
+          "cmd": "zz",
+          "desc": "当前行居中"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "fx",
+      "category": "vim",
+      "description": "在当前行查找字符 x（向后）",
+      "keywords": [
+        "查找字符",
+        "fx"
+      ],
+      "examples": [
+        {
+          "cmd": "fa",
+          "desc": "跳到本行下一个 a"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Fx",
+      "category": "vim",
+      "description": "在当前行查找字符 x（向前）",
+      "keywords": [
+        "向前查找字符",
+        "Fx"
+      ],
+      "examples": [
+        {
+          "cmd": "Fa",
+          "desc": "跳到本行上一个 a"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "tx",
+      "category": "vim",
+      "description": "跳到字符 x 之前（向后）",
+      "keywords": [
+        "前移字符",
+        "tx"
+      ],
+      "examples": [
+        {
+          "cmd": "ta",
+          "desc": "停在 a 前"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ";",
+      "category": "vim",
+      "description": "重复上次字符查找",
+      "keywords": [
+        "重复查找",
+        ";"
+      ],
+      "examples": [
+        {
+          "cmd": ";",
+          "desc": "同向再找一次"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "*",
+      "category": "vim",
+      "description": "搜索光标下的单词（向下）",
+      "keywords": [
+        "搜索单词",
+        "*"
+      ],
+      "examples": [
+        {
+          "cmd": "*",
+          "desc": "查找当前词"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "#",
+      "category": "vim",
+      "description": "搜索光标下的单词（向上）",
+      "keywords": [
+        "向上搜索单词",
+        "#"
+      ],
+      "examples": [
+        {
+          "cmd": "#",
+          "desc": "向上找当前词"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+o",
+      "category": "vim",
+      "description": "在跳转历史中后退",
+      "keywords": [
+        "跳转后退",
+        "Ctrl+o"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+o",
+          "desc": "回到上次光标位置"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+i",
+      "category": "vim",
+      "description": "在跳转历史中前进",
+      "keywords": [
+        "跳转前进",
+        "Ctrl+i"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+i",
+          "desc": "前进到下一处光标位置"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "``",
+      "category": "vim",
+      "description": "跳回上次光标位置",
+      "keywords": [
+        "上次位置",
+        "``"
+      ],
+      "examples": [
+        {
+          "cmd": "``",
+          "desc": "回到上一次停留处"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "x",
+      "category": "vim",
+      "description": "删除光标下字符",
+      "keywords": [
+        "删除字符",
+        "x"
+      ],
+      "examples": [
+        {
+          "cmd": "x",
+          "desc": "删一个字符"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "X",
+      "category": "vim",
+      "description": "删除光标前字符",
+      "keywords": [
+        "删除前字符",
+        "X"
+      ],
+      "examples": [
+        {
+          "cmd": "X",
+          "desc": "删光标左边字符"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dw",
+      "category": "vim",
+      "description": "删除一个词",
+      "keywords": [
+        "删除词",
+        "dw"
+      ],
+      "examples": [
+        {
+          "cmd": "dw",
+          "desc": "删到词尾"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dd（删行）",
+      "category": "vim",
+      "description": "删除（剪切）整行",
+      "keywords": [
+        "删除行",
+        "删行",
+        "dd"
+      ],
+      "examples": [
+        {
+          "cmd": "dd",
+          "desc": "删一行（可 p 粘贴）"
+        },
+        {
+          "cmd": "3dd",
+          "desc": "删 3 行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "dd 实际是剪切，删后可用 p 粘贴；误删用 u 撤销",
+      "compare": null
+    },
+    {
+      "name": "D",
+      "category": "vim",
+      "description": "删除从光标到行尾",
+      "keywords": [
+        "删除到行尾",
+        "D"
+      ],
+      "examples": [
+        {
+          "cmd": "D",
+          "desc": "清空光标到行末"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "D 等同 d$；d0 删到行首"
+    },
+    {
+      "name": "cw",
+      "category": "vim",
+      "description": "修改一个词（删除并插入）",
+      "keywords": [
+        "修改词",
+        "cw"
+      ],
+      "examples": [
+        {
+          "cmd": "cw",
+          "desc": "改一个词"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "C",
+      "category": "vim",
+      "description": "修改从光标到行尾",
+      "keywords": [
+        "修改到行尾",
+        "C"
+      ],
+      "examples": [
+        {
+          "cmd": "C",
+          "desc": "改光标到行末"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "r",
+      "category": "vim",
+      "description": "替换单个字符",
+      "keywords": [
+        "替换字符",
+        "r"
+      ],
+      "examples": [
+        {
+          "cmd": "rx",
+          "desc": "把光标字符换成 x"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": "r 只换一个字符；R 进入持续替换模式"
+    },
+    {
+      "name": "J",
+      "category": "vim",
+      "description": "把下一行合并到当前行",
+      "keywords": [
+        "合并行",
+        "J"
+      ],
+      "examples": [
+        {
+          "cmd": "J",
+          "desc": "两行合成一行"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "~",
+      "category": "vim",
+      "description": "切换光标字符大小写",
+      "keywords": [
+        "大小写",
+        "~"
+      ],
+      "examples": [
+        {
+          "cmd": "~",
+          "desc": "反转大小写"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "gu",
+      "category": "vim",
+      "description": "将文本转为小写",
+      "keywords": [
+        "转小写",
+        "gu"
+      ],
+      "examples": [
+        {
+          "cmd": "guw",
+          "desc": "当前词转小写"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "gU",
+      "category": "vim",
+      "description": "将文本转为大写",
+      "keywords": [
+        "转大写",
+        "gU"
+      ],
+      "examples": [
+        {
+          "cmd": "gUw",
+          "desc": "当前词转大写"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ".",
+      "category": "vim",
+      "description": "重复上一次修改",
+      "keywords": [
+        "重复",
+        "."
+      ],
+      "examples": [
+        {
+          "cmd": ".",
+          "desc": "再执行一次上次编辑"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "配合动作使用最强，如 dw. 连续删词",
+      "compare": null
+    },
+    {
+      "name": "u",
+      "category": "vim",
+      "description": "撤销",
+      "keywords": [
+        "撤销",
+        "u"
+      ],
+      "examples": [
+        {
+          "cmd": "u",
+          "desc": "撤销一步"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+r",
+      "category": "vim",
+      "description": "重做（反撤销）",
+      "keywords": [
+        "重做",
+        "Ctrl+r"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+r",
+          "desc": "恢复被撤销的改动"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "U",
+      "category": "vim",
+      "description": "撤销当前行的全部改动",
+      "keywords": [
+        "撤销整行",
+        "U"
+      ],
+      "examples": [
+        {
+          "cmd": "U",
+          "desc": "还原本行到最初"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "yy",
+      "category": "vim",
+      "description": "复制（yank）整行",
+      "keywords": [
+        "复制行",
+        "yy"
+      ],
+      "examples": [
+        {
+          "cmd": "yy",
+          "desc": "复制一行"
+        },
+        {
+          "cmd": "3yy",
+          "desc": "复制 3 行"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "Y 在部分配置等同 yy；y 是复制操作符",
+      "compare": null
+    },
+    {
+      "name": "yw",
+      "category": "vim",
+      "description": "复制一个词",
+      "keywords": [
+        "复制词",
+        "yw"
+      ],
+      "examples": [
+        {
+          "cmd": "yw",
+          "desc": "复制光标所在词"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "y$",
+      "category": "vim",
+      "description": "复制到行尾",
+      "keywords": [
+        "复制到行尾",
+        "y$"
+      ],
+      "examples": [
+        {
+          "cmd": "y$",
+          "desc": "复制光标到行末"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "p",
+      "category": "vim",
+      "description": "粘贴到光标后/下方",
+      "keywords": [
+        "粘贴",
+        "p"
+      ],
+      "examples": [
+        {
+          "cmd": "p",
+          "desc": "在光标后/下一行粘贴"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "P",
+      "category": "vim",
+      "description": "粘贴到光标前/上方",
+      "keywords": [
+        "粘贴前",
+        "P"
+      ],
+      "examples": [
+        {
+          "cmd": "P",
+          "desc": "在光标前/上一行粘贴"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "diw",
+      "category": "vim",
+      "description": "删除光标所在词（不含空格）",
+      "keywords": [
+        "删词",
+        "diw"
+      ],
+      "examples": [
+        {
+          "cmd": "diw",
+          "desc": "删除 inner word"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": "文本对象：d/c/y + i/a + 对象；i 不含边界，a 含边界",
+      "compare": null
+    },
+    {
+      "name": "ciw",
+      "category": "vim",
+      "description": "修改光标所在词",
+      "keywords": [
+        "改词",
+        "ciw"
+      ],
+      "examples": [
+        {
+          "cmd": "ciw",
+          "desc": "清空当前词并输入"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "di\"",
+      "category": "vim",
+      "description": "删除引号内的文本",
+      "keywords": [
+        "删引号内",
+        "di\""
+      ],
+      "examples": [
+        {
+          "cmd": "di\"",
+          "desc": "删除 \"...\" 内容"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ci\"",
+      "category": "vim",
+      "description": "修改引号内的文本",
+      "keywords": [
+        "改引号内",
+        "ci\""
+      ],
+      "examples": [
+        {
+          "cmd": "ci\"",
+          "desc": "改 \"...\" 内容"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "di(",
+      "category": "vim",
+      "description": "删除括号内的文本",
+      "keywords": [
+        "删括号内",
+        "di("
+      ],
+      "examples": [
+        {
+          "cmd": "di(",
+          "desc": "删除 (...) 内容"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "dit",
+      "category": "vim",
+      "description": "删除标签内的文本",
+      "keywords": [
+        "删标签内",
+        "dit"
+      ],
+      "examples": [
+        {
+          "cmd": "dit",
+          "desc": "删除 <tag>...</tag> 内容"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "/pattern",
+      "category": "vim",
+      "description": "向下搜索模式（支持正则）",
+      "keywords": [
+        "搜索",
+        "查找",
+        "/pattern"
+      ],
+      "examples": [
+        {
+          "cmd": "/foo",
+          "desc": "向下找 foo"
+        },
+        {
+          "cmd": "/the\\<",
+          "desc": "正则匹配词首"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "n 下一个，N 上一个；:noh 取消高亮",
+      "compare": null
+    },
+    {
+      "name": "?pattern",
+      "category": "vim",
+      "description": "向上搜索模式",
+      "keywords": [
+        "向上搜索",
+        "?pattern"
+      ],
+      "examples": [
+        {
+          "cmd": "?foo",
+          "desc": "向上找 foo"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "n",
+      "category": "vim",
+      "description": "跳到下一个搜索匹配",
+      "keywords": [
+        "下一个匹配",
+        "n"
+      ],
+      "examples": [
+        {
+          "cmd": "n",
+          "desc": "同向下一处"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "N",
+      "category": "vim",
+      "description": "跳到上一个搜索匹配",
+      "keywords": [
+        "上一个匹配",
+        "N"
+      ],
+      "examples": [
+        {
+          "cmd": "N",
+          "desc": "反向上一处"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":%s",
+      "category": "vim",
+      "description": "全局查找替换",
+      "keywords": [
+        "替换",
+        "查找替换",
+        ":%s"
+      ],
+      "examples": [
+        {
+          "cmd": ":%s/foo/bar/g",
+          "desc": "全文把 foo 换成 bar"
+        },
+        {
+          "cmd": ":%s/foo/bar/gc",
+          "desc": "每处确认"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "日常",
+      "pitfalls": "漏写 g 只换每行首个；c 逐个确认更安全",
+      "compare": null
+    },
+    {
+      "name": ":s",
+      "category": "vim",
+      "description": "当前行查找替换",
+      "keywords": [
+        "行内替换",
+        ":s"
+      ],
+      "examples": [
+        {
+          "cmd": ":s/old/new/g",
+          "desc": "本行替换"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":5,20s",
+      "category": "vim",
+      "description": "在指定行范围替换",
+      "keywords": [
+        "区间替换",
+        ":5,20s"
+      ],
+      "examples": [
+        {
+          "cmd": ":5,20s/old/new/g",
+          "desc": "第 5–20 行替换"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set ic",
+      "category": "vim",
+      "description": "搜索忽略大小写",
+      "keywords": [
+        "忽略大小写",
+        ":set ic"
+      ],
+      "examples": [
+        {
+          "cmd": ":set ic",
+          "desc": "搜索不区分大小写"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set hls",
+      "category": "vim",
+      "description": "高亮搜索结果",
+      "keywords": [
+        "高亮搜索",
+        ":set hls"
+      ],
+      "examples": [
+        {
+          "cmd": ":set hls",
+          "desc": "开启搜索高亮"
+        },
+        {
+          "cmd": ":noh",
+          "desc": "临时关闭高亮"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":w",
+      "category": "vim",
+      "description": "保存文件",
+      "keywords": [
+        "保存",
+        "写盘",
+        ":w"
+      ],
+      "examples": [
+        {
+          "cmd": ":w",
+          "desc": "保存"
+        },
+        {
+          "cmd": ":w new.txt",
+          "desc": "另存为"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":q",
+      "category": "vim",
+      "description": "退出",
+      "keywords": [
+        "退出",
+        ":q"
+      ],
+      "examples": [
+        {
+          "cmd": ":q",
+          "desc": "退出（有改动会报错）"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":q!",
+      "category": "vim",
+      "description": "强制退出不保存",
+      "keywords": [
+        "强制退出",
+        ":q!"
+      ],
+      "examples": [
+        {
+          "cmd": ":q!",
+          "desc": "丢弃改动退出"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": "会丢失所有未保存改动，慎用",
+      "compare": null
+    },
+    {
+      "name": ":wq",
+      "category": "vim",
+      "description": "保存并退出",
+      "keywords": [
+        "保存退出",
+        ":wq"
+      ],
+      "examples": [
+        {
+          "cmd": ":wq",
+          "desc": "保存后退出"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": ":wq / :x / ZZ 都保存退出；:x 仅在改动时写盘"
+    },
+    {
+      "name": ":x",
+      "category": "vim",
+      "description": "保存并退出（仅改动时写盘）",
+      "keywords": [
+        "保存退出",
+        ":x"
+      ],
+      "examples": [
+        {
+          "cmd": ":x",
+          "desc": "等同 ZZ"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": ":x 比 :wq 更优：未改动不更新 mtime"
+    },
+    {
+      "name": "ZZ",
+      "category": "vim",
+      "description": "普通模式下保存并退出",
+      "keywords": [
+        "保存退出",
+        "ZZ"
+      ],
+      "examples": [
+        {
+          "cmd": "ZZ",
+          "desc": "按两次 Z 退出"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":e",
+      "category": "vim",
+      "description": "打开/切换到另一个文件",
+      "keywords": [
+        "打开文件",
+        ":e"
+      ],
+      "examples": [
+        {
+          "cmd": ":e other.txt",
+          "desc": "切换到另一文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":e!",
+      "category": "vim",
+      "description": "从磁盘重新加载当前文件",
+      "keywords": [
+        "重新加载",
+        ":e!"
+      ],
+      "examples": [
+        {
+          "cmd": ":e!",
+          "desc": "放弃改动重读磁盘"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":qa",
+      "category": "vim",
+      "description": "退出所有缓冲区",
+      "keywords": [
+        "退出全部",
+        ":qa"
+      ],
+      "examples": [
+        {
+          "cmd": ":qa",
+          "desc": "关闭所有"
+        },
+        {
+          "cmd": ":qa!",
+          "desc": "强制关闭全部"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":ls",
+      "category": "vim",
+      "description": "列出缓冲区",
+      "keywords": [
+        "缓冲区列表",
+        ":ls"
+      ],
+      "examples": [
+        {
+          "cmd": ":ls",
+          "desc": "查看已打开文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":bn",
+      "category": "vim",
+      "description": "切换到下一个缓冲区",
+      "keywords": [
+        "下一缓冲区",
+        ":bn"
+      ],
+      "examples": [
+        {
+          "cmd": ":bn",
+          "desc": "下一个文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":bp",
+      "category": "vim",
+      "description": "切换到上一个缓冲区",
+      "keywords": [
+        "上一缓冲区",
+        ":bp"
+      ],
+      "examples": [
+        {
+          "cmd": ":bp",
+          "desc": "上一个文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":bd",
+      "category": "vim",
+      "description": "关闭当前缓冲区",
+      "keywords": [
+        "关闭缓冲区",
+        ":bd"
+      ],
+      "examples": [
+        {
+          "cmd": ":bd",
+          "desc": "关掉当前文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":sp",
+      "category": "vim",
+      "description": "横向分屏",
+      "keywords": [
+        "水平分屏",
+        ":sp"
+      ],
+      "examples": [
+        {
+          "cmd": ":sp",
+          "desc": "上下分屏同文件"
+        },
+        {
+          "cmd": ":sp new.txt",
+          "desc": "分屏打开新文件"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":vsp",
+      "category": "vim",
+      "description": "纵向分屏",
+      "keywords": [
+        "垂直分屏",
+        ":vsp"
+      ],
+      "examples": [
+        {
+          "cmd": ":vsp",
+          "desc": "左右分屏"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+w",
+      "category": "vim",
+      "description": "窗口切换/调整（前缀键）",
+      "keywords": [
+        "窗口切换",
+        "Ctrl+w"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+w h/j/k/l",
+          "desc": "四向切换窗口"
+        },
+        {
+          "cmd": "Ctrl+w =",
+          "desc": "等分窗口"
+        },
+        {
+          "cmd": "Ctrl+w +",
+          "desc": "增高"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": "所有窗口操作都以 Ctrl+w 开头；误按会触发切换",
+      "compare": null
+    },
+    {
+      "name": ":tabnew",
+      "category": "vim",
+      "description": "新建标签页",
+      "keywords": [
+        "新标签",
+        ":tabnew"
+      ],
+      "examples": [
+        {
+          "cmd": ":tabnew",
+          "desc": "开新标签"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "gt",
+      "category": "vim",
+      "description": "切换到下一个标签页",
+      "keywords": [
+        "下一标签",
+        "gt"
+      ],
+      "examples": [
+        {
+          "cmd": "gt",
+          "desc": "下一标签"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "gT",
+      "category": "vim",
+      "description": "切换到上一个标签页",
+      "keywords": [
+        "上一标签",
+        "gT"
+      ],
+      "examples": [
+        {
+          "cmd": "gT",
+          "desc": "上一标签"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "za",
+      "category": "vim",
+      "description": "切换折叠展开/收起",
+      "keywords": [
+        "折叠",
+        "za"
+      ],
+      "examples": [
+        {
+          "cmd": "za",
+          "desc": "开/关当前折叠"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zo",
+      "category": "vim",
+      "description": "打开折叠",
+      "keywords": [
+        "展开折叠",
+        "zo"
+      ],
+      "examples": [
+        {
+          "cmd": "zo",
+          "desc": "展开一层"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zc",
+      "category": "vim",
+      "description": "关闭折叠",
+      "keywords": [
+        "收起折叠",
+        "zc"
+      ],
+      "examples": [
+        {
+          "cmd": "zc",
+          "desc": "收起一层"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zR",
+      "category": "vim",
+      "description": "展开全部折叠",
+      "keywords": [
+        "全部展开",
+        "zR"
+      ],
+      "examples": [
+        {
+          "cmd": "zR",
+          "desc": "递归展开"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "zM",
+      "category": "vim",
+      "description": "收起全部折叠",
+      "keywords": [
+        "全部收起",
+        "zM"
+      ],
+      "examples": [
+        {
+          "cmd": "zM",
+          "desc": "递归收起"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "qa",
+      "category": "vim",
+      "description": "录制宏到寄存器 a",
+      "keywords": [
+        "录制宏",
+        "qa"
+      ],
+      "examples": [
+        {
+          "cmd": "qa ... q",
+          "desc": "录动作到 a"
+        },
+        {
+          "cmd": "@a",
+          "desc": "回放 a"
+        },
+        {
+          "cmd": "20@a",
+          "desc": "回放 20 次"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": "录制以 q 开始、以 q 结束；注意 q 也是退出键",
+      "compare": null
+    },
+    {
+      "name": "@a",
+      "category": "vim",
+      "description": "回放寄存器 a 中的宏",
+      "keywords": [
+        "回放宏",
+        "@a"
+      ],
+      "examples": [
+        {
+          "cmd": "@a",
+          "desc": "执行宏 a"
+        },
+        {
+          "cmd": "@@",
+          "desc": "重复上次宏"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "ma",
+      "category": "vim",
+      "description": "设置标记 a",
+      "keywords": [
+        "设置标记",
+        "ma"
+      ],
+      "examples": [
+        {
+          "cmd": "ma",
+          "desc": "在当前位置记 a"
+        },
+        {
+          "cmd": "`a",
+          "desc": "跳回标记 a"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+n",
+      "category": "vim",
+      "description": "插入模式单词补全（下一个）",
+      "keywords": [
+        "补全",
+        "Ctrl+n"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+n",
+          "desc": "向下补全单词"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "Ctrl+p",
+      "category": "vim",
+      "description": "插入模式单词补全（上一个）",
+      "keywords": [
+        "补全",
+        "Ctrl+p"
+      ],
+      "examples": [
+        {
+          "cmd": "Ctrl+p",
+          "desc": "向上补全单词"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set nu",
+      "category": "vim",
+      "description": "显示行号",
+      "keywords": [
+        "行号",
+        ":set nu"
+      ],
+      "examples": [
+        {
+          "cmd": ":set nu",
+          "desc": "显示行号"
+        },
+        {
+          "cmd": ":set nonu",
+          "desc": "隐藏行号"
+        }
+      ],
+      "frequency": "高",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set rnu",
+      "category": "vim",
+      "description": "显示相对行号",
+      "keywords": [
+        "相对行号",
+        ":set rnu"
+      ],
+      "examples": [
+        {
+          "cmd": ":set rnu",
+          "desc": "配合 5j/3k 跳转更方便"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":syntax on",
+      "category": "vim",
+      "description": "开启语法高亮",
+      "keywords": [
+        "语法高亮",
+        ":syntax on"
+      ],
+      "examples": [
+        {
+          "cmd": ":syntax on",
+          "desc": "彩色显示代码"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set ai",
+      "category": "vim",
+      "description": "开启自动缩进",
+      "keywords": [
+        "自动缩进",
+        ":set ai"
+      ],
+      "examples": [
+        {
+          "cmd": ":set ai",
+          "desc": "新行沿用缩进"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set list",
+      "category": "vim",
+      "description": "显示不可见字符（tab/行尾）",
+      "keywords": [
+        "不可见字符",
+        ":set list"
+      ],
+      "examples": [
+        {
+          "cmd": ":set list",
+          "desc": "显示制表符与行尾符"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":set wrap",
+      "category": "vim",
+      "description": "开启长行自动换行显示",
+      "keywords": [
+        "换行显示",
+        ":set wrap"
+      ],
+      "examples": [
+        {
+          "cmd": ":set wrap",
+          "desc": "长行折行"
+        },
+        {
+          "cmd": ":set nowrap",
+          "desc": "不折行"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":retab",
+      "category": "vim",
+      "description": "按当前设置转换 tab 与空格",
+      "keywords": [
+        "转换制表符",
+        ":retab"
+      ],
+      "examples": [
+        {
+          "cmd": ":retab",
+          "desc": "统一缩进风格"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":r",
+      "category": "vim",
+      "description": "读入文件内容到当前缓冲",
+      "keywords": [
+        "读入文件",
+        ":r"
+      ],
+      "examples": [
+        {
+          "cmd": ":r other.txt",
+          "desc": "把文件内容插入光标下"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":!cmd",
+      "category": "vim",
+      "description": "在 Vim 内执行外部 shell 命令",
+      "keywords": [
+        "执行命令",
+        ":!cmd"
+      ],
+      "examples": [
+        {
+          "cmd": ":!ls",
+          "desc": "查看目录"
+        },
+        {
+          "cmd": ":r !date",
+          "desc": "插入命令输出"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":%!",
+      "category": "vim",
+      "description": "用外部命令过滤全部内容",
+      "keywords": [
+        "外部过滤",
+        ":%!"
+      ],
+      "examples": [
+        {
+          "cmd": ":%!sort",
+          "desc": "全文排序"
+        },
+        {
+          "cmd": ":%!grep foo",
+          "desc": "只保留含 foo 的行"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": ":help",
+      "category": "vim",
+      "description": "打开内置帮助",
+      "keywords": [
+        "帮助",
+        ":help"
+      ],
+      "examples": [
+        {
+          "cmd": ":help :w",
+          "desc": "查某命令帮助"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
+      "pitfalls": null,
+      "compare": null
+    },
+    {
+      "name": "vimtutor",
+      "category": "vim",
+      "description": "启动交互式 Vim 教程",
+      "keywords": [
+        "教程",
+        "vimtutor"
+      ],
+      "examples": [
+        {
+          "cmd": "vimtutor",
+          "desc": "终端输入学习基础"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "入门",
       "pitfalls": null,
       "compare": null
     },
