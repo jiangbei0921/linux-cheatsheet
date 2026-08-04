@@ -396,7 +396,7 @@
     for (var i = 0; i < tokens.length; i++) {
       s = (s ? s + " " : "") + tokens[i];
       var c = findCmdByName(s);
-      if (c && (explainGroup === "all" || groupOf(c) === explainGroup)) { best = c; bestLen = i + 1; }
+      if (c) { best = c; bestLen = i + 1; }
     }
     if (!best) return { cmd: null, args: tokens };
     return { cmd: best, args: tokens.slice(bestLen) };
@@ -523,9 +523,6 @@
           "<h2>指令含义查询</h2>" +
           "<p>粘贴或输入一条完整命令，例如 <code>find . -name \"*.log\" -delete</code>、<code>chmod 755 app.sh</code> 或 <code>top -b -n 1</code>，查看它每一步在做什么、以及各参数的作用。</p>" +
         "</div>" +
-        '<div class="grp-seg" id="explainSeg">' +
-          segBtn("all", explainGroup) + segBtn("linux", explainGroup) +
-        "</div>" +
         '<div class="explain-bar">' +
           '<div class="explain-field"><input id="explainInput" class="explain-input" type="text" autocomplete="off" spellcheck="false" placeholder="在此输入一条命令，如 ls -lah /var/log" /></div>' +
           '<button id="explainBtn" class="btn-primary" type="button">查询含义</button>' +
@@ -537,7 +534,6 @@
     var run = function () { explainRun($input.value); };
     $btn.onclick = run;
     $input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
-    bindGroupSeg("explainSeg", function (g) { explainGroup = g; explainRun($input.value); });
     $input.focus();
   }
   function explainRun(raw) {
