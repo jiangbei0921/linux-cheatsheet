@@ -871,7 +871,9 @@
     });
   }
   function grpPickBtn(g, title, sub) {
+    var icon = g === "linux" ? "🐧" : "🔀";
     return '<button class="grp-pick-btn ' + g + '" data-g="' + g + '">' +
+      '<span class="gp-icon">' + icon + '</span>' +
       '<span class="gp-title">' + title + '</span><span class="gp-sub">' + sub + '</span></button>';
   }
 
