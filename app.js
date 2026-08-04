@@ -367,7 +367,7 @@
   }
 
   /* ---------- 指令含义查询 ---------- */
-  var explainGroup = "all", genGroup = "all";
+  var explainGroup = "linux", genGroup = "linux";
   function segBtn(g, cur) {
     var label = g === "all" ? "全部" : g === "linux" ? "Linux" : "Git";
     return '<button type="button" class="seg-btn' + (g === cur ? " on" : "") + '" data-group="' + g + '">' + label + "</button>";
@@ -736,9 +736,6 @@
           "<h2>任务 → 指令生成</h2>" +
           "<p>用一句话描述你想完成的任务，例如「删除当前目录所有 .log 文件」「把本地修改提交并推送到远程」，系统会从全库命令中匹配最相关的指令，并给出可直接执行的示例。</p>" +
         "</div>" +
-        '<div class="grp-seg" id="genSeg">' +
-          segBtn("all", genGroup) + segBtn("linux", genGroup) +
-        "</div>" +
         '<div class="generate-bar">' +
           '<div class="generate-field"><input id="genInput" class="generate-input" type="text" autocomplete="off" spellcheck="false" placeholder="描述你的任务，例如：查找包含 error 的日志文件" /></div>' +
           '<button id="genBtn" class="btn-primary" type="button">生成指令</button>' +
@@ -761,7 +758,6 @@
     Array.prototype.forEach.call($content.querySelectorAll(".gen-chip"), function (ch) {
       ch.onclick = function () { $input.value = ch.getAttribute("data-task"); generateRun($input.value); };
     });
-    bindGroupSeg("genSeg", function (g) { genGroup = g; generateRun($input.value); });
     $input.focus();
   }
   function generateRun(raw) {
@@ -778,7 +774,6 @@
     var scored = idx.map(function (item) {
       return { item: item, score: genScore(item, qBg, qLower, qTokens) };
     }).filter(function (x) { return x.score > 0; })
-      .filter(function (x) { return genGroup === "all" || groupOf(x.item.c) === genGroup; })
       .sort(function (a, b) { return b.score - a.score; })
       .slice(0, 6);
     if (!scored.length) {
