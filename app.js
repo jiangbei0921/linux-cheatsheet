@@ -1,4 +1,4 @@
-/* Linux & Git 命令速查 —— 前端逻辑（纯原生，无依赖，支持 file:// 双击打开） */
+/* Linux 命令速查 —— 前端逻辑（纯原生，无依赖，支持 file:// 双击打开） */
 (function () {
   "use strict";
 
@@ -126,7 +126,7 @@
   }
 
   function renderHome(list) {
-    var groups = state.group === "all" ? ["linux", "git"] : [state.group];
+    var groups = state.group === "all" ? ["linux"] : [state.group];
 
     var html = '<section class="hero">' +
       '<div class="chips" id="chips">' +
@@ -521,13 +521,13 @@
       '<section class="explain">' +
         '<div class="explain-head">' +
           "<h2>指令含义查询</h2>" +
-          "<p>粘贴或输入一条完整命令，例如 <code>git commit -m \"init\"</code>、<code>find . -name \"*.log\" -delete</code> 或 <code>chmod 755 app.sh</code>，查看它每一步在做什么、以及各参数的作用。</p>" +
+          "<p>粘贴或输入一条完整命令，例如 <code>find . -name \"*.log\" -delete</code>、<code>chmod 755 app.sh</code> 或 <code>top -b -n 1</code>，查看它每一步在做什么、以及各参数的作用。</p>" +
         "</div>" +
         '<div class="grp-seg" id="explainSeg">' +
-          segBtn("all", explainGroup) + segBtn("linux", explainGroup) + segBtn("git", explainGroup) +
+          segBtn("all", explainGroup) + segBtn("linux", explainGroup) +
         "</div>" +
         '<div class="explain-bar">' +
-          '<div class="explain-field"><input id="explainInput" class="explain-input" type="text" autocomplete="off" spellcheck="false" placeholder="在此输入一条命令，如 git reset --hard HEAD~1" /></div>' +
+          '<div class="explain-field"><input id="explainInput" class="explain-input" type="text" autocomplete="off" spellcheck="false" placeholder="在此输入一条命令，如 ls -lah /var/log" /></div>' +
           '<button id="explainBtn" class="btn-primary" type="button">查询含义</button>' +
         "</div>" +
         '<div id="explainResult" class="explain-result"></div>' +
@@ -737,7 +737,7 @@
           "<p>用一句话描述你想完成的任务，例如「删除当前目录所有 .log 文件」「把本地修改提交并推送到远程」，系统会从全库命令中匹配最相关的指令，并给出可直接执行的示例。</p>" +
         "</div>" +
         '<div class="grp-seg" id="genSeg">' +
-          segBtn("all", genGroup) + segBtn("linux", genGroup) + segBtn("git", genGroup) +
+          segBtn("all", genGroup) + segBtn("linux", genGroup) +
         "</div>" +
         '<div class="generate-bar">' +
           '<div class="generate-field"><input id="genInput" class="generate-input" type="text" autocomplete="off" spellcheck="false" placeholder="描述你的任务，例如：查找包含 error 的日志文件" /></div>' +
@@ -871,7 +871,6 @@
       '<p>不打选择题——用「自测清单」逐条自评，或用「实战任务」在场景里手写命令，真正测出你会不会。</p></div>' +
       '<div class="grp-pick">' +
         grpPickBtn("linux", "Linux 自测", "Linux（含 Vim）命令") +
-        grpPickBtn("git", "Git 自测", "Git 命令") +
       '</div>' +
       '<div class="mod-note">两种模式均纯本地运行，无需联网或 Key：<b>自测清单</b>帮你生成掌握度地图；<b>实战任务</b>给出中文场景，由你手写命令并即时校验。</div>' +
       '</div>';
@@ -1201,10 +1200,9 @@
       : '<div class="mod-note warn">尚未配置 API Key，点击右上角 ⚙ 设置后开始。</div>';
     $content.innerHTML = '<div class="mod-home">' +
       '<div class="mod-head"><h2>AI 模拟面试</h2>' +
-      '<p>大模型扮演面试官，围绕 Linux / Git 实时追问。需你自带 LLM API Key（浏览器直连，Key 仅发往对应服务商，站点不收集）。</p></div>' +
+      '<p>大模型扮演面试官，围绕 Linux 实时追问。需你自带 LLM API Key（浏览器直连，Key 仅发往对应服务商，站点不收集）。</p></div>' +
       '<div class="grp-pick">' +
         grpPickBtn("linux", "Linux 面试", "命令行 / 系统 / Vim 方向") +
-        grpPickBtn("git", "Git 面试", "版本控制 / 协作方向") +
       "</div>" + note + "</div>";
     Array.prototype.forEach.call($content.querySelectorAll(".grp-pick-btn"), function (b) {
       b.onclick = function () { startInterview(b.getAttribute("data-g")); };
