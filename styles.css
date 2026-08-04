@@ -664,6 +664,71 @@ body {
 .copy-btn.done { color: #86efac; border-color: rgba(74, 222, 128, 0.5); background: rgba(74, 222, 128, 0.12); }
 .ex-desc { padding: 10px 14px; font-size: 14px; color: var(--ink-secondary); background: var(--surface-subtle); }
 
+/* 执行示例与输出解释 */
+.sample-block { display: flex; flex-direction: column; gap: var(--space-4); }
+.sample-term {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--code-bg);
+  box-shadow: var(--shadow-sm);
+}
+.sample-term-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sample-term-bar .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.sample-term-bar .dot.r { background: #ff5f56; }
+.sample-term-bar .dot.y { background: #ffbd2e; }
+.sample-term-bar .dot.g { background: #27c93f; }
+.sample-term-title {
+  margin-left: 8px;
+  font-family: "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.55);
+  letter-spacing: 0.04em;
+}
+.sample-output {
+  margin: 0;
+  padding: 16px 18px;
+  font-family: "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--code-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+.sample-output .prompt { color: #34d399; font-weight: 700; }
+.sample-output .cmd-line { color: #f8fafc; }
+.sample-output .out-line { color: var(--code-text); }
+.sample-explain {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  background: var(--surface);
+}
+.sample-explain-head {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+  margin-bottom: 8px;
+}
+.sample-explain p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-secondary);
+}
+.sample-explain p:last-child { margin-bottom: 0; }
+
 /* 选项速查表 */
 .opt-table {
   border: 1px solid var(--line);

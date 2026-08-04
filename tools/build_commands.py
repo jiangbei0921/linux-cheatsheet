@@ -16,6 +16,7 @@ if HERE not in sys.path:
     sys.path.insert(0, HERE)
 from command_options import OPTIONS  # noqa: E402
 from command_intros import INTROS, PITFALLS, COMPARES  # noqa: E402
+from command_outputs import OUTPUTS  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
 DATA_DIR = os.path.join(ROOT, "data")
@@ -57,6 +58,7 @@ CATEGORIES = [
 
 def c(name, cat, desc, kws, ex, freq, diff, pit=None, cmp=None):
     opts = OPTIONS.get(name)
+    samp = OUTPUTS.get(name)
     return {
         "name": name,
         "category": cat,
@@ -70,6 +72,9 @@ def c(name, cat, desc, kws, ex, freq, diff, pit=None, cmp=None):
         "options": [
             {"flag": o[0], "default": o[1], "desc": o[2]} for o in opts
         ] if opts else None,
+        "sample": (
+            {"output": samp[0], "explain": samp[1]} if samp else None
+        ),
     }
 
 

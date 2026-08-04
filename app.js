@@ -20,6 +20,24 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
   function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\$]/g, "\\$&"); }
+  // 将多行文本转为 <p> 段落（按换行拆分，空行忽略）
+  function paras(s) {
+    return String(s == null ? "" : s).split("\n").map(function (line) {
+      var t = line.trim();
+      return t ? "<p>" + esc(line) + "</p>" : "";
+    }).join("");
+  }
+  // 终端输出：转义后高亮 $ 提示符与输入命令行
+  function renderSampleOutput(text) {
+    return String(text == null ? "" : text).split("\n").map(function (line) {
+      var safe = esc(line);
+      if (/^\s*\$ /.test(line)) {
+        var html = safe.replace(/^(\s*)\$ /, '$1<span class="prompt">$</span> ');
+        return '<span class="cmd-line">' + html + "</span>";
+      }
+      return '<span class="out-line">' + safe + "</span>";
+    }).join("\n");
+  }
   function hl(text) {
     var q = state.q.trim();
     var e = esc(text);
@@ -197,6 +215,14 @@
         '<div class="ex-desc">' + esc(ex.desc) + "</div></div>";
     });
     html += "</div>";
+
+    if (c.sample && c.sample.output) {
+      html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg>执行示例与输出解释</div>';
+      html += '<div class="sample-block">';
+      html += '<div class="sample-term"><div class="sample-term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="sample-term-title">bash</span></div><pre class="sample-output">' + renderSampleOutput(c.sample.output) + "</pre></div>";
+      html += '<div class="sample-explain"><div class="sample-explain-head">输出结果解释</div>' + paras(c.sample.explain) + "</div>";
+      html += "</div>";
+    }
 
     if (c.options && c.options.length) {
       html += '<div class="section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>选项速查</div>' +

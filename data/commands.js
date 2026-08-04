@@ -232,7 +232,11 @@ window.COMMAND_DATA = {
           "default": "多数发行版为 auto",
           "desc": "着色时机，取值 always/auto/never。auto 表示仅输出到终端时着色。重定向到文件时用 always 会写入转义码。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ls -lh\ntotal 48K\n-rw-r--r-- 1 user user  12K Aug  4 10:21 report.txt\n-rwxr-xr-x 1 user user 3.2K Aug  4 09:10 run.sh\ndrwxr-xr-x 2 user user 4.0K Aug  3 22:05 docs",
+        "explain": "第1行 `$ ls -lh` 为执行的命令（-l 长格式、-h 人类可读大小）。\n第2行 `total 48K`：目录内文件占用的磁盘块合计约 48KB。\n第3行首字符 - 表示普通文件；`rw-r--r--` 为权限（属主读写、组与其他只读）；`1` 是硬链接数；`user user` 是属主与属组；`12K` 为人类可读大小；`Aug 4 10:21` 为最后修改时间；`report.txt` 是文件名。\n第4行 `rwxr-xr-x` 含 x，说明 run.sh 可执行。\n第5行首字符 d 表示 docs 是目录。"
+      }
     },
     {
       "name": "cd",
@@ -278,7 +282,11 @@ window.COMMAND_DATA = {
           "default": "$HOME",
           "desc": "不带参数时回到当前用户家目录，等价于 cd ~。若 HOME 未设置则报错。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ pwd\n/home/user\n$ cd projects\n$ pwd\n/home/user/projects",
+        "explain": "前两条展示初始位置 `/home/user`。\n`cd projects` 切换到当前目录下的 projects 子目录。\n最后 `pwd` 显示新位置 `/home/user/projects`，证明目录已切换。"
+      }
     },
     {
       "name": "pwd",
@@ -314,7 +322,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "输出解析所有符号链接后的物理真实路径。适用于脚本中需要唯一路径标识时。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ pwd\n/home/user/projects\n$ pwd -P\n/real/path/to/projects",
+        "explain": "第1行 `pwd` 显示当前工作目录的逻辑路径。\n第2行 `pwd -P` 解析符号链接后输出真实物理路径（当当前目录经软链接进入时，两者可能不同）。"
+      }
     },
     {
       "name": "cp",
@@ -399,7 +411,11 @@ window.COMMAND_DATA = {
           "default": "mode,ownership,timestamps",
           "desc": "指定保留的属性列表，可选 mode/ownership/timestamps/links/xattr/all。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ cp -i a.txt b.txt\ncp: overwrite 'b.txt'? n\n$ cp -r src/ dst/",
+        "explain": "第1行 `cp -i a.txt b.txt`：因目标已存在，-i 触发询问 `overwrite 'b.txt'?`，输入 n 取消覆盖，保留原文件。\n第2行 `cp -r src/ dst/`：递归复制整个目录（复制目录必须加 -r）。"
+      }
     },
     {
       "name": "mv",
@@ -469,7 +485,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "把目标当作普通文件而非目录。可避免目标恰为同名目录时误移入其中。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ mv old.txt new.txt\n$ ls\nnew.txt\n$ mv new.txt backup/",
+        "explain": "第1行将 old.txt 重命名为 new.txt（同分区内仅改路径，极快）。\n第2行 ls 确认旧名消失、新名出现。\n第3行把 new.txt 移动到 backup/ 子目录。"
+      }
     },
     {
       "name": "rm",
@@ -535,7 +555,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "递归时跳过位于其他文件系统上的目录。适用于避免误删挂载点内容。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ rm -i note.txt\nrm: remove regular file 'note.txt'? y\n$ rm -rf build/",
+        "explain": "第1行 `rm -i` 删除前询问确认，输入 y 才真正删除，降低误删风险。\n第2行 `rm -rf build/`：`-r` 递归、`-f` 强制不询问，直接删除整个目录——此组合极具破坏性，路径务必先确认。"
+      }
     },
     {
       "name": "mkdir",
@@ -576,7 +600,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "为每个创建的目录打印一条消息。可确认哪些层级是新建的。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ mkdir -p a/b/c\n$ ls -d a/b/c\na/b/c",
+        "explain": "第1行 `mkdir -p a/b/c`：一次性递归创建多级目录，父目录缺失时自动补建。\n第2行 `ls -d` 确认最深目录已存在。"
+      }
     },
     {
       "name": "rmdir",
@@ -612,7 +640,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "输出每一步删除动作。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ rmdir empty_dir\n$ rmdir full_dir\nrmdir: failed to remove 'full_dir': Directory not empty",
+        "explain": "第1行删除一个空目录成功（无输出即成功）。\n第2行 `rmdir full_dir` 因目录非空而失败并提示 `Directory not empty`；要连同内容删除需用 `rm -r`。"
+      }
     },
     {
       "name": "touch",
@@ -668,7 +700,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "使用参照文件的时间戳。适用于让多个文件时间保持一致。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ touch newfile.log\n$ ls -l newfile.log\n-rw-r--r-- 1 user user 0 Aug  4 11:00 newfile.log",
+        "explain": "第1行 `touch newfile.log` 创建一个大小为 0 的空文件（若已存在则仅刷新时间戳）。\n第2行 ls 显示该文件已生成，大小为 0 字节，时间更新为当前。"
+      }
     },
     {
       "name": "find",
@@ -769,7 +805,11 @@ window.COMMAND_DATA = {
           "default": "-print",
           "desc": "以 NUL 分隔输出。必须配合 xargs -0，用于安全处理含空格的文件名。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ find . -name '*.log' -size +1M\n./var/app.log\n./cache/old.log",
+        "explain": "命令在 `.` 当前目录递归查找：`-name '*.log'` 匹配扩展名，`-size +1M` 仅保留大于 1MB 的文件。\n输出两行即命中结果；可继续用 `-exec` 对它们操作。"
+      }
     },
     {
       "name": "ln",
@@ -826,7 +866,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "始终把目标视为普通文件，避免误创建到同名目录内部。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ln -s /opt/app/app bin/app\n$ ls -l bin/app\nlrwxrwxrwx 1 user user 13 Aug  4 11:05 bin/app -> /opt/app/app",
+        "explain": "第1行 `ln -s` 创建指向 /opt/app/app 的软链接 bin/app。\n第2行首字符 l 表示链接，`->` 后显示其指向的真实路径；软链接可跨文件系统、可指向目录。"
+      }
     },
     {
       "name": "readlink",
@@ -846,7 +890,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ readlink bin/app\n/opt/app/app",
+        "explain": "输出软链接 bin/app 指向的目标路径；用于快速查看链接去向、排查链接错乱。"
+      }
     },
     {
       "name": "realpath",
@@ -866,7 +914,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ realpath ../conf/app.conf\n/home/user/conf/app.conf",
+        "explain": "将相对路径 `../conf/app.conf` 解析为规范绝对路径，自动展开 .. 与符号链接，便于脚本获取文件真实位置。"
+      }
     },
     {
       "name": "basename",
@@ -886,7 +938,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ basename /home/user/a/b.txt\nb.txt\n$ basename /home/user/a/b.txt .txt\nb",
+        "explain": "第1行提取路径末端的文件名 `b.txt`。\n第2行额外去掉后缀 `.txt`，得到纯名 `b`，常用于脚本拆分文件名与扩展名。"
+      }
     },
     {
       "name": "dirname",
@@ -906,7 +962,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dirname /home/user/a/b.txt\n/home/user/a",
+        "explain": "提取路径中的目录部分（去掉文件名），返回 `/home/user/a`，常与 basename 配合处理路径。"
+      }
     },
     {
       "name": "tree",
@@ -972,7 +1032,11 @@ window.COMMAND_DATA = {
           "default": "随环境",
           "desc": "强制彩色输出。管道时默认关闭颜色。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ tree -L 2 -a\n.\n├── .git\n├── src\n│   ├── main.py\n│   └── util.py\n└── README.md",
+        "explain": "以树状展示目录结构；`-L 2` 限制显示深度为 2 层，`-a` 包含隐藏文件（如 .git）。\n输出直观呈现项目层级，适合快速总览布局。"
+      }
     },
     {
       "name": "stat",
@@ -1018,7 +1082,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "同 -c 但不自动换行，支持 \\n \\t 转义。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ stat report.txt\n  File: report.txt\n  Size: 12288      Blocks: 24  IO Block: 4096  regular file\nAccess: 2026-08-04 10:21:00\nModify: 2026-08-04 10:21:00\nChange: 2026-08-04 10:21:05\n",
+        "explain": "`File` 为文件名；`Size` 12288 字节，`Blocks` 占用磁盘块数；`regular file` 表示普通文件。\n`Access` 最后访问时间、`Modify` 内容最后修改时间、`Change` 元数据（如权限）最后变更时间——三者含义不同。"
+      }
     },
     {
       "name": "file",
@@ -1069,7 +1137,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "读取块设备或字符设备内容。适用于识别磁盘分区上的文件系统。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ file unknown.bin\nunknown.bin: PDF document, version 1.7\n$ file run.sh\nrun.sh: Bourne-Again shell script, ASCII text executable",
+        "explain": "`file` 通过文件头魔数识别真实类型，不被扩展名误导。\n第1行显示 unknown.bin 实为 PDF 文档；第2行显示 run.sh 是 bash 脚本（文本可执行）。"
+      }
     },
     {
       "name": "tee",
@@ -1114,7 +1186,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "可同时写入多个文件加标准输出。配合 sudo tee 可向无权限文件写入。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ls -l | tee out.txt\ntotal 4\n-rw-r--r-- ... a.txt\n$ cat out.txt\ntotal 4\n-rw-r--r-- ... a.txt",
+        "explain": "`ls -l` 的输出既显示在屏幕，又被 `tee out.txt` 同时写入 out.txt。\n随后 `cat out.txt` 显示文件内容与屏幕一致，证明已落盘保存。"
+      }
     },
     {
       "name": "pushd",
@@ -1134,7 +1210,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pushd /var/log\n/var/log ~\n$ dirs\n/var/log ~",
+        "explain": "`pushd /var/log` 切换到 /var/log 并将其压入目录栈，输出栈内容（当前 + 原目录 ~）。\n`dirs` 列出目录栈，便于用 `popd` 返回。"
+      }
     },
     {
       "name": "popd",
@@ -1154,7 +1234,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dirs\n/var/log ~\n$ popd\n~",
+        "explain": "`dirs` 显示栈顶为 /var/log。\n`popd` 弹出栈顶并切回原目录 ~，输出剩余栈（仅 ~）。"
+      }
     },
     {
       "name": "eza",
@@ -1224,7 +1308,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "长格式下显示列标题。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ eza -l --icons\ndrwxr-xr-x  user 4.0k Aug 04 10:21  docs\n.rwxr-xr-x  user 3.2k Aug 04 09:10  run.sh",
+        "explain": "`eza` 是 ls 的现代替代品，`-l` 长格式、`--icons` 显示图标。\n输出含权限、属主、大小、时间，并以图标区分文件类型，比传统 ls 更直观。"
+      }
     },
     {
       "name": "fd",
@@ -1299,7 +1387,11 @@ window.COMMAND_DATA = {
           "default": "智能大小写",
           "desc": "强制区分大小写。默认为智能模式：全小写则忽略大小写。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ fd config\nsrc/config.yaml\netc/app/config.json",
+        "explain": "`fd` 是 find 的更快替代，默认递归搜索文件名。\n此处列出所有名为 config 的文件（含相对路径），忽略 .git 等隐藏目录。"
+      }
     },
     {
       "name": "cat",
@@ -1360,7 +1452,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "显示非打印字符（除 Tab 与换行）。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ cat a.txt\nline one\nline two\nline three",
+        "explain": "`cat` 将文件内容原样输出到屏幕，按行依次显示 a.txt 的三行文本。\n适合查看短文件；大文件建议用 less 分页。"
+      }
     },
     {
       "name": "less",
@@ -1421,7 +1517,11 @@ window.COMMAND_DATA = {
           "default": "1",
           "desc": "启动时直接跳转到指定行，如 +100。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ less long.log\n(line 1 of file shown; press SPACE to page down, q to quit)\n...\n(long.log)",
+        "explain": "`less` 进入分页浏览：显示一屏内容，空格下翻页、上下键滚动、`/` 搜索、`q` 退出。\n不加载整个文件到内存，适合查看大日志。底部状态显示文件名。"
+      }
     },
     {
       "name": "more",
@@ -1467,7 +1567,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "把连续空行压缩为一行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ more long.log\nline one\nline two\n--More--(12%)",
+        "explain": "`more` 与 less 类似但功能更弱，逐屏显示并在底部提示 `--More--(12%)` 已浏览比例。\n回车下滚一行、空格下滚一屏，`q` 退出。"
+      }
     },
     {
       "name": "head",
@@ -1517,7 +1621,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "以 NUL 而非换行作为行分隔符。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ head -n 3 access.log\n10.0.0.1 GET /\n10.0.0.2 POST /login\n10.0.0.3 GET /home",
+        "explain": "`head -n 3` 只显示文件前 3 行；常用于快速预览日志头部或 CSV 表头。\n缺省显示前 10 行。"
+      }
     },
     {
       "name": "tail",
@@ -1577,7 +1685,11 @@ window.COMMAND_DATA = {
           "default": "多文件时显示文件名",
           "desc": "分别为不显示与强制显示文件名标题。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ tail -n 3 access.log\n10.0.0.9 GET /about\n10.0.0.10 POST /cart\n10.0.0.11 GET /checkout\n$ tail -f access.log\n(持续输出新追加的行...)",
+        "explain": "第1条 `tail -n 3` 显示末尾 3 行，常看最新日志。\n第2条 `tail -f` 持续跟踪文件增长，监视实时写入（Ctrl+C 退出）。"
+      }
     },
     {
       "name": "nl",
@@ -1597,7 +1709,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nl -ba a.txt\n     1  line one\n     2  line two\n     3  line three",
+        "explain": "`nl` 为每行加行号输出；`-ba` 表示连空行也编号。\n适合需要引用具体行号的场景（如代码评审）。"
+      }
     },
     {
       "name": "tac",
@@ -1617,7 +1733,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ tac a.txt\nline three\nline two\nline one",
+        "explain": "`tac` 是 cat 的反向版，从最后一行倒序输出到第一行。\n常配合日志分析，先看最新内容。"
+      }
     },
     {
       "name": "od",
@@ -1637,7 +1757,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ od -A x -t x1z sample.bin\n000000 48 65 6c 6c 6f 0a                         |hello.|\n000006",
+        "explain": "`od` 以八进制/十六进制转储二进制；`-A x` 地址用十六进制，`-t x1z` 每字节十六进制并附可读字符。\n第1行 `48 65 6c 6c 6f` 是 \"hello\" 的 ASCII 十六进制，`0a` 是换行。"
+      }
     },
     {
       "name": "xxd",
@@ -1657,7 +1781,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ xxd sample.bin\n00000000: 4865 6c6c 6f0a 0a                       hello..",
+        "explain": "`xxd` 生成十六进制转储：左侧为偏移，中间为十六进制字节，右侧为对应 ASCII。\n`4865 6c6c 6f0a` 对应 \"hello\n\"，末尾 `0a` 是换行，便于分析二进制文件。"
+      }
     },
     {
       "name": "hexdump",
@@ -1677,7 +1805,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ hexdump -C sample.bin\n00000000  48 65 6c 6c 6f 0a                              |hello.|\n00000006",
+        "explain": "`hexdump -C` 以规范十六进制+ASCII 双栏显示；`48 65 6c 6c 6f 0a` 是 \"hello\n\" 的字节。\n与 xxd 类似，用于二进制/编码排查。"
+      }
     },
     {
       "name": "strings",
@@ -1697,7 +1829,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ strings app.bin | head\n/lib64/ld-linux-x86-64.so.2\nGLIBC_2.2.5\nUsage: app [options]",
+        "explain": "`strings` 从二进制文件中提取可打印的字符串。\n输出中可见依赖的动态库名、版本符号与内置帮助文本，常用于快速了解未知可执行文件。"
+      }
     },
     {
       "name": "fold",
@@ -1717,7 +1853,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ fold -w 10 longline.txt\nthis is a\nlong line\nthat wraps",
+        "explain": "`fold -w 10` 将每行按宽度 10 字符折行，便于在窄屏/固定宽度下阅读长行。"
+      }
     },
     {
       "name": "pr",
@@ -1737,7 +1877,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pr -2 -l 10 a.txt\n2026-08-04 11:30  a.txt  Page 1\nline one            line four\nline two            line five\nline three",
+        "explain": "`pr` 为打印格式化文本：`-2` 双栏、`-l 10` 每页 10 行，并加页眉（日期、文件名、页码）。\n用于准备打印稿。"
+      }
     },
     {
       "name": "bat",
@@ -1808,7 +1952,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示相对 Git 索引有改动的行及其上下文。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ bat a.py\n├──┤ File: a.py\n  1 │ def f():\n  2 │     return 1\n  3 │\n  4 │ f()",
+        "explain": "`bat` 是 cat 的现代替代，带语法高亮、行号与 Git 改动标记（左侧 ├──┤ 指示文件信息）。\n输出更易读，适合代码查看。"
+      }
     },
     {
       "name": "grep",
@@ -1924,7 +2072,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "使用 PCRE 正则，支持 \\d \\s 与前后向断言。部分系统未编译该支持。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ grep -n 'error' app.log\n12:2026-08-04 ERROR: connection failed\n47:2026-08-04 ERROR: timeout",
+        "explain": "`grep -n 'error' app.log` 在文件中搜索包含 error 的行；`-n` 显示行号。\n输出 `12:`、`47:` 即命中行号，便于定位。"
+      }
     },
     {
       "name": "egrep",
@@ -1960,7 +2112,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "递归搜索目录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ egrep 'warn|error' app.log\nWARN: low memory\nERROR: disk full",
+        "explain": "`egrep`（等同 `grep -E`）支持扩展正则；此处用 `warn|error` 匹配 warn 或 error。\n输出同时命中两类行。"
+      }
     },
     {
       "name": "fgrep",
@@ -1980,7 +2136,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "fgrep 不解释正则，等价于 grep -F",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ fgrep 'a.b' data.txt\nx a.b y",
+        "explain": "`fgrep`（等同 `grep -F`）按字面字符串匹配，不解释正则。\n此处把 `a.b` 当作普通文本，故只命中含字面 \"a.b\" 的行（. 不被当通配）。"
+      }
     },
     {
       "name": "sed",
@@ -2051,7 +2211,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "删除指定行，如 1d 删首行、'$d' 删末行、'2,5d' 删 2 到 5 行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sed 's/foo/bar/g' a.txt\nbar baz\n$ sed -n '1,3p' a.txt\nline one\nline two\nline three",
+        "explain": "第1条 `s/foo/bar/g` 把每行所有 foo 替换为 bar 并输出（不改动原文件）。\n第2条 `-n '1,3p'` 静默模式仅打印第 1–3 行。"
+      }
     },
     {
       "name": "awk",
@@ -2116,7 +2280,11 @@ window.COMMAND_DATA = {
           "default": "空格 / 换行",
           "desc": "输出字段与记录分隔符。修改 OFS 后需对 $0 赋值才会重建行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ awk '{sum+=$1} END{print sum}' nums.txt\n150\n$ awk -F: '$3>100{print $1}' /etc/passwd\nnobody\nsystemd-resolve",
+        "explain": "第1条对第一列求和，END 块打印总和 150。\n第2条 `-F:` 以冒号分隔，打印 UID(第3列)>100 的账号名，常用于分析 passwd。"
+      }
     },
     {
       "name": "sort",
@@ -2205,7 +2373,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "按版本号规则排序，如 v1.9 排在 v1.10 之前。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sort -n sizes.txt\n3\n15\n128\n$ sort -u names.txt\nalice\nbob",
+        "explain": "第1条 `-n` 按数值排序（避免 128 排在 15 前）。\n第2条 `-u` 去重后按字典序输出唯一值。"
+      }
     },
     {
       "name": "uniq",
@@ -2270,7 +2442,11 @@ window.COMMAND_DATA = {
           "default": "整行",
           "desc": "只比较每行前 n 个字符。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sort access.log | uniq -c\n  12 GET /\n   3 POST /login",
+        "explain": "`uniq` 仅合并相邻重复行，故通常先 `sort`；`-c` 统计每行的重复次数。\n输出显示 GET / 出现 12 次、POST /login 出现 3 次。"
+      }
     },
     {
       "name": "cut",
@@ -2330,7 +2506,11 @@ window.COMMAND_DATA = {
           "default": "同输入分隔符",
           "desc": "指定输出分隔符，可与输入不同。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ cut -d: -f1 /etc/passwd | head -3\nroot\ndaemon\nbin",
+        "explain": "`cut -d: -f1` 以冒号为分隔符，取第 1 字段；配合 head -3 取前 3 个账号名。\n便于从结构化文本中抽列。"
+      }
     },
     {
       "name": "paste",
@@ -2350,7 +2530,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ paste a.txt b.txt\nline one\tline A\nline two\tline B",
+        "explain": "`paste` 将多个文件的对应行横向合并，默认以制表符分隔。\n第1行把 a.txt 第1行与 b.txt 第1行并排，常用于字段拼接。"
+      }
     },
     {
       "name": "join",
@@ -2370,7 +2554,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ join id.txt name.txt\n1 alice\n2 bob",
+        "explain": "`join` 按共同字段（默认第1列）横向合并两个已排序文件；此处按 id 把姓名连上。"
+      }
     },
     {
       "name": "comm",
@@ -2390,7 +2578,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ comm <(sort a.txt) <(sort b.txt)\na\n\tb\n\t\tc",
+        "explain": "`comm` 比较两已排序文件：第1列仅在 A、第2列仅在 B、第3列共有。\n输出中 `\t` 缩进区分三类；用于求差集/交集。"
+      }
     },
     {
       "name": "diff",
@@ -2470,7 +2662,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "左右并排显示。配合 -W 指定总宽度。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ diff a.txt b.txt\n3c3\n< line three old\n---\n> line three new",
+        "explain": "`diff` 显示两文件差异：`3c3` 表示第 3 行被替换。\n`<` 为 a.txt 原行，`>` 为 b.txt 新行，`---` 分隔。"
+      }
     },
     {
       "name": "patch",
@@ -2526,7 +2722,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "不询问，尽量应用。失败块会写入 .rej 文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ patch old.txt < fix.diff\npatching file old.txt",
+        "explain": "`patch` 按 diff 补丁修改文件；`patching file old.txt` 表示成功应用。\n常用于应用他人提交的改动。"
+      }
     },
     {
       "name": "tr",
@@ -2581,7 +2781,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "tr 不接受文件参数，必须用重定向或管道输入。这是最常见的使用错误。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ echo 'Hello' | tr 'a-z' 'A-Z'\nHELLO\n$ echo 'a,b,c' | tr ',' '\n'\na\nb\nc",
+        "explain": "第1条 `tr 'a-z' 'A-Z'` 把小写转大写。\n第2条把逗号替换为换行，实现简单分词。"
+      }
     },
     {
       "name": "wc",
@@ -2640,7 +2844,11 @@ window.COMMAND_DATA = {
           "default": "-l -w -c",
           "desc": "不带选项时同时输出行数、单词数、字节数三列。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ wc -lwc report.txt\n  120  480 3120 report.txt",
+        "explain": "`wc -lwc` 同时统计行数、词数、字节数；输出 `120` 行、`480` 词、`3120` 字节。\n单独 `-l` 仅行数，常用于统计代码行。"
+      }
     },
     {
       "name": "split",
@@ -2660,7 +2868,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ split -l 1000 big.log chunk_\n$ ls chunk_*\nchunk_aa chunk_ab chunk_ac",
+        "explain": "`split -l 1000` 每 1000 行切一个文件，前缀 chunk_；输出分块为 chunk_aa/ab/ac。\n便于大文件拆分处理。"
+      }
     },
     {
       "name": "csplit",
@@ -2680,7 +2892,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ csplit app.log '/^===/' '{*}'\n12\n34\n9",
+        "explain": "`csplit` 按内容模式切分；`/^===/` 以 === 开头的行作分隔，`{*}` 重复到末尾。\n输出各分块的行数（12/34/9）。"
+      }
     },
     {
       "name": "fmt",
@@ -2700,7 +2916,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ fmt -w 40 longpara.txt\nthis is a paragraph that gets\nwrapped at about forty columns\nfor readable width",
+        "explain": "`fmt -w 40` 把段落重排为每行约 40 列，提升可读性；用于规范化文本宽度。"
+      }
     },
     {
       "name": "expand",
@@ -2720,7 +2940,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ expand -t 4 tabs.txt > spaces.txt\n$ cat -A spaces.txt\nline    one$",
+        "explain": "`expand -t 4` 把制表符转成 4 个空格；`cat -A` 用 `$` 标行尾，确认制表符已被空格替代。"
+      }
     },
     {
       "name": "unexpand",
@@ -2740,7 +2964,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ unexpand -a spaces.txt > tabs.txt\n$ cat -T tabs.txt\nline^Ione",
+        "explain": "`unexpand -a` 把连续空格转回制表符；`cat -T` 用 `^I` 显示制表符，确认转换成功。"
+      }
     },
     {
       "name": "rg",
@@ -2831,7 +3059,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "输出时用替换文本呈现匹配部分。它不会修改文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ rg -n 'TODO' src/\nsrc/main.py:12:    # TODO refactor\nsrc/util.py:45:    # TODO add test",
+        "explain": "`rg`（ripgrep）更快的递归搜索；`-n` 显示行号。\n输出递归列出 src/ 下含 TODO 的文件与行，默认跳过 .git 与二进制。"
+      }
     },
     {
       "name": "yq",
@@ -2896,7 +3128,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "路径表达式语法同 jq。数组用 .[0]，全部元素用 .[]。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ yq '.name' config.yaml\napp-server",
+        "explain": "`yq` 像 jq 一样查询/转换 YAML；`.name` 取顶层 name 字段，输出其值为 app-server。"
+      }
     },
     {
       "name": "chmod",
@@ -2966,7 +3202,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "4 为 setuid、2 为 setgid、1 为 sticky。如 1777 用于 /tmp 这类公共可写目录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ chmod 755 script.sh\n$ ls -l script.sh\n-rwxr-xr-x 1 user user 123 Aug  4 11:30 script.sh\n$ chmod u+x,go-w data.txt\n-rwxr----- 1 user user 99 Aug  4 11:31 data.txt",
+        "explain": "`chmod 755` 用数字法设权限：属主 rwx(7)、组 r-x(5)、其他 r-x(5)；ls 确认脚本已可执行。\n第2例 `u+x,go-w` 符号法：给属主加执行、去掉组与其他的写权限。"
+      }
     },
     {
       "name": "chown",
@@ -3021,7 +3261,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "仅当当前属主匹配时才修改。适用于精确批量迁移。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ chown root:root /srv/app\n$ ls -ld /srv/app\ndrwxr-xr-x 1 root root 4096 Aug  4 11:32 /srv/app",
+        "explain": "`chown root:root` 把属主与属组同时改为 root；`ls -ld` 显示目录属主已变为 root root。\n改属主通常需要 root 权限。"
+      }
     },
     {
       "name": "chgrp",
@@ -3071,7 +3315,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "非 root 用户只能把文件改到自己所属的组，且必须是文件属主。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ chgrp developers app.conf\n$ ls -l app.conf\n-rw-r--r-- 1 user developers 256 Aug  4 11:33 app.conf",
+        "explain": "`chgrp developers` 仅修改文件的属组为 developers；ls 显示属组已变更，属主不变。"
+      }
     },
     {
       "name": "umask",
@@ -3117,7 +3365,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "只影响当前 shell 及其之后创建的文件，对已存在文件无效；需持久化应写入 shell 配置文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ umask\n0022\n$ umask -S\nu=rwx,g=rx,o=rx",
+        "explain": "`umask` 显示当前掩码 0022（八进制），表示新建文件默认去掉组与其他的写位。\n`-S` 以符号法展示：属主全权、组与其他读+执行。"
+      }
     },
     {
       "name": "chattr",
@@ -3141,7 +3393,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "需 root；+i 后连 root 也删不掉，用 -i 解除",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ chattr +i important.txt\n$ lsattr important.txt\n----i---------e----- important.txt",
+        "explain": "`chattr +i` 设不可修改位（immutable），连 root 也无法删除/改写，需 `-i` 解除。\n`lsattr` 显示 i 标志已置位，用于防误删关键文件。"
+      }
     },
     {
       "name": "lsattr",
@@ -3161,7 +3417,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lsattr /etc/shadow\n----i---------e----- /etc/shadow",
+        "explain": "`lsattr` 列出文件扩展属性位；i 表示不可变，e 表示 extent 格式；用于排查异常属性。"
+      }
     },
     {
       "name": "setfacl",
@@ -3181,7 +3441,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ setfacl -m u:alice:rwx shared/\n$ getfacl shared/\nuser:alice:rwx",
+        "explain": "`setfacl -m u:alice:rwx` 给 alice 对 shared/ 设精细 ACL 读写执行权（超越传统三类权限）。\n`getfacl` 显示该 ACL 条目已生效。"
+      }
     },
     {
       "name": "getfacl",
@@ -3201,7 +3465,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ getfacl docs/\n# file: docs/\nuser::rwx\nuser:alice:r-x\ngroup::r-x\nother::---",
+        "explain": "`getfacl` 输出目录的 ACL：属主 rwx、alice r-x、组 r-x、其他无权限。\n比 `ls` 更细，能看到逐用户授权。"
+      }
     },
     {
       "name": "sudo",
@@ -3271,7 +3539,11 @@ window.COMMAND_DATA = {
           "default": "15 分钟",
           "desc": "首次输入密码后在同一终端内默认缓存 15 分钟，由 sudoers 的 timestamp_timeout 控制。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sudo -u postgres psql\n[sudo] password for user: \npsql (14.5)",
+        "explain": "`sudo -u postgres psql` 以 postgres 身份运行命令；先提示输入当前用户密码，验证后切换身份执行。"
+      }
     },
     {
       "name": "su",
@@ -3321,7 +3593,11 @@ window.COMMAND_DATA = {
           "default": "root",
           "desc": "不指定用户名时切换到 root，需要输入 root 密码而非当前用户密码。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ su -\nPassword: \n# whoami\nroot",
+        "explain": "`su -` 切换到 root 并加载其环境；输入 root 密码后提示符变 `#`，`whoami` 确认已是 root。"
+      }
     },
     {
       "name": "useradd",
@@ -3392,7 +3668,11 @@ window.COMMAND_DATA = {
           "default": "锁定",
           "desc": "新建用户默认无密码且处于锁定态，须再执行 passwd 设置后才能登录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ useradd -m -s /bin/bash alice\n$ id alice\nuid=1001(alice) gid=1001(alice) groups=1001(alice)",
+        "explain": "`useradd -m` 创建家目录、`-s /bin/bash` 指定登录 shell；`id alice` 显示新账号 uid/gid 已生成。"
+      }
     },
     {
       "name": "userdel",
@@ -3412,7 +3692,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "-r 才会删家目录，否则残留",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ userdel -r alice\n$ id alice\nid: 'alice': no such user",
+        "explain": "`userdel -r` 删除账号并连同家目录；`id` 返回无此用户，确认删除成功。"
+      }
     },
     {
       "name": "usermod",
@@ -3483,7 +3767,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "对已登录会话不生效，用户需重新登录；修改中的用户不能有正在运行的进程。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ usermod -aG sudo alice\n$ groups alice\nalice : alice sudo",
+        "explain": "`usermod -aG sudo` 把 alice 追加到 sudo 组（注意 -a 避免覆盖原有组）；`groups` 显示已含 sudo。"
+      }
     },
     {
       "name": "groupadd",
@@ -3503,7 +3791,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ groupadd dev\n$ getent group dev\ndev:x:1002:",
+        "explain": "`groupadd dev` 新建 dev 组；`getent group` 显示组名、gid 1002，成员暂空。"
+      }
     },
     {
       "name": "groupdel",
@@ -3523,7 +3815,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ groupdel dev\n$ getent group dev\n(无输出，组已删除)",
+        "explain": "`groupdel dev` 删除组；`getent` 无输出即组不存在，删除成功。"
+      }
     },
     {
       "name": "passwd",
@@ -3593,7 +3889,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "分别设置到期前警告天数与到期后宽限天数。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ passwd alice\nNew password: \nRetype new password: \npasswd: password updated successfully",
+        "explain": "以 root 改 alice 密码：输入两次后提示 `password updated successfully` 表示更新成功。"
+      }
     },
     {
       "name": "chpasswd",
@@ -3613,7 +3913,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ echo 'alice:NewPass123' | chpasswd\n$ getent shadow alice | cut -d: -f1,2 | head -c 20\nalice:$6$...",
+        "explain": "`chpasswd` 从 `user:password` 批量设置密码（常用于脚本）；getent shadow 显示密码已哈希存储。"
+      }
     },
     {
       "name": "newgrp",
@@ -3633,7 +3937,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ newgrp dev\n$ id -gn\ndev",
+        "explain": "`newgrp dev` 切换当前 shell 的有效组为 dev；`id -gn` 确认有效组已变。"
+      }
     },
     {
       "name": "gpasswd",
@@ -3653,7 +3961,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ gpasswd -a alice sudo\nAdding user alice to group sudo\n$ groups alice\nalice : alice sudo",
+        "explain": "`gpasswd -a alice sudo` 把 alice 加入 sudo 组并回显确认；`groups` 验证已生效。"
+      }
     },
     {
       "name": "id",
@@ -3708,7 +4020,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "输出真实 ID 而非有效 ID。在 setuid 程序中两者不同。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ id\nuid=1000(user) gid=1000(user) groups=1000(user),27(sudo),1001(docker)",
+        "explain": "显示当前用户的 uid、gid 及所属全部组；此处 user 属 sudo、docker 组，决定其可执行权限。"
+      }
     },
     {
       "name": "whoami",
@@ -3739,7 +4055,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "logname 返回最初登录的用户名，sudo 后仍是原用户，可用于区分真实操作者。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ whoami\nuser",
+        "explain": "输出当前生效的用户名；在 sudo/su 后用来确认自己当前身份。"
+      }
     },
     {
       "name": "who",
@@ -3759,7 +4079,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ who\nuser     tty2         2026-08-04 09:10\nuser     pts/0        2026-08-04 10:05 (:0)",
+        "explain": "列出当前登录会话：用户名、终端(tty2/pts/0)、登录时间与来源(:0 表示本地桌面)。"
+      }
     },
     {
       "name": "w",
@@ -3779,7 +4103,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ w\n 11:40:01 up 3 days,  1:20,  2 users,  load average: 0.10, 0.05, 0.01\nUSER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT\nuser     pts/0    :0               10:05    3:21   0.12s  0.05s bash",
+        "explain": "首行含开机时长、用户数、负载均值；下方逐行显示每个会话的用户、终端、来源、空闲时间与正在运行的命令。"
+      }
     },
     {
       "name": "last",
@@ -3799,7 +4127,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ last -n 3\nuser     pts/0        :0               Mon Aug  4 10:05   still logged in\nreboot   system boot  6.8.0-45         Mon Aug  4 09:10   still running\nuser     tty2         :0               Sun Aug  3 22:00 - 23:40  (01:40)",
+        "explain": "显示最近登录/重启记录；含用户、终端、来源、起止时间；`reboot` 行表示系统启动，可审计异常登录。"
+      }
     },
     {
       "name": "lastlog",
@@ -3819,7 +4151,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lastlog -u alice\nUsername         Port     From             Latest\nalice            pts/0    :0               Mon Aug  4 10:05:22 +0800 2026",
+        "explain": "`lastlog -u alice` 显示该用户最近一次登录时间/来源；若显示 `**Never logged in**` 说明从未登录。"
+      }
     },
     {
       "name": "groups",
@@ -3839,7 +4175,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ groups\nuser : user sudo docker",
+        "explain": "显示当前用户所属的全部组；`user sudo docker` 表明其拥有相应组权限。"
+      }
     },
     {
       "name": "visudo",
@@ -3859,7 +4199,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "务必用 visudo 而非直接改，避免锁死 sudo",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ visudo\n(syntax-checked edit of /etc/sudoers; saved OK)",
+        "explain": "`visudo` 以受控编辑器修改 /etc/sudoers，保存时做语法校验，避免错误配置导致所有人无法提权。"
+      }
     },
     {
       "name": "finger",
@@ -3879,7 +4223,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ finger alice\nLogin: alice         Name: Alice Wang\nOffice: /dev/null\nLast login Mon Aug  4 10:05 (CST) on pts/0",
+        "explain": "显示用户账户信息（全名、办公室、最近登录等）；依赖 fingerd 服务，现代系统常未启用。"
+      }
     },
     {
       "name": "adduser",
@@ -3944,7 +4292,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "为 Debian/Ubuntu 专有的 Perl 脚本，RHEL 系上通常是 useradd 的软链，行为不同。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ adduser bob\nAdding user 'bob' ...\nNew password: \nAdding new group 'bob' ...\n$ id bob\nuid=1002(bob) gid=1002(bob) groups=1002(bob)",
+        "explain": "Debian 系交互式建用户脚本：自动建家目录、同名组并提示设密码；`id` 验证账号已建好。"
+      }
     },
     {
       "name": "ps",
@@ -4028,7 +4380,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "ps 只输出执行瞬间的快照，%CPU 为进程生命周期均值而非瞬时值，看瞬时负载应用 top。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ps aux | head -5\nUSER   PID %CPU %MEM    VSZ   RSS TTY  STAT START   TIME COMMAND\nroot     1  0.0  0.1 168k  9.2M ?    Ss   09:10   0:02 /sbin/init\nuser  1234  2.1  1.3 1.2g 210m pts/0 S    10:05   0:11 vim app.js",
+        "explain": "`ps aux` 列出全部进程；各列：USER 属主、PID 进程号、%CPU/%MEM 占用、VSZ 虚拟内存、RSS 常驻内存、STAT 状态(S 睡眠/R 运行)、TIME 累计 CPU、COMMAND 命令。\n第3行 vim 占 2.1% CPU，便于定位高耗进程。"
+      }
     },
     {
       "name": "top",
@@ -4104,7 +4460,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "load average 三个数分别为 1/5/15 分钟平均值，应与 CPU 核心数对比判断是否过载。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ top -b -n1 | head -8\ntop - 11:45:00 up 3 days,  load average: 0.10, 0.05, 0.01\nTasks: 210 total,   1 running, 209 sleeping\n%Cpu(s):  1.3 us,  0.3 sy, 98.3 id\nMiB Mem :  15987.0 total,  10213.4 free\n   PID USER  PR  NI    VIRT    RES  %CPU %MEM COMMAND\n  1234 user  20   0 1234567 215000  2.1  1.3 vim",
+        "explain": "首行含运行时间、负载均值(1/5/15分钟)，值越低越空闲。\nTasks 显示进程总数与睡眠/运行数；%Cpu 中 id 高表示空闲；Mem 显示内存使用。\n下方进程表按资源排序，可找最占 CPU 的进程（交互模式按 P 按 CPU、M 按内存排）。"
+      }
     },
     {
       "name": "htop",
@@ -4165,7 +4525,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "支持鼠标操作、彩色条形图与横向滚动查看完整命令行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ htop\n  CPU[|||               5.2%]  Mem[|||||||      2.1G/15.6G]\n  Tasks: 210, 1 running\n  PID USER  PRI  NI  VIRT   RES  S  CPU% MEM% COMMAND\n 1234 user  20   0 1204M  210M S   2.1  1.3 vim",
+        "explain": "htop 是 top 的交互增强版：顶部彩色条显示 CPU/内存占用，列表可鼠标点选、滚动、杀进程（F9）。\n上手更友好，适合实时监控。"
+      }
     },
     {
       "name": "kill",
@@ -4230,7 +4594,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "对 Z 状态的僵尸进程无效，须终止其父进程才能回收。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ kill 1234\n$ kill -9 1234\n$ ps -p 1234\n(无输出，进程已终止)",
+        "explain": "`kill 1234` 发送 SIGTERM(15) 请求进程优雅退出；若无效用 `kill -9`(SIGKILL) 强制。\n`ps -p` 无输出表示进程已不存在。"
+      }
     },
     {
       "name": "pkill",
@@ -4291,7 +4659,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "先用同参数的 pgrep 确认命中范围，再换成 pkill 执行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ pkill -u alice chrome\n$ pgrep -u alice chrome\n(无输出，进程已结束)",
+        "explain": "`pkill -u alice chrome` 按\"用户+命令名\"批量结束匹配的进程；`pgrep` 无输出即已全部终止。"
+      }
     },
     {
       "name": "killall",
@@ -4352,7 +4724,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "Linux 上按进程名匹配；Solaris/BSD 上 killall 会终止所有进程，跨平台脚本须谨慎。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ killall -9 nginx\nnginx: no process found\n$ killall nginx\n(nginx 进程已终止)",
+        "explain": "`killall nginx` 按进程名结束全部实例；首行因已无 nginx 报 not found，确认后再查已无残留。"
+      }
     },
     {
       "name": "pgrep",
@@ -4418,7 +4794,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "按父进程 ID 过滤，用于找出某进程的子进程。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ pgrep -a sshd\n812 /usr/sbin/sshd -D\n1050 /usr/sbin/sshd -D",
+        "explain": "`pgrep -a sshd` 列出 sshd 进程的 PID 与完整命令行；常用于先查再决定如何操作进程。"
+      }
     },
     {
       "name": "pidof",
@@ -4438,7 +4818,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pidof nginx\n812 1050",
+        "explain": "`pidof nginx` 直接返回同名进程的所有 PID（空格分隔），脚本中取 PID 很方便。"
+      }
     },
     {
       "name": "jobs",
@@ -4489,7 +4873,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "用 %1、%2 引用任务；%+ 或 %% 为当前任务，%- 为上一个任务。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sleep 100 &\n[1] 2345\n$ jobs\n[1]+  Running                 sleep 100 &",
+        "explain": "`sleep 100 &` 后台运行并分配作业号 [1] 与 PID 2345。\n`jobs` 列出当前 shell 的后台作业及其状态(Running)。"
+      }
     },
     {
       "name": "bg",
@@ -4525,7 +4913,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "后台任务仍属于当前终端，关闭终端会收到 SIGHUP 而终止；需持久运行应改用 nohup 或 setsid。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ jobs\n[1]+  Stopped                 sleep 100\n$ bg %1\n[1]+ sleep 100 &",
+        "explain": "`bg %1` 把暂停的作业 1 放到后台继续运行；状态由 Stopped 变为 Running(&)。"
+      }
     },
     {
       "name": "fg",
@@ -4561,7 +4953,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "只能操作当前 shell 启动的任务，无法接管其他终端的进程。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ jobs\n[1]+  Running                 sleep 100 &\n$ fg %1\n(带回前台，可 Ctrl+Z 再次暂停)",
+        "explain": "`fg %1` 把后台作业 1 调回前台终端，便于交互或 Ctrl+Z 暂停。"
+      }
     },
     {
       "name": "nohup",
@@ -4607,7 +5003,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "nohup 仅忽略 SIGHUP，进程仍属原会话；setsid 会创建新会话，脱离更彻底。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ nohup ./server.sh > server.log 2>&1 &\n[1] 3456\n$ tail -f server.log",
+        "explain": "`nohup ... &` 让进程忽略挂断信号，退出终端后仍继续运行；输出重定向到 server.log。\n适合启动长期服务。"
+      }
     },
     {
       "name": "disown",
@@ -4627,7 +5027,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sleep 100 &\n[1] 2345\n$ disown\n$ exit\n(进程在终端关闭后继续存活)",
+        "explain": "`disown` 把作业从 shell 作业表移除，关闭终端时不会被发 SIGHUP，进程得以存活。"
+      }
     },
     {
       "name": "nice",
@@ -4647,7 +5051,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nice -n 10 backup.sh &\n[1] 4001\n$ ps -o pid,ni,cmd -p 4001\n  PID  NI CMD\n 4001  10 backup.sh",
+        "explain": "`nice -n 10` 以较低优先级(高 niceness)启动进程；`ps -o ni` 确认其 NI 为 10，避免抢占关键任务。"
+      }
     },
     {
       "name": "renice",
@@ -4667,7 +5075,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ renice -n 5 -p 4001\n4001 (process ID) old priority 10, new priority 5\n$ ps -o pid,ni -p 4001\n  PID  NI\n 4001   5",
+        "explain": "`renice -n 5 -p 4001` 把运行中进程 4001 的优先级改为 5；`ps` 确认 NI 已从 10 变为 5。"
+      }
     },
     {
       "name": "at",
@@ -4687,7 +5099,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ echo 'backup.sh' | at 23:00\njob 7 at Mon Aug  4 23:00\n$ atq\n7 Mon Aug  4 23:00 a user",
+        "explain": "`at 23:00` 安排命令在指定时间一次性执行，返回作业号 7；`atq` 列出待执行队列。"
+      }
     },
     {
       "name": "batch",
@@ -4707,7 +5123,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ echo 'sync-data' | batch\njob 8 at Mon Aug  4 11:50",
+        "explain": "`batch` 等同于 at，但仅在系统负载低于阈值(默认 0.8)时才执行，适合低峰跑批处理。"
+      }
     },
     {
       "name": "crontab",
@@ -4777,7 +5197,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "命令中的 % 会被解释为换行，必须转义为 \\%，date 格式串中尤其常见。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ crontab -l\n0 2 * * * /usr/bin/backup.sh\n$ crontab -e\n(crontab 已更新)",
+        "explain": "`crontab -l` 列出当前定时任务：`0 2 * * *` 表示每天 02:00 跑备份。\n`crontab -e` 编辑；格式为 分 时 日 月 周 + 命令。"
+      }
     },
     {
       "name": "runlevel",
@@ -4797,7 +5221,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ runlevel\nN 5",
+        "explain": "显示运行级别：前一个 N(无切换)，当前 5(多用户图形界面)；3 为纯多用户文本，6 重启。"
+      }
     },
     {
       "name": "init",
@@ -4817,7 +5245,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ init 6\n(broadcast: system is rebooting)",
+        "explain": "`init 6` 切换到运行级别 6 触发重启；`init 0` 关机，`init 3` 进文本多用户。现代多用 systemctl 替代。"
+      }
     },
     {
       "name": "watch",
@@ -4873,7 +5305,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "含管道或变量的命令须整体加单引号，否则管道会作用于 watch 自身。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ watch -n 2 'df -h /'\nEvery 2.0s: df -h /\nFilesystem  Size  Used  Avail  Use%  Mounted\n/dev/sda1   50G   20G    28G   42%   /",
+        "explain": "`watch -n 2` 每 2 秒刷新执行一次命令；此处持续监视根分区使用率，便于观察变化。"
+      }
     },
     {
       "name": "lsof",
@@ -4944,7 +5380,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "非 root 只能看到自己的进程，排查端口占用通常需要 sudo。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ lsof -i :8080\nCOMMAND  PID USER  FD  TYPE DEVICE SIZE/OFF NODE NAME\nnode    1234 user  12u IPv4  23456 0t0 TCP *:8080 (LISTEN)",
+        "explain": "`lsof -i :8080` 列出占用 8080 端口的进程；输出显示 node(PID 1234) 正在 LISTEN，便于排查端口冲突。"
+      }
     },
     {
       "name": "strace",
@@ -4964,7 +5404,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ strace -f -e trace=network curl -s localhost\nconnect(3, {sa_family=AF_INET,...port=80}, 16) = 0\nsendto(3, \"GET / HTTP/1.1\\r\\n\"..., 75, 0, NULL, 0) = 75",
+        "explain": "`strace -e trace=network` 只跟踪网络相关系统调用；此处看到 connect 建立连接、sendto 发送 HTTP 请求，用于诊断程序行为。"
+      }
     },
     {
       "name": "time",
@@ -5020,7 +5464,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "real 为墙钟耗时，user 与 sys 分别为用户态和内核态 CPU 时间；多核并行时两者之和可超过 real。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ time ./build.sh\nreal    0m12.345s\nuser    0m09.120s\nsys     0m01.200s",
+        "explain": "`time` 统计命令耗时：real 实际墙钟、user 用户态 CPU、sys 内核态 CPU。\nuser+sys < real 说明有 I/O 等待；常用于性能分析。"
+      }
     },
     {
       "name": "timeout",
@@ -5040,7 +5488,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ timeout 5 slow.sh\n(timed out after 5s, exit 124)\n$ echo $?\n124",
+        "explain": "`timeout 5` 在 5 秒后若命令未结束则杀掉并返回码 124；`echo $?` 读到 124 即超时触发。"
+      }
     },
     {
       "name": "df",
@@ -5114,7 +5566,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "ext4 默认为 root 保留 5% 空间，故普通用户可用量小于「总量减已用」。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ df -h\nFilesystem  Size  Used Avail Use% Mounted on\n/dev/sda1    50G   20G   28G  42% /\ntmpfs       3.9G     0  3.9G   0% /dev/shm",
+        "explain": "`df -h` 以人类可读单位显示各文件系统容量；Used/Avail 已用可用，Use% 使用率，Mounted on 挂载点。\n/dev/sda1 根分区用了 42%，尚有余量。"
+      }
     },
     {
       "name": "du",
@@ -5189,7 +5645,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "已删除但仍被进程占用的文件不计入 du 却计入 df，两者对不上时用 lsof 排查。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ du -sh /var/log\n245M  /var/log\n$ du -h --max-depth=1 /home | sort -h\n12K  /home/user/.cache\n2.1G /home/user/data",
+        "explain": "`du -sh` 汇总目录总大小(245M)；`--max-depth=1` 看各级子目录并 `sort -h` 找出最占空间的目录。"
+      }
     },
     {
       "name": "mount",
@@ -5259,7 +5719,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "命令行挂载重启后失效，需写入 /etc/fstab；fstab 写错可能导致系统无法启动，建议先 mount -a 验证。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ mount | grep sda1\n/dev/sda1 on / type ext4 (rw,relatime)\n$ mount -t tmpfs tmpfs /mnt/ram",
+        "explain": "`mount` 列出已挂载文件系统；首行显示 /dev/sda1 挂载为 /，ext4、可读写(rw)。\n第二行示例把 tmpfs 挂到 /mnt/ram（内存盘）。"
+      }
     },
     {
       "name": "umount",
@@ -5310,7 +5774,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "报忙时先用 lsof +D <挂载点> 或 fuser -vm <挂载点> 找出占用进程，注意当前 shell 不能处于该目录内。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ umount /mnt/ram\n$ mount | grep ram\n(无输出，已卸载)",
+        "explain": "`umount /mnt/ram` 卸载挂载点；`mount | grep ram` 无输出即卸载成功。若提示 busy，先 `fuser -km` 杀占用进程。"
+      }
     },
     {
       "name": "fdisk",
@@ -5330,7 +5798,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "操作分区有数据丢失风险",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ fdisk -l /dev/sdb\nDisk /dev/sdb: 16 GiB, 17179869184 bytes, 33554432 sectors\nDevice     Boot Start      End  Sectors Size Id Type\n/dev/sdb1  *     2048 33554431 33552384  16G 83 Linux",
+        "explain": "`fdisk -l /dev/sdb` 列出磁盘与分区表；显示磁盘容量、扇区数、分区 /dev/sdb1(16G, Linux 类型 83)。"
+      }
     },
     {
       "name": "parted",
@@ -5350,7 +5822,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ parted /dev/sdb print\nModel: ATA Disk (scsi)\nDisk /dev/sdb: 16.0GB\nNumber  Start   End     Size    File system  Name  Flags\n 1      1049kB  16.0GB  16.0GB  ext4",
+        "explain": "`parted print` 以更易读方式显示分区：GPT/MBR、各分区起止、大小与文件系统；比 fdisk 更适合大磁盘与 GPT。"
+      }
     },
     {
       "name": "lsblk",
@@ -5411,7 +5887,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "显示设备节点的属主、属组与权限。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ lsblk\nNAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT\nsda      8:0    0   50G  0 disk\n├─sda1   8:1    0   50G  0 part /\nsdb      8:16   0   16G  0 disk\n└─sdb1   8:17   0   16G  0 part /data",
+        "explain": "`lsblk` 树状列出块设备：磁盘(sda/sdb)与分区(sda1/sdb1)及挂载点；清晰展示磁盘→分区→挂载的层级。"
+      }
     },
     {
       "name": "blkid",
@@ -5431,7 +5911,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ blkid /dev/sda1\n/dev/sda1: UUID=\"a1b2c3...\" TYPE=\"ext4\" PARTUUID=\"...\" ",
+        "explain": "`blkid` 显示块设备的 UUID、文件系统类型(TYPE)与 PARTUUID；fstab 中常用 UUID= 引用，避免设备名变动导致挂载错乱。"
+      }
     },
     {
       "name": "mkfs",
@@ -5451,7 +5935,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "格式化会清空数据！",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mkfs -t ext4 /dev/sdb1\nmke2fs 1.46.5 (30-Dec-2021)\nCreating filesystem with 4096000 4k blocks\n$ blkid /dev/sdb1\n/dev/sdb1: UUID=\"...\" TYPE=\"ext4\" ",
+        "explain": "`mkfs -t ext4` 在分区上创建 ext4 文件系统（会清空数据！）；`blkid` 确认 TYPE 已为 ext4。"
+      }
     },
     {
       "name": "dd",
@@ -5479,7 +5967,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "if=/dev/sda 写错 of= 会毁盘，务必核对；bs 越大越快但更占内存",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dd if=/dev/zero of=test.img bs=1M count=10\n10+0 records in\n10+0 records out\n10485760 bytes (10 MB) copied, 0.01 s, 1.0 GB/s",
+        "explain": "`dd if=输入 of=输出 bs=块大小 count=块数`；此处用零填充生成 10MB 测试镜像。\n`if=/dev/sda of=/dev/sdb` 可整盘克隆——极危险，务必核对 if/of 顺序！"
+      }
     },
     {
       "name": "fsck",
@@ -5499,7 +5991,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "需在卸载状态下运行",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ fsck -y /dev/sdb1\nfsck from util-linux 2.38\n/dev/sdb1: clean, 12345/1048576 files, 234567/4194304 blocks",
+        "explain": "`fsck -y` 检查并自动修复文件系统；输出 clean 表示无错误。应在卸载状态下运行，否则可能损坏数据。"
+      }
     },
     {
       "name": "e2fsck",
@@ -5519,7 +6015,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ e2fsck -f /dev/sdb1\nPass 1: Checking inodes...\n/dev/sdb1: 12345/1048576 files (0.1% non-contiguous), 234567/4194304 blocks",
+        "explain": "`e2fsck -f` 强制检查 ext2/3/4 文件系统各阶段(索引节点、块、目录)；输出文件/块数，用于 ext 专用修复。"
+      }
     },
     {
       "name": "tune2fs",
@@ -5539,7 +6039,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ tune2fs -l /dev/sdb1 | head\nFilesystem volume name:   data\nInode count:              1048576\nBlock size:               4096\nFilesystem state:         clean",
+        "explain": "`tune2fs -l` 显示 ext 文件系统参数（卷名、inode 数、块大小、状态）；也可 `-L` 改卷标、`-i` 调检查间隔。"
+      }
     },
     {
       "name": "badblocks",
@@ -5559,7 +6063,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ badblocks -v /dev/sdb1\nChecking blocks 0 to 4194303\n0 bad blocks found. (0/0/0 errors)",
+        "explain": "`badblocks -v` 扫描磁盘坏块；输出 0 bad blocks 表示无损。常与 `e2fsck -c` 配合标记坏块。"
+      }
     },
     {
       "name": "nvme",
@@ -5579,7 +6087,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nvme list\nNode             SN                   Model            Namespace Size\n/dev/nvme0n1     S4...                Samsung 980      1.02  TB",
+        "explain": "`nvme list` 列出 NVMe 固态硬盘：设备节点、序列号、型号、容量；`nvme smart-log /dev/nvme0n1` 可查健康度。"
+      }
     },
     {
       "name": "losetup",
@@ -5599,7 +6111,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ losetup -f test.img\n$ losetup -a\n/dev/loop0: []: (/path/test.img)\n$ losetup -d /dev/loop0",
+        "explain": "`losetup -f` 把镜像文件关联到空闲 loop 设备；`-a` 列出所有 loop；`-d` 解除。常用于挂载 .img 分区。"
+      }
     },
     {
       "name": "sync",
@@ -5619,7 +6135,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sync\n$ echo $?\n0",
+        "explain": "`sync` 把内核缓存的写操作刷到磁盘，确保数据安全；返回 0 表示完成。卸载/关机前应执行。"
+      }
     },
     {
       "name": "mkswap",
@@ -5639,7 +6159,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mkswap /swapfile\nSetting up swapspace version 1, size = 2 GiB\n$ swapon /swapfile\n$ free -h | grep Swap\nSwap:   2.0Gi   0B   2.0Gi",
+        "explain": "`mkswap` 初始化交换文件；`swapon` 启用；`free` 显示 Swap 已增 2G，提供额外虚拟内存。"
+      }
     },
     {
       "name": "swapon",
@@ -5659,7 +6183,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ swapon --show\nNAME      TYPE SIZE USED PRIO\n/swapfile file   2G   0B   -2",
+        "explain": "`swapon --show` 列出当前启用的交换空间；此处为 2G 文件型交换，USED 0 表示暂未使用。"
+      }
     },
     {
       "name": "swapoff",
@@ -5679,7 +6207,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ swapoff /swapfile\n$ swapon --show\n(无输出，交换已关闭)",
+        "explain": "`swapoff /swapfile` 关闭指定交换空间；`swapon --show` 无输出即已全部停用。"
+      }
     },
     {
       "name": "dumpe2fs",
@@ -5699,7 +6231,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dumpe2fs -h /dev/sdb1\nInode count:              1048576\nBlock size:               4096\nFilesystem state:         clean\nMount count:              12",
+        "explain": "`dumpe2fs -h` 仅打印超级块信息（inode 数、块大小、状态、挂载次数）；用于诊断 ext 文件系统元数据。"
+      }
     },
     {
       "name": "ncdu",
@@ -5765,7 +6301,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "界面内按 d 会真实删除文件，仅有一次确认，操作需谨慎。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ncdu /home\n--- /home/user -------------------------------------------------\n  2.1 GiB [##########] /data\n 12.0 KiB [          ] /cache\n Total disk usage:   2.1 GiB",
+        "explain": "`ncdu` 交互式磁盘分析：按大小排序各目录，直观找出占用大户(/data 2.1G)，比 du 更易浏览。"
+      }
     },
     {
       "name": "duf",
@@ -5786,7 +6326,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需先安装",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ duf\n╭─────────────────────────────╮\n│ MOUNTED ON  SIZE  USED  AVAIL │\n│ /           50G   20G   28G    │\n╰─────────────────────────────╯",
+        "explain": "`duf` 是 df 的现代彩色替代，表格化显示各挂载点容量；一目了然看剩余空间。"
+      }
     },
     {
       "name": "dust",
@@ -5811,7 +6355,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需先安装",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dust /home -d 1\n 2.1G ┌── /home/user/data\n12.0K ├── /home/user/cache\n 2.1G ┌── /home/user",
+        "explain": "`dust` 以可视化条形展示目录占用；`-d 1` 仅看一级，快速定位哪个子目录最占空间。"
+      }
     },
     {
       "name": "quota",
@@ -5835,7 +6383,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需文件系统启用配额并在挂载时配置（usrquota/grpquota）",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ quota -s alice\nDisk quotas for user alice:\n  Filesystem  blocks  quota  limit  grace  files  quota  limit\n  /dev/sda1   512000  1G     2G           1234   0      0",
+        "explain": "`quota -s` 显示用户磁盘配额(-s 人性化)；alice 已用 512M，软限 1G、硬限 2G，files 数未限制。"
+      }
     },
     {
       "name": "ping",
@@ -5911,7 +6463,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "ping 不通不代表主机宕机，很多防火墙默认丢弃 ICMP，应改用 TCP 探测确认。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ping -c 3 example.com\nPING example.com (93.184.216.34): 56 data bytes\n64 bytes from 93.184.216.34: icmp_seq=0 ttl=56 time=12.3 ms\n--- example.com ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, avg rtt=12.4 ms",
+        "explain": "`ping -c 3` 发 3 个 ICMP 回显请求；每行显示往返时间(time)、TTL。\n统计段给出丢包率(0% 正常)与平均 RTT(12.4ms)，用于测试连通性与延迟。"
+      }
     },
     {
       "name": "curl",
@@ -6016,7 +6572,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "通过代理访问，如 -x http://127.0.0.1:7890。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ curl -s -o /dev/null -w '%{http_code} %{time_total}\\n' https://example.com\n200 0.412\n$ curl -I https://example.com\nHTTP/2 200\ncontent-type: text/html",
+        "explain": "第1条用 `-w` 输出 HTTP 状态码 200 与总耗时 0.412s，适合脚本判断。\n第2条 `-I` 仅取响应头，看到 HTTP/2 200 与内容类型。"
+      }
     },
     {
       "name": "wget",
@@ -6120,7 +6680,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "从文件批量读取待下载 URL，每行一个。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ wget -q https://example.com/file.zip\n$ ls -l file.zip\n-rw-r--r-- 1 user user 1048576 Aug  4 12:00 file.zip",
+        "explain": "`wget -q` 安静地下载文件到当前目录；`ls` 确认 file.zip 已落地(1MB)。支持断点续传 `-c`。"
+      }
     },
     {
       "name": "ssh",
@@ -6219,7 +6783,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "启用压缩。仅在低带宽链路上有收益。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ssh user@192.168.1.10\nuser@192.168.1.10's password: \nWelcome to Ubuntu 22.04\n$ hostname\nserver01",
+        "explain": "`ssh user@host` 远程登录；输入密码后进入对端 shell，`hostname` 显示已连到 server01。"
+      }
     },
     {
       "name": "scp",
@@ -6294,7 +6862,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "OpenSSH 9 起 scp 默认改用 SFTP 协议，且官方推荐改用 rsync 或 sftp。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ scp file.txt user@192.168.1.10:/tmp/\nfile.txt                      100% 1024     1.0KB/s   00:01\n$ ssh user@192.168.1.10 'ls /tmp/file.txt'\n/tmp/file.txt",
+        "explain": "`scp` 安全复制文件到远端 /tmp/；进度条显示 100% 完成。再用 ssh 远端 `ls` 确认已送达。"
+      }
     },
     {
       "name": "sftp",
@@ -6350,7 +6922,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "传递 ssh 配置项。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sftp user@host\nsftp> put local.txt\nUploading local.txt to /home/user/local.txt\nsftp> ls\nlocal.txt",
+        "explain": "`sftp` 交互式安全传输；`put` 上传文件，`ls` 确认远端已存在。适合无 scp 时的文件交换。"
+      }
     },
     {
       "name": "rsync",
@@ -6435,7 +7011,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "源路径带 / 表示复制目录内容，不带 / 表示复制目录本身。这是最经典的语义陷阱。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ rsync -avh --progress src/ user@host:/backup/\nsending incremental file list\na.txt\n         1.02K 100%    0.00kB/s    0:00:00\nsent 1.05K bytes  received 35 bytes  2.17K bytes/sec",
+        "explain": "`rsync -avh` 增量同步(只传变更)；`-a` 归档保留属性，`--progress` 显示进度。适合备份与镜像。"
+      }
     },
     {
       "name": "netstat",
@@ -6506,7 +7086,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "netstat 属于已废弃的 net-tools，新系统可能未预装，建议改用 ss。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ netstat -tunlp | head -4\nProto Recv-Q Send-Q Local Address  State   PID/Program\ntcp        0      0 0.0.0.0:22     LISTEN  812/sshd\ntcp        0      0 127.0.0.1:8080 LISTEN  1234/node",
+        "explain": "`netstat -tunlp` 列出监听端口：t=tcp,u=udp,n=数字, l=监听,p=进程。\nsshd 监听 22、node 监听 127.0.0.1:8080，可查端口占用。"
+      }
     },
     {
       "name": "ss",
@@ -6582,7 +7166,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "直接读取内核 netlink 接口，在连接数上万时速度优势明显。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ss -tlnp\nState   Recv-Q Send-Q Local Address:Port  Process\nLISTEN 0      128    0.0.0.0:22          users:((\"sshd\",pid=812))\nLISTEN 0      128    127.0.0.1:8080      users:((\"node\",pid=1234))",
+        "explain": "`ss -tlnp` 是现代版 netstat，更快；显示 LISTEN 状态的 TCP 端口及对应进程(pid)。"
+      }
     },
     {
       "name": "ip",
@@ -6662,7 +7250,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "输出 JSON，便于脚本解析。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ip addr show eth0\n2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500\n    inet 192.168.1.20/24 brd 192.168.1.255 scope global eth0\n$ ip route\ndefault via 192.168.1.1 dev eth0",
+        "explain": "`ip addr show` 显示网卡 IP(192.168.1.20/24)与状态 UP；`ip route` 显示默认网关 192.168.1.1。取代旧 ifconfig。"
+      }
     },
     {
       "name": "ifconfig",
@@ -6718,7 +7310,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "属 net-tools 已废弃，不显示同一网卡的全部 IP，多地址场景请改用 ip addr。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ifconfig eth0\neth0: flags=4163<UP,BROADCAST,RUNNING>  mtu 1500\n      inet 192.168.1.20  netmask 255.255.255.0\n      RX packets 12345  bytes 2.1M",
+        "explain": "旧式网卡配置查看；显示 inet 地址、掩码、收发统计。已过时，建议用 `ip` 替代，但很多脚本仍在用。"
+      }
     },
     {
       "name": "traceroute",
@@ -6784,7 +7380,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "* 表示该跳未响应，通常是路由器禁用了 ICMP 回应，并不必然代表链路中断。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ traceroute example.com\n 1  gateway (192.168.1.1)   1.2 ms\n 2  10.0.0.1                5.4 ms\n 3  93.184.216.34          12.3 ms",
+        "explain": "逐跳显示到目标的路径与每跳延迟；第1跳是网关，最后一跳到达目标(12.3ms)，用于定位网络瓶颈在哪一段。"
+      }
     },
     {
       "name": "mtr",
@@ -6804,7 +7404,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mtr -r -c 10 example.com\nHOST: local  Loss%  Snt  Last  Avg\n  1. gateway  0.0%    10   1.2   1.5\n  3. 93.184.. 0.0%    10  12.3 12.5",
+        "explain": "`mtr` 结合 ping+traceroute 并持续采样；`-c 10` 发 10 轮，显示每跳丢包率(Loss%)与平均延迟，比 traceroute 更稳。"
+      }
     },
     {
       "name": "dig",
@@ -6879,7 +7483,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "输出中的数字为剩余缓存秒数，可据此判断记录是否来自缓存。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ dig +short example.com\n93.184.216.34\n$ dig example.com A +noall +answer\nexample.com. 3600 IN A 93.184.216.34",
+        "explain": "`dig +short` 直接返回解析到的 IP；`+noall +answer` 精简只显示答案段(A 记录 IPv4、TTL 3600)。DNS 排障首选。"
+      }
     },
     {
       "name": "host",
@@ -6899,7 +7507,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "host 简单；dig 更详细",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ host example.com\nexample.com has address 93.184.216.34\nexample.com mail is handled by 0 .",
+        "explain": "`host` 简单 DNS 查询：返回 A 地址与 MX 邮件记录；比 dig 输出更友好，适合快速查域名。"
+      }
     },
     {
       "name": "whois",
@@ -6919,7 +7531,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ whois example.com | head -6\nDomain Name: EXAMPLE.COM\nRegistrar: RESERVED-Internet\nCreation Date: 1995-08-14\nExpiration Date: 2026-08-13",
+        "explain": "`whois` 查询域名注册信息：注册商、创建/到期时间；用于确认域名归属与到期续费提醒。"
+      }
     },
     {
       "name": "nc",
@@ -6943,7 +7559,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nc -l 1234 > recv.txt   # 接收端\n$ nc 127.0.0.1 1234 < send.txt  # 发送端\n$ cat recv.txt\nhello nc",
+        "explain": "`nc`(netcat) 网络瑞士军刀；`-l 1234` 监听端口收数据，另一端连接发送，实现简易文件传输/端口探测。"
+      }
     },
     {
       "name": "nmap",
@@ -6963,7 +7583,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "扫描他人系统可能违法，仅用于自有资产",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nmap -sT 192.168.1.0/24\nNmap scan report for 192.168.1.10\nHost is up (0.0021s latency).\nPORT   STATE SERVICE\n22/tcp open  ssh\n80/tcp open  http",
+        "explain": "`nmap -sT` TCP 端口扫描；显示主机在线、开放端口(22 ssh、80 http)。用于安全自查与资产盘点。"
+      }
     },
     {
       "name": "tcpdump",
@@ -6983,7 +7607,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ tcpdump -i eth0 -n 'tcp port 80' -c 2\n12:00:01 IP 192.168.1.20.55555 > 93.184.216.34.80: Flags [P]\n12:00:01 IP 93.184.216.34.80 > 192.168.1.20.55555: Flags [.]",
+        "explain": "`tcpdump` 抓包；`-i eth0` 网卡、`port 80` 过滤、`-c 2` 只抓 2 个。输出显示源/目的 IP:端口与 TCP 标志，深度排障用。"
+      }
     },
     {
       "name": "iptables",
@@ -7007,7 +7635,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "规则重启会丢失，需 iptables-save 持久化；改动可能断连，谨慎；新系统多用 nftables/ufw",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ iptables -A INPUT -p tcp --dport 22 -j ACCEPT\n$ iptables -L -n -v | head\nChain INPUT (policy ACCEPT)\n pkts bytes target prot opt in  source  destination\n    0     0 ACCEPT tcp  --  *    *   0.0.0.0/0  tcp dpt:22",
+        "explain": "`iptables -A INPUT -p tcp --dport 22 -j ACCEPT` 放行 SSH 入站；`-L -n -v` 列出规则(包/字节计数)，查看防火墙策略。"
+      }
     },
     {
       "name": "ufw",
@@ -7031,7 +7663,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "ufw 是 iptables 的友好封装",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ufw allow 22/tcp\nRule added\n$ ufw status\nStatus: active\n22/tcp  ALLOW  Anywhere",
+        "explain": "`ufw` 是 iptables 的易用前端；`allow 22/tcp` 放行 SSH，`status` 显示已生效规则，适合个人防火墙快速配置。"
+      }
     },
     {
       "name": "arp",
@@ -7051,7 +7687,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ arp -n\nAddress      HWtype  HWaddress           Iface\n192.168.1.1  ether   00:11:22:33:44:55  eth0",
+        "explain": "`arp -n` 显示 ARP 表：IP 与 MAC 地址的映射(192.168.1.1 → 00:11:22:...)，排查局域网连通与 MAC 绑定时用。"
+      }
     },
     {
       "name": "socat",
@@ -7071,7 +7711,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ socat TCP-LISTEN:1234,fork STDOUT &\n$ echo hi | socat - TCP:127.0.0.1:1234\nhi",
+        "explain": "`socat` 双向数据流工具；一端监听 1234 转发到标准输出，另一端连接发送 \"hi\"，实现端口转发/管道。"
+      }
     },
     {
       "name": "nslookup",
@@ -7091,7 +7735,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": "已被 dig/host 取代",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nslookup example.com\nServer:  192.168.1.1\nAddress: 93.184.216.34",
+        "explain": "`nslookup` 查询 DNS：显示使用的 DNS 服务器(Server)与解析结果地址；交互式也可查 MX/NS 等记录。"
+      }
     },
     {
       "name": "iwconfig",
@@ -7116,7 +7764,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "老旧工具；新系统推荐 iw，部分发行版已不含 iwconfig",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ iwconfig wlan0\nwlan0  IEEE 802.11  ESSID:\"HomeWiFi\"\n       Link Quality=70/70  Signal level=-40 dBm",
+        "explain": "`iwconfig` 查看无线网卡状态：已连 ESSID、链路质量(70/70)、信号强度(-40dBm 越强越好)。"
+      }
     },
     {
       "name": "iw",
@@ -7145,7 +7797,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ iw dev wlan0 link\nConnected to 00:11:22:33:44:55 (on wlan0)\nSSID: HomeWiFi\nsignal: -40 dBm",
+        "explain": "`iw` 是新一代无线配置工具；`link` 显示连接到的 AP MAC、SSID 与信号，比 iwconfig 更现代。"
+      }
     },
     {
       "name": "sshfs",
@@ -7211,7 +7867,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "使用 fusermount -u <挂载点> 卸载；网络中断可能导致挂载点僵死，需加 -z 强制卸载。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sshfs user@host:/remote /mnt/remote\n$ ls /mnt/remote\nfile_on_server.txt",
+        "explain": "`sshfs` 把远端目录通过 SSH 挂载到本地 /mnt/remote，像本地文件一样访问；`ls` 可见远端文件。"
+      }
     },
     {
       "name": "http",
@@ -7291,7 +7951,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "同时打印完整的请求与响应，调试接口时非常直观。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ python3 -m http.server 8000\nServing HTTP on 0.0.0.0 port 8000...\n$ curl -s localhost:8000 | head -1\n<!DOCTYPE html>",
+        "explain": "`python3 -m http.server 8000` 在 8000 端口起一个临时静态文件服务器；`curl` 验证能取到页面，便于临时分享目录。"
+      }
     },
     {
       "name": "iftop",
@@ -7312,7 +7976,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需 root 且安装；按 h 看帮助、q 退出",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ iftop -i eth0\n192.168.1.20  => 93.184.216.34   1.2Mb  0.8Mb  0.6Mb\n",
+        "explain": "`iftop` 实时显示各连接的带宽占用(类似 top for network)；可看哪些 IP 在大量收发，定位流量异常。"
+      }
     },
     {
       "name": "nethogs",
@@ -7332,7 +8000,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需 root 且安装",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nethogs eth0\nPID  USER  PROGRAM                          DEV  SENT  RECEIVED\n1234 user  /usr/bin/node                     eth0  12KB  45KB",
+        "explain": "`nethogs` 按进程(而非连接)统计网络流量；输出 node(PID 1234) 的发送/接收速率，找出耗带宽的进程。"
+      }
     },
     {
       "name": "tar",
@@ -7431,7 +8103,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "默认会剥离路径开头的 /，解压时是相对当前目录展开，不会覆盖系统根目录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ tar -czvf backup.tar.gz /home/user\n/home/user/\n/home/user/a.txt\n$ tar -tzf backup.tar.gz | head\nhome/user/a.txt",
+        "explain": "`tar -czvf` 打包并用 gzip 压缩(-z)；`-t` 列出包内文件而不解压，确认内容。常用组合：压缩 c+z、解压 x+z。"
+      }
     },
     {
       "name": "gzip",
@@ -7501,7 +8177,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "gzip 只能压缩单个文件，压缩目录须先用 tar 打包。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ gzip report.txt\n$ ls report.txt.gz\nreport.txt.gz\n$ gunzip report.txt.gz",
+        "explain": "`gzip` 压缩单个文件为 .gz(原文件被替换删除)；`gunzip` 解压还原。对目录需先 tar 再 gzip。"
+      }
     },
     {
       "name": "gunzip",
@@ -7521,7 +8201,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "gunzip 即 gzip -d",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ gunzip data.gz\n$ ls\ndata\n$ file data\ndata: ASCII text",
+        "explain": "`gunzip data.gz` 解压得到 data；`file` 确认已还原为 ASCII 文本。"
+      }
     },
     {
       "name": "bzip2",
@@ -7541,7 +8225,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ bzip2 -k big.log\n$ ls big.log.bz2\nbig.log.bz2\n$ bunzip2 big.log.bz2",
+        "explain": "`bzip2 -k` 压缩(保留原文件)；比 gzip 压缩率更高但更慢。`.bz2` 解压用 bunzip2。"
+      }
     },
     {
       "name": "xz",
@@ -7561,7 +8249,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ xz -9 kernel.tar\n$ ls kernel.tar.xz\nkernel.tar.xz\n$ unxz kernel.tar.xz",
+        "explain": "`xz -9` 最高压缩率(最慢)；常用于分发大文件。`.xz` 解压用 unxz。"
+      }
     },
     {
       "name": "zip",
@@ -7632,7 +8324,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "跨平台易出现乱码，建议加 -UN=UTF8 或改用 tar。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ zip -r site.zip /var/www\n  adding: var/www/index.html\n$ unzip -l site.zip\nArchive: site.zip\n  var/www/index.html",
+        "explain": "`zip -r` 递归压缩目录；`unzip -l` 列出内容预览而不解压。zip 跨平台(Windows 友好)。"
+      }
     },
     {
       "name": "unzip",
@@ -7703,7 +8399,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "默认逐个询问是否覆盖，脚本中不加 -o 或 -n 会导致挂起。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ unzip site.zip -d /tmp/site\nArchive: site.zip\n extracting: /tmp/site/var/www/index.html\n$ ls /tmp/site/var/www\nindex.html",
+        "explain": "`unzip -d` 解压到指定目录；输出每文件提取进度，`ls` 确认已落地。"
+      }
     },
     {
       "name": "7z",
@@ -7727,7 +8427,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ 7z a arch.7z /data\nCompressing  data/a.bin\nEverything is Ok\n$ 7z l arch.7z\nMethod = LZMA2\nPath = data/a.bin",
+        "explain": "`7z a` 创建 7z 压缩包(高压缩率)；`l` 列出内容。支持多种格式，备份利器。"
+      }
     },
     {
       "name": "zstd",
@@ -7747,7 +8451,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ zstd -19 data.bin -o data.bin.zst\ndata.bin: 3.12%   (1234567 => 38512 bytes)\n$ zstd -d data.bin.zst",
+        "explain": "`zstd -19` 高压缩、极快解压；显示压缩比 3.12%。`-d` 解压。现代首选(兼顾速度与比 gzip 更好的压缩)。"
+      }
     },
     {
       "name": "lz4",
@@ -7767,7 +8475,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lz4 file file.lz4\nCompressed 12345 bytes into 4321 bytes ==> 35%\n$ lz4 -d file.lz4 file2",
+        "explain": "`lz4` 极快但压缩率一般(35%)；适合实时/大数据流压缩。`-d` 解压。"
+      }
     },
     {
       "name": "compress",
@@ -7787,7 +8499,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ compress data.txt\n$ ls data.txt.Z\ndata.txt.Z",
+        "explain": "`compress` 生成 .Z(古老的 LZW 压缩)；现代很少用，仅兼容老旧系统。解压用 uncompress。"
+      }
     },
     {
       "name": "unrar",
@@ -7807,7 +8523,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ unrar x archive.rar /tmp/\nExtracting  doc/readme.txt\nAll OK",
+        "explain": "`unrar x` 解压 rar 到目标目录；`All OK` 表示成功。需安装 unrar 非自由工具。"
+      }
     },
     {
       "name": "rar",
@@ -7827,7 +8547,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ rar a docs.rar *.pdf\nCreating archive docs.rar\nAdding    a.pdf  OK",
+        "explain": "`rar a` 创建 rar 压缩包；逐文件 Adding 提示 OK。rar 为专有格式。"
+      }
     },
     {
       "name": "zcat",
@@ -7847,7 +8571,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "zcat 即 gzip -dc",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ zcat log.gz | head -3\nline one\nline two\nline three",
+        "explain": "`zcat` 不解压直接将 .gz 内容输出到标准输出；配合 head/grep 直接查压缩日志，省去先解压。"
+      }
     },
     {
       "name": "brotli",
@@ -7871,7 +8599,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ brotli -q 11 data.js -o data.js.br\n$ brotli -d data.js.br",
+        "explain": "`brotli -q 11` 高压缩(web 常用)；`.br` 可被 Web 服务器直接发送。`-d` 解压。"
+      }
     },
     {
       "name": "pigz",
@@ -7896,7 +8628,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "接口与 gzip 兼容；多文件/大文件时比 gzip 快很多",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pigz -p 4 bigfile\n$ ls bigfile.gz\nbigfile.gz",
+        "explain": "`pigz` 是 gzip 的多线程版，`-p 4` 用 4 核并行，大文件压缩远快于 gzip。输出 .gz 兼容。"
+      }
     },
     {
       "name": "pax",
@@ -7920,7 +8656,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "可跨 cpio/tar 格式互换；-r 读、-w 写、-f 指定文件",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pax -w -f archive.pax /home/user\n$ pax -rvf archive.pax\n/home/user/a.txt",
+        "explain": "`pax` POSIX 归档工具(可替代 tar/cpio)；`-w -f` 写归档，`-rvf` 读取并解包。跨平台归档更标准。"
+      }
     },
     {
       "name": "uname",
@@ -7976,7 +8716,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "uname 不提供发行版名称与版本，应查看 /etc/os-release 或用 lsb_release。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ uname -a\nLinux server01 6.8.0-45-generic #45-Ubuntu SMP x86_64 GNU/Linux\n$ uname -r\n6.8.0-45-generic",
+        "explain": "`uname -a` 输出全部系统信息：内核名 Linux、主机 server01、内核版本 6.8.0-45、架构 x86_64。\n`-r` 只取内核版本，编译内核模块时常需对应。"
+      }
     },
     {
       "name": "uptime",
@@ -8022,7 +8766,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "Linux 的负载还计入不可中断睡眠进程，磁盘或网络阻塞也会推高负载而 CPU 未必繁忙。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ uptime\n 11:50:00 up 3 days,  1:20,  2 users,  load average: 0.10, 0.05, 0.01",
+        "explain": "显示当前时间、已运行 3 天、2 个登录用户、负载均值(1/5/15分钟)；负载接近 CPU 核数即偏忙。"
+      }
     },
     {
       "name": "free",
@@ -8082,7 +8830,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "应看 available 而非 free：缓存可被随时回收，free 偏低属正常现象，不代表内存不足。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ free -h\n              total  used   free  shared  buff/cache  available\nMem:          15Gi   4.1Gi  6.2Gi  350Mi      5.3Gi      10Gi\nSwap:        2.0Gi      0B  2.0Gi",
+        "explain": "`free -h` 以可读单位显示内存：total 15G、used 4.1G、available 真正可用 10G(含可回收缓存)。\nSwap 未用，说明内存充足。"
+      }
     },
     {
       "name": "lscpu",
@@ -8133,7 +8885,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "总逻辑核数 = 插槽数 × 每插槽核心数 × 每核心线程数；超线程使线程数为物理核数的两倍。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ lscpu | head -6\nArchitecture:        x86_64\nCPU op-mode(s):      32-bit, 64-bit\nCPU(s):              8\nThread(s) per core:  2\nCore(s) per socket:  4\nSocket(s):           1",
+        "explain": "`lscpu` 汇总 CPU 拓扑：架构 x86_64、8 逻辑 CPU、每核 2 线程、每槽 4 核、1 插槽——即 4 核 8 线程。"
+      }
     },
     {
       "name": "lsmem",
@@ -8153,7 +8909,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lsmem\nRANGE                  SIZE  STATE   REMOVABLE  BLOCK\n0x0000000000000000-...  16G   online        no       0-63",
+        "explain": "`lsmem` 显示物理内存范围与状态(16G online)；可看 NUMA 与可热插拔块，定位内存布局。"
+      }
     },
     {
       "name": "lsusb",
@@ -8173,7 +8933,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lsusb\nBus 001 Device 002: ID 046d:c52b Logitech USB Receiver\nBus 001 Device 001: ID 1d6b:0002 Linux Foundation Hub",
+        "explain": "`lsusb` 列出 USB 设备：总线/设备号、厂商 ID 与产品(Logitech 接收器、根 Hub)，排查外设时用。"
+      }
     },
     {
       "name": "lspci",
@@ -8193,7 +8957,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lspci | grep -i vga\n01:00.0 VGA compatible controller: NVIDIA Corporation GP107 [GeForce GTX 1050]",
+        "explain": "`lspci` 列出 PCI 设备；grep VGA 找到显卡为 NVIDIA GTX 1050，装驱动前先确认型号。"
+      }
     },
     {
       "name": "lshw",
@@ -8213,7 +8981,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lshw -short | head -6\nH/W path  Device  Class   Description\n/0                system  Computer\n/0/0              memory  16GiB System memory\n/0/1              processor Intel Core i7",
+        "explain": "`lshw -short` 以简表列出硬件层级(系统/内存/处理器)；需 root 才完整，用于全面盘点硬件。"
+      }
     },
     {
       "name": "dmidecode",
@@ -8233,7 +9005,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sudo dmidecode -t memory | head -8\nMemory Device\n  Size: 8192 MB\n  Type: DDR4\n  Speed: 2666 MT/s",
+        "explain": "`dmidecode -t memory` 读取 BIOS/固件中的内存信息：单条 8GB DDR4 2666，查物理内存规格用。需 root。"
+      }
     },
     {
       "name": "dmesg",
@@ -8298,7 +9074,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "多数发行版限制非特权用户读取，通常需要 sudo。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ dmesg | tail -3\n[12345.678] usb 1-2: new high-speed USB device\n[12346.000] sd 0:0:0:0: Attached scsi disk sda\n$ dmesg -w  # 实时跟踪内核日志",
+        "explain": "`dmesg` 显示内核环形缓冲日志；可看硬件枚举(USB/sda 挂载)、驱动错误。加 `-w` 实时跟踪。排查启动/硬件故障首选。"
+      }
     },
     {
       "name": "journalctl",
@@ -8378,7 +9158,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "查看日志占用空间与按大小清理，如 --vacuum-size=200M。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ journalctl -u nginx -b --no-pager | tail -5\nAug 04 11:00 nginx[812]: start worker\n$ journalctl -f -u nginx\n(live log...)",
+        "explain": "`journalctl -u nginx -b` 只看本次启动的 nginx 日志；`-f` 实时跟随。systemd 系统统一日志入口。"
+      }
     },
     {
       "name": "hostnamectl",
@@ -8398,7 +9182,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ hostnamectl\n Static hostname: server01\n       Operating System: Ubuntu 22.04 LTS\n            Kernel: Linux 6.8.0-45",
+        "explain": "`hostnamectl`(无参) 显示主机名、操作系统、内核等；`set-hostname` 可改主机名。"
+      }
     },
     {
       "name": "timedatectl",
@@ -8418,7 +9206,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ timedatectl\n               Local time: Mon 2026-08-04 12:00:00 CST\n           Universal time: Mon 2026-08-04 04:00:00 UTC\n                 Time zone: Asia/Shanghai (CST, +0800)\n$ timedatectl set-timezone UTC",
+        "explain": "显示本地/UTC 时间与时区(Asia/Shanghai +0800)；`set-timezone UTC` 改时区。NTP 同步状态也在此。"
+      }
     },
     {
       "name": "localectl",
@@ -8438,7 +9230,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ localectl\n   System Locale: LANG=en_US.UTF-8\n       VC Keymap: us\n      X11 Layout: us",
+        "explain": "`localectl` 显示系统语言(LANG)、键盘映射；`set-locale LANG=zh_CN.UTF-8` 可改系统语言。"
+      }
     },
     {
       "name": "loginctl",
@@ -8458,7 +9254,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ loginctl\nSESSION UID USER SEAT TTY\n      2 1000 user seat0\n$ loginctl terminate-session 2",
+        "explain": "`loginctl` 列出登录会话；`terminate-session` 可结束指定会话。管理桌面/用户会话用。"
+      }
     },
     {
       "name": "iostat",
@@ -8478,7 +9278,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ iostat -x 1 2\navg-cpu:  %user  %system  %idle\n           2.10    0.50   97.40\nDevice  r/s  w/s  await  rkB/s  wkB/s\nsda    0.50 1.20  2.10   20.0   48.0",
+        "explain": "`iostat -x` 显示 CPU 与磁盘 I/O：CPU idle 97% 空闲；磁盘 sda 读写速率与 await(平均等待 ms)，排查 I/O 瓶颈。"
+      }
     },
     {
       "name": "vmstat",
@@ -8498,7 +9302,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vmstat 1 3\nprocs --memory-- --io-- -system- ----cpu----\n r  b  swpd  free  si so  bi  bo  in  cs us sy id wa\n 1  0     0  6200   0  0   2   8  45  60  2  1 97  0",
+        "explain": "`vmstat 1 3` 每 1 秒采样、共 3 次：procs(r 运行/b 阻塞)、memory(free/swap)、io(bi/bo 块读写)、cpu(us/sy/id/wa)。\nid 97 表示 CPU 空闲，wa 0 无 I/O 等待。"
+      }
     },
     {
       "name": "sar",
@@ -8518,7 +9326,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sar -u 1 2\nLinux 6.8.0  (server01)\n12:00:01  CPU  %user  %system  %idle\n12:00:02  all    2.10    0.50   97.40",
+        "explain": "`sar -u` 报告 CPU 历史/实时使用率(%user/%system/%idle)；sysstat 套件，可查历史(`sar -u -f /var/log/sa/saXX`)。"
+      }
     },
     {
       "name": "mpstat",
@@ -8538,7 +9350,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mpstat -P ALL 1 1\nLinux 6.8.0  (server01)\n12:00:01  CPU  %usr  %sys  %idle\n12:00:02  all   2.10  0.50  97.40\n12:00:02    0   3.00  0.80  96.20",
+        "explain": "`mpstat -P ALL` 按每个 CPU 核心分别报告利用率；可发现是否单核打满而其他空闲的负载不均问题。"
+      }
     },
     {
       "name": "nproc",
@@ -8558,7 +9374,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nproc\n8\n$ nproc --all\n8",
+        "explain": "`nproc` 输出可用逻辑 CPU 数(8)；编译/并行任务常用 `make -j$(nproc)` 充分利用多核。"
+      }
     },
     {
       "name": "sensors",
@@ -8578,7 +9398,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sensors\ncoretemp-isa-0000\nPackage id 0:  +45.0°C\nCore 0:        +42.0°C",
+        "explain": "`sensors`(lm-sensors) 显示 CPU/主板温度；Package 45°C 正常，过高需检查散热。监控硬件温度用。"
+      }
     },
     {
       "name": "lsb_release",
@@ -8638,7 +9462,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "许多最小化安装未预装该命令，更可靠的做法是读取 /etc/os-release。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ lsb_release -a\nDistributor ID: Ubuntu\nDescription:    Ubuntu 22.04.4 LTS\nRelease:        22.04\nCodename:       jammy",
+        "explain": "`lsb_release -a` 显示发行版信息：Ubuntu 22.04.4 LTS，代号 jammy。脚本中判断系统版本常用。"
+      }
     },
     {
       "name": "neofetch",
@@ -8658,7 +9486,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需先安装；fastfetch 为更快的替代品",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ neofetch\nOS: Ubuntu 22.04 LTS\nHost: ThinkPad T14\nCPU: Intel i7 (8) @ 3.0GHz\nMemory: 4123MiB / 15987MiB",
+        "explain": "`neofetch` 以美观方式汇总系统信息(OS/主机/CPU/内存)并配 ASCII logo，常用于截图展示。"
+      }
     },
     {
       "name": "btop",
@@ -8679,7 +9511,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需先安装；htop 的增强版",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ btop\nCPU[|||       6.2%]  Mem[|||||   4.1G/15.6G]  Net[↓12KiB/s ↑3KiB/s]\nProcess: vim(2.1%)  node(1.3%)  ...",
+        "explain": "`btop` 现代化资源监控(继承 htop)，图形化显示 CPU/内存/网络与进程排行，交互友好。"
+      }
     },
     {
       "name": "glances",
@@ -8703,7 +9539,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需先安装；可配合 -s 作服务端",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ glances\nCPU:  6.2%  Load: 0.10  Mem: 26%  Swap: 0%\nTasks: 210 (1 running)  Sensors: 45°C",
+        "explain": "`glances` 一站式监控：CPU/负载/内存/进程/传感器汇总一屏，还可 Web 模式远程查看。"
+      }
     },
     {
       "name": "shutdown",
@@ -8768,7 +9608,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "附加广播给所有登录用户的提示信息，须放在时间参数之后。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ shutdown -h +10 '系统将维护'\nBroadcast message: ... The system will halt in 10 min\n$ shutdown -c\n(取消已计划的关机)",
+        "explain": "`shutdown -h +10` 10 分钟后关机并广播通知；`shutdown -c` 取消。比直接 poweroff 更友好(可提前告警)。"
+      }
     },
     {
       "name": "reboot",
@@ -8819,7 +9663,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "reboot 立即执行且不通知登录用户，多用户环境建议改用 shutdown -r +5 并附带提示。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ reboot\n(broadcast: system is rebooting; system restarts)",
+        "explain": "`reboot` 立即重启系统；等价于 `shutdown -r now`。远程操作前确认无未保存工作。"
+      }
     },
     {
       "name": "poweroff",
@@ -8865,7 +9713,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "通常需要 root；桌面环境下普通用户可能被 polkit 策略允许。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ poweroff\n(broadcast: system is powering down; machine halts)",
+        "explain": "`poweroff` 立即关机断电；等价于 `shutdown -P now`。虚拟机/物理机均可。"
+      }
     },
     {
       "name": "halt",
@@ -8885,7 +9737,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ halt\n(broadcast: system halted)",
+        "explain": "`halt` 停止 CPU(系统停摆但未必断电)；现代系统多与 poweroff 行为相近。维护时用。"
+      }
     },
     {
       "name": "systemctl",
@@ -8974,7 +9830,11 @@ window.COMMAND_DATA = {
           "default": "10 / 关闭",
           "desc": "status 时控制日志行数与是否分页。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ systemctl status nginx\n● nginx.service - A high performance web server\n     Active: active (running) since Mon 11:00; 1h ago\n$ systemctl restart nginx",
+        "explain": "`systemctl status` 查看服务状态(active running)；`restart/reload/enable/disable` 管理服务。systemd 系统核心命令。"
+      }
     },
     {
       "name": "telinit",
@@ -8994,7 +9854,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "现代多用 systemctl 的 target",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ telinit 3\n(switching to runlevel 3: multi-user text mode)",
+        "explain": "`telinit 3` 切换运行级别(3=多用户文本、5=图形)；在 systemd 下等价于 `systemctl isolate`。"
+      }
     },
     {
       "name": "apt",
@@ -9083,7 +9947,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "apt 面向交互使用，输出带进度条与颜色，但接口稳定性弱于 apt-get，脚本中推荐用后者。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ apt update\nHit:1 http://archive.ubuntu.com jammy InRelease\n$ apt install -y curl\nReading package lists... Done\nThe following NEW packages will be installed: curl",
+        "explain": "`apt update` 刷新软件源索引(Hit 表示已最新)；`apt install -y curl` 安装 curl 并确认将新增该包。Debian/Ubuntu 前端。"
+      }
     },
     {
       "name": "apt-get",
@@ -9154,7 +10022,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "命令行接口向后兼容有保证，是自动化脚本的推荐选择。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ apt-get install -y nginx\n0 upgraded, 12 newly installed, 0 to remove\nProcessing triggers for nginx...",
+        "explain": "`apt-get` 是 apt 的低层命令，脚本中更稳定；输出显示将安装 12 个包，适合自动化部署。"
+      }
     },
     {
       "name": "dpkg",
@@ -9229,7 +10101,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "dpkg 是底层工具，只处理本地包与依赖检查，不访问软件源。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ dpkg -i package.deb\nSelecting previously unselected package demo.\nSetting up demo (1.0) ...\n$ dpkg -l | grep demo\nii  demo  1.0  amd64  demo package",
+        "explain": "`dpkg -i` 直接安装本地 .deb(不自动解决依赖)；`dpkg -l` 列出已装包，ii 表示正常安装。依赖缺失需手动 apt -f install 修复。"
+      }
     },
     {
       "name": "yum",
@@ -9249,7 +10125,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ yum install -y httpd\nDependencies resolved.\nInstalled: httpd-2.4.6\nComplete!",
+        "explain": "`yum install` 解析依赖并安装 httpd，提示 Complete 完成。RHEL/CentOS 7 及以前默认包管理器。"
+      }
     },
     {
       "name": "dnf",
@@ -9269,7 +10149,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "dnf 取代 yum",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dnf install -y git\nDependencies resolved.\nInstalled: git-2.40.0\nComplete!",
+        "explain": "`dnf` 是 yum 的下一代(更快、更好依赖解算)；RHEL 8+ 默认。安装 git 显示 Complete。"
+      }
     },
     {
       "name": "rpm",
@@ -9293,7 +10177,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ rpm -ivh package.rpm\nPreparing... ################################# [100%]\nUpdating / installing...\n   1:demo-1.0-1 ################################# [100%]\n$ rpm -qa | grep demo\ndemo-1.0-1.x86_64",
+        "explain": "`rpm -ivh` 安装本地 rpm(-v 详细 -h 进度条)；`rpm -qa` 查询已装包。不自动处理依赖。"
+      }
     },
     {
       "name": "pacman",
@@ -9317,7 +10205,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pacman -Syu\n:: Synchronizing package databases...\n:: Starting full system upgrade...\nresolving dependencies... done",
+        "explain": "`pacman -Syu` 同步源并全系统升级(Arch 风格)；`-S` 安装、`-R` 卸载。Arch/Manjaro 包管理器。"
+      }
     },
     {
       "name": "zypper",
@@ -9337,7 +10229,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ zypper install -y vim\nRefreshing service 'repo'...\nResolving package dependencies...\nThe following NEW package is going to be installed: vim",
+        "explain": "`zypper install` openSUSE 包管理器；解析依赖并显示将安装的 vim。"
+      }
     },
     {
       "name": "apk",
@@ -9357,7 +10253,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ apk add curl\nfetch https://dl-cdn.alpinelinux.org/.../curl-8.apk\nOK: 12 MiB in 45 packages\n$ apk update\nfetch ... Index of /.../x86_64/APKINDEX.tar.gz",
+        "explain": "`apk add curl` Alpine 安装包(基于 musl，体积小)；`apk update` 刷新索引。容器镜像常用。"
+      }
     },
     {
       "name": "snap",
@@ -9377,7 +10277,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ snap install code --classic\ncode 1.90 from Visual Studio Code installed\n$ snap list | grep code\ncode  1.90  latest/stable  canonical*  -",
+        "explain": "`snap install` 安装 snap 打包的应用(--classic 放宽沙箱)；`snap list` 查看已装。跨发行版的通用打包格式。"
+      }
     },
     {
       "name": "flatpak",
@@ -9397,7 +10301,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ flatpak install flathub org.gimp.GIMP\nLooking for matches...\nInstalling org.gimp.GIMP\n$ flatpak list | head -2\norg.gimp.GIMP  stable  system",
+        "explain": "`flatpak install` 从 flathub 装桌面应用(沙箱隔离)；`flatpak list` 列出已装。桌面应用分发新方式。"
+      }
     },
     {
       "name": "brew",
@@ -9417,7 +10325,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ brew install wget\n==> Downloading https://.../wget\n==> Pouring wget--1.24.bottle\n🍺  /opt/homebrew/Cellar/wget/1.24  (success)",
+        "explain": "`brew install wget` macOS/ Linux 的 Homebrew 包管理器；\"Pour bottle\" 表示用预编译二进制，安装快。"
+      }
     },
     {
       "name": "apt-cache",
@@ -9437,7 +10349,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ apt-cache search nginx\nnginx - high performance web server\nnginx-light - ...\n$ apt-cache policy nginx\nnginx: Installed: (none)  Candidate: 1.18.0",
+        "explain": "`apt-cache search` 按关键词搜包；`policy` 显示已装/候选版本。查询软件源信息用。"
+      }
     },
     {
       "name": "aptitude",
@@ -9465,7 +10381,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需安装；能更好地处理依赖冲突，优于 apt-get",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ aptitude search '~i~nnginx'\ni   nginx  - high performance web server\n$ aptitude install nginx\nThe following NEW packages will be installed: nginx",
+        "explain": "`aptitude` 是 apt 的更强前端，搜索支持 ~ 模式(如 ~i 已装)；依赖解算更智能，交互式 TUI。"
+      }
     },
     {
       "name": "emerge",
@@ -9494,7 +10414,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "编译安装耗时；--ask 先预览、--oneshot 不写入 world",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ emerge -av nginx\nThese are the packages that would be merged:\n[ebuild  N] www-servers/nginx-1.24.0\nWould you like to merge these packages? [Yes/No]",
+        "explain": "`emerge -av nginx` Gentoo 源码包管理器(-a 询问 -v 详细)；显示将编译安装 nginx，确认后从源码构建。"
+      }
     },
     {
       "name": "lsmod",
@@ -9514,7 +10438,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lsmod | head -4\nModule        Size  Used by\nnvidia     12345678  102  drm\nsnd_hda_intel  90123  4  snd_hda_codec",
+        "explain": "`lsmod` 列出已加载内核模块；Size 大小、Used by 被哪些模块依赖。nvidia 模块被 102 处使用。"
+      }
     },
     {
       "name": "modprobe",
@@ -9538,7 +10466,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "修改需谨慎，错误模块可致系统不稳",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ modprobe vfat\n$ lsmod | grep vfat\nvfat    24576  0\n$ modprobe -r vfat",
+        "explain": "`modprobe vfat` 加载 vfat 模块(自动处理依赖)；`lsmod` 确认已加载；`-r` 移除。比 insmod 智能。"
+      }
     },
     {
       "name": "insmod",
@@ -9558,7 +10490,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "insmod 不自动解决依赖；modprobe 会",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ insmod ./mymod.ko\n$ lsmod | grep mymod\nmymod  16384  0",
+        "explain": "`insmod` 直接插入指定 .ko 模块文件(不自动解决依赖)；`lsmod` 确认加载。一般优先用 modprobe。"
+      }
     },
     {
       "name": "rmmod",
@@ -9578,7 +10514,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ rmmod mymod\n$ lsmod | grep mymod\n(无输出，模块已卸载)",
+        "explain": "`rmmod` 移除指定模块；`lsmod` 无输出即已卸载。若被其他模块依赖会失败，需先 rmmod 依赖方。"
+      }
     },
     {
       "name": "depmod",
@@ -9598,7 +10538,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ depmod -a\n(生成 /lib/modules/$(uname -r)/modules.dep)\n$ cat /lib/modules/$(uname -r)/modules.dep | head -1\nkernel/fs/vfat/vfat.ko: kernel/fs/fat/fat.ko",
+        "explain": "`depmod -a` 为当前内核重新生成模块依赖关系文件；输出显示 vfat 依赖 fat 模块，modprobe 据此自动加载。"
+      }
     },
     {
       "name": "modinfo",
@@ -9618,7 +10562,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ modinfo vfat | head -6\nfilename:       /lib/modules/.../vfat.ko\nauthor:         ...\nlicense:        GPL\ndescription:     VFAT filesystem support\ndepends:        fat",
+        "explain": "`modinfo vfat` 显示模块信息：文件路径、作者、许可证、描述、依赖(depends: fat)。查模块详情用。"
+      }
     },
     {
       "name": "echo",
@@ -9668,7 +10616,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "不同 shell 与 /bin/echo 对 -e 的处理不一致，脚本中建议改用 printf。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ echo \"Hello $USER\"\nHello user\n$ echo -e \"a\\tb\"\na    b",
+        "explain": "第1条输出变量 $USER 展开后的值(Hello user)。\n第2条 `-e` 解释转义，`\\t` 变为制表符，实现简单格式化输出。"
+      }
     },
     {
       "name": "printf",
@@ -9719,7 +10671,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "行为在各平台高度一致，是脚本中输出的推荐方式。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ printf '%-10s %d\\n' \"alice\" 30\nalice      30\n$ printf '%.2f\\n' 3.14159\n3.14",
+        "explain": "`printf` 类 C 格式化：`%-10s` 左对齐占 10 列，`%d` 整数；`%.2f` 保留 2 位小数。比 echo 更可控。"
+      }
     },
     {
       "name": "export",
@@ -9770,7 +10726,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "只影响当前 shell 及其子进程，无法反向影响父进程；关闭终端即失效，持久化需写入 ~/.bashrc 等配置。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ export API_KEY=abc123\n$ echo $API_KEY\nabc123\n$ env | grep API_KEY\nAPI_KEY=abc123",
+        "explain": "`export` 设置并导出环境变量(对子进程可见)；`env | grep` 确认已存在于环境。仅当前 shell 会话有效。"
+      }
     },
     {
       "name": "alias",
@@ -9821,7 +10781,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "仅在当前交互式 shell 有效，需写入 ~/.bashrc 才持久；别名不接受参数，需要参数应改用函数。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ alias ll='ls -lh'\n$ ll\n(以长可读格式列出)\n$ alias\nalias ll='ls -lh'",
+        "explain": "`alias ll='ls -lh'` 定义命令别名；之后 ll 即执行 ls -lh。`alias` 单独列出全部别名。"
+      }
     },
     {
       "name": "unalias",
@@ -9841,7 +10805,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ unalias ll\n$ ll\nbash: ll: command not found",
+        "explain": "`unalias ll` 移除别名；再执行 ll 报错 \"command not found\"，确认别名已失效。"
+      }
     },
     {
       "name": "source",
@@ -9887,7 +10855,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "脚本中的 exit 会直接退出当前 shell 而非仅退出脚本。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ source ./venv/bin/activate\n(venv) $  # 提示符前缀出现 (venv)\n$ echo $VIRTUAL_ENV\n/path/venv",
+        "explain": "`source script` 在当前 shell 执行脚本(不启子进程)，故能修改当前环境；此处激活 Python 虚拟环境，VIRTUAL_ENV 已设。"
+      }
     },
     {
       "name": "history",
@@ -9952,7 +10924,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "设置后，以空格开头的命令不会被记入历史，适用于输入敏感信息。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ history 5\n  998  ls -l\n  999  cd /tmp\n 1000  vim a.txt\n$ !999\ncd /tmp",
+        "explain": "`history 5` 显示最近 5 条历史命令及编号；`!999` 重放第 999 条(cd /tmp)。"
+      }
     },
     {
       "name": "read",
@@ -9972,7 +10948,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ read -p 'Name: ' name; echo \"Hi $name\"\nName: alice\nHi alice",
+        "explain": "`read -p` 从标准输入读入变量 name；输入 alice 后 echo 显示，常用于脚本交互。"
+      }
     },
     {
       "name": "eval",
@@ -9992,7 +10972,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "拼接用户输入执行有注入风险",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ cmd=\"ls -l\"; eval $cmd\ntotal 4\n-rw-r--r-- ... a.txt",
+        "explain": "`eval` 把字符串当命令执行；此处展开 cmd 变量并运行 ls -l。慎用——拼接用户输入易引发注入。"
+      }
     },
     {
       "name": "exec",
@@ -10012,7 +10996,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ exec bash --login\n(当前 shell 被新 bash 替换，PID 不变)",
+        "explain": "`exec` 用新程序替换当前 shell 进程(不创建子进程)；常用于在脚本末尾切换 shell 或重定向后替换。"
+      }
     },
     {
       "name": "trap",
@@ -10032,7 +11020,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ trap 'echo bye' EXIT\n$ exit\nbye",
+        "explain": "`trap 'echo bye' EXIT` 注册退出钩子；shell 退出时执行 echo bye。脚本清理(删临时文件)常用。"
+      }
     },
     {
       "name": "set",
@@ -10056,7 +11048,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ set -e\n$ set -x; ls /tmp; set +x\n+ ls /tmp\n(跟踪打印执行的命令)",
+        "explain": "`set -e` 遇错即退出；`set -x` 开启命令回显(前缀 +)，便于调试脚本；`set +x` 关闭。"
+      }
     },
     {
       "name": "unset",
@@ -10076,7 +11072,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ unset API_KEY\n$ echo $API_KEY\n\n(空，变量已清除)",
+        "explain": "`unset` 删除变量或函数；`echo` 输出空，确认 API_KEY 已不存在。"
+      }
     },
     {
       "name": "shopt",
@@ -10096,7 +11096,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ shopt -s globstar\n$ shopt globstar\nglobstar  on",
+        "explain": "`shopt -s globstar` 开启 globstar(`**` 递归匹配)；`shopt globstar` 显示其状态为 on。bash 高级通配开关。"
+      }
     },
     {
       "name": "type",
@@ -10147,7 +11151,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "which 是外部程序且不识别别名与内建，type 是 shell 内建，判断结果更准确。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ type ls\nls is aliased to 'ls --color=auto'\n$ type -t cd\nbuiltin",
+        "explain": "`type` 说明命令类型：ls 是别名；`type -t cd` 返回 builtin(内置命令)，区分别名/函数/内置/外部程序。"
+      }
     },
     {
       "name": "command",
@@ -10167,7 +11175,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ command ls\n(绕过别名，直接执行外部 ls)\n$ command -v git\n/usr/bin/git",
+        "explain": "`command` 忽略别名/函数直接执行原命令；`command -v git` 返回 git 的路径，脚本中取命令绝对路径。"
+      }
     },
     {
       "name": "builtin",
@@ -10187,7 +11199,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ builtin cd /tmp\n$ pwd\n/tmp",
+        "explain": "`builtin` 显式调用 shell 内置版命令(忽略同名函数/外部程序)；`cd` 本就是内置，此处直接执行内置切换目录。"
+      }
     },
     {
       "name": "let",
@@ -10207,7 +11223,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ let \"a = 3 + 4\"; echo $a\n7\n$ let \"i++\"; echo $i\n1",
+        "explain": "`let` 在 bash 中做算术求值；`a=3+4` 得 7，`i++` 自增到 1。算术推荐用 `(( ))`，let 仍可。"
+      }
     },
     {
       "name": "wait",
@@ -10227,7 +11247,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sleep 1 & sleep 2 & wait\n[1]-  Done  sleep 1\n[2]+  Done  sleep 2",
+        "explain": "`wait` 等待所有(或指定 PID)后台作业结束；两个 sleep 完成后提示 Done，脚本中用于顺序同步。"
+      }
     },
     {
       "name": "ulimit",
@@ -10247,7 +11271,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ulimit -a | head -3\ncore file size          (blocks, -c) 0\nmax memory size         (kbytes, -m) unlimited\n$ ulimit -n 4096",
+        "explain": "`ulimit -a` 显示资源限制(核心文件 0、内存 unlimited)；`ulimit -n 4096` 把打开文件数上限设为 4096，防句柄耗尽。"
+      }
     },
     {
       "name": "test",
@@ -10267,7 +11295,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "test 即 [ ... ]",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ test -f a.txt && echo exists\nexists\n$ [ 5 -gt 3 ] && echo yes\nyes",
+        "explain": "`test`(或 `[ ]`) 做条件判断：`-f` 文件存在、`-gt` 大于。配合 && 实现 if 逻辑，脚本判断基石。"
+      }
     },
     {
       "name": "fc",
@@ -10287,7 +11319,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ fc -l -5\n 996  grep x\n 997  cat a\n 998  vim b\n$ fc 998\n(打开编辑器编辑并重执行第 998 条)",
+        "explain": "`fc -l -5` 列出最近 5 条历史；`fc 998` 把该命令载入编辑器，修改后重执行，修正长命令很方便。"
+      }
     },
     {
       "name": "[",
@@ -10307,7 +11343,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "[ 是 test 的同名内建，注意收尾 ]",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ [ -d /tmp ] && echo dir\ndir\n$ [ -z \"$VAR\" ] && echo empty\nempty",
+        "explain": "`[` 是 test 的同义内置；`-d` 判目录、`-z` 判空串。上例 /tmp 是目录故输出 dir，VAR 空故输出 empty。"
+      }
     },
     {
       "name": "fzf",
@@ -10386,7 +11426,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "安装 shell 集成后，Ctrl+R 搜索历史、Ctrl+T 选择文件、Alt+C 切换目录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ls | fzf\n(a.txt  |  b.txt  |  c.txt)  <- 交互模糊选择\n$ cat $(ls | fzf)\n(打开所选文件)",
+        "explain": "`fzf` 模糊查找过滤器；管道输入列表后交互高亮选择，回车输出选中项。常与 cd/vi/git 组合提效。"
+      }
     },
     {
       "name": "nano",
@@ -10452,7 +11496,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "编辑系统文件需 sudo，否则退出时才会发现无法保存。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ nano a.txt\n(底部显示 ^O 写入 ^X 退出；保存提示 [ Wrote 1 line ])",
+        "explain": "`nano` 简易终端编辑器；`^O`(Ctrl+O) 保存、`^X` 退出，底部有快捷键提示，新手友好。"
+      }
     },
     {
       "name": "emacs",
@@ -10472,7 +11520,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ emacs -nw a.txt\n(文本界面；C-x C-s 保存，C-x C-c 退出)",
+        "explain": "`emacs -nw` 在终端(无窗口)打开；`C-x C-s` 保存、`C-x C-c` 退出。功能强大的可扩展编辑器。"
+      }
     },
     {
       "name": "ed",
@@ -10492,7 +11544,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ed a.txt\na.txt: 3 lines\n1p\nline one\nq",
+        "explain": "`ed` 行编辑器(无可视)：启动报 3 行；`1p` 打印第 1 行、`q` 退出。极简环境/脚本补丁用。"
+      }
     },
     {
       "name": "man",
@@ -10557,7 +11613,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "多数系统默认英文，可安装 manpages-zh 并设置 LANG 获取中文版，但内容常滞后。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ man ls | head -5\nLS(1)  User Commands  LS(1)\nNAME\n   ls - list directory contents\nSYNOPSIS\n   ls [OPTION]... [FILE]...",
+        "explain": "`man` 查看命令手册：显示章节(1=用户命令)、NAME、SYNOPSIS(语法)；`/` 搜索、q 退出，是权威用法来源。"
+      }
     },
     {
       "name": "info",
@@ -10577,7 +11637,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ info coreutils 'ls invocation'\n(next: dir, prev: ..., up: Top)  -- 超链接式文档",
+        "explain": "`info` GNU 超文本手册(比 man 结构化)：可节点间跳转，适合 GNU 工具(如 coreutils)的详尽文档。"
+      }
     },
     {
       "name": "which",
@@ -10623,7 +11687,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "未找到时返回非零，可用于脚本中检测命令是否存在。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ which git python3\n/usr/bin/git\n/usr/bin/python3",
+        "explain": "`which` 显示可执行文件的路径(在 $PATH 中首个匹配)；确认实际调用的程序位置，排查\"同名命令冲突\"。"
+      }
     },
     {
       "name": "whereis",
@@ -10643,7 +11711,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ whereis ls\nls: /usr/bin/ls /usr/share/man/man1/ls.1.gz",
+        "explain": "`whereis` 同时定位二进制、源码与手册页；ls 的二进制在 /usr/bin、手册在 man1，比 which 信息更全。"
+      }
     },
     {
       "name": "whatis",
@@ -10663,7 +11735,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ whatis git\ngit (1)  - the stupid content tracker",
+        "explain": "`whatis` 从 whatis 数据库取一行命令简介；git 描述为内容追踪器，快速了解命令用途。需 updatedb 已建库。"
+      }
     },
     {
       "name": "locate",
@@ -10724,7 +11800,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "结果来自定期更新的索引，新建文件可能查不到，需先执行 sudo updatedb。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ locate nginx.conf\n/etc/nginx/nginx.conf\n/usr/share/nginx/nginx.conf",
+        "explain": "`locate` 基于预建数据库秒搜文件名；列出所有 nginx.conf 路径。比 find 快但非实时(需 updatedb 更新)。"
+      }
     },
     {
       "name": "updatedb",
@@ -10744,7 +11824,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ updatedb\n(无输出，更新 /var/lib/mlocate/mlocate.db)\n$ locate newfile\n/home/user/newfile",
+        "explain": "`updatedb` 重建 locate 数据库(通常 cron 每日跑)；之后 locate 能搜到新建的 newfile。"
+      }
     },
     {
       "name": "date",
@@ -10809,7 +11893,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "输出 Unix 时间戳；反向可用 date -d @1700000000 还原为可读时间。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ date\nMon Aug  4 12:00:00 CST 2026\n$ date +%Y-%m-%d\n2026-08-04\n$ date -d 'next monday' +%F\n2026-08-11",
+        "explain": "第1条显示当前日期时间；`+%Y-%m-%d` 自定义格式输出 2026-08-04；`-d` 做日期运算得下周一。脚本中常取时间戳。"
+      }
     },
     {
       "name": "cal",
@@ -10833,7 +11921,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ cal\n   August 2026\nSu Mo Tu We Th Fr Sa\n                   1\n 2  3  4  5  6  7  8\n...\n$ cal 2026\n(整年日历)",
+        "explain": "`cal` 显示当前月日历(高亮今日所在)；`cal 2026` 显示全年。快速查看日期与星期。"
+      }
     },
     {
       "name": "sleep",
@@ -10879,7 +11971,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "在等待条件的循环中使用时应设置最大重试次数，避免无限阻塞。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sleep 2 && echo done\n(等待 2 秒)\ndone",
+        "explain": "`sleep 2` 暂停 2 秒；常与 && 配合在命令间插入延时，或用于轮询/定时脚本。"
+      }
     },
     {
       "name": "yes",
@@ -10899,7 +11995,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ yes | head -3\ny\ny\ny\n$ yes n | rm -ri dir",
+        "explain": "`yes` 持续输出 y(或指定串)；管道给需要确认的交互命令(如 rm -i)自动应答，批量操作省事。"
+      }
     },
     {
       "name": "clear",
@@ -10940,7 +12040,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "默认只是滚屏，向上滚动仍能看到历史输出；彻底清除需用 reset 或 printf '\\033c'。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ clear\n(终端屏幕清屏，回到顶部)",
+        "explain": "`clear`(或 Ctrl+L) 清屏，隐藏历史输出，聚焦当前命令。"
+      }
     },
     {
       "name": "script",
@@ -10960,7 +12064,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ script session.log\nScript started, file is session.log\n$ ls\n$ exit\nScript done, file is session.log",
+        "explain": "`script` 把终端会话全程录制到文件；`exit` 结束后 session.log 含所有输入输出，便于复盘/教学。"
+      }
     },
     {
       "name": "wall",
@@ -10980,7 +12088,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ wall '系统将于 10 分钟后维护'\nBroadcast message from user (pts/0):\n系统将于 10 分钟后维护",
+        "explain": "`wall` 向所有登录用户终端广播消息；运维通知全体在线用户时用(需权限)。"
+      }
     },
     {
       "name": "mesg",
@@ -11000,7 +12112,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mesg y\n$ mesg\nis y\n$ mesg n\n(拒绝他人 write/wall 消息)",
+        "explain": "`mesg y/n` 控制是否接收他人发来的终端消息(write/talk)；`mesg` 显示当前状态。隐私/演示时设为 n。"
+      }
     },
     {
       "name": "tldr",
@@ -11056,7 +12172,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "只给常用示例，不含完整选项说明，需要精确语义仍应查 man。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ tldr tar\ntar\nCompress/extract archives.\n- Create: tar -cf file.tar path\n- Extract: tar -xf file.tar",
+        "explain": "`tldr` 提供命令的实用示例(社区维护，比 man 精简)；tar 直接给出常见压缩/解压模板，速查首选。"
+      }
     },
     {
       "name": "cheat",
@@ -11080,7 +12200,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "需先安装",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ cheat git\n# To stage all changes:\ngit add .\n# To commit:\ngit commit -m 'msg'",
+        "explain": "`cheat` 显示命令速查备忘(社区 cheat-sheet)；git 列出常用片段，比 man 直达要点。"
+      }
     },
     {
       "name": "reset",
@@ -11126,7 +12250,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "stty sane 可修复输入设置而不清屏。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ reset\n(重置终端到默认状态，清除乱码/异常显示)",
+        "explain": "`reset` 恢复终端设置(当输出二进制导致乱码、光标错位时)；比 clear 更彻底地重置。"
+      }
     },
     {
       "name": "vim",
@@ -11152,7 +12280,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": ":q! 强制退出不保存会丢失改动；只读可用 vim -R",
       "compare": "vim 是 vi 的增强版；nano 更简单但功能弱",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vim report.txt\n~                             (空行以 ~ 表示)\n-- INSERT --                 (按 i 进入插入模式时显示)\n'report.txt' 3L, 42C          (状态行: 3 行 42 字符)",
+        "explain": "启动 Vim 编辑 report.txt；行首 ~ 代表文件末尾之后的空行。`-- INSERT --` 提示处于插入模式；底部状态行列出行数与字符数。`:q!` 不保存退出，`:wq` 保存退出。"
+      }
     },
     {
       "name": "vim -d",
@@ -11174,7 +12306,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vim -d a.txt b.txt\na.txt        | b.txt\nline one     | line ONE\nline two     | line two\n[diff] 高亮两文件不同处",
+        "explain": "以 diff 模式同时打开两文件；Vim 并排显示并高亮差异(如 line one vs line ONE)，`do` 取对方、`dp` 推到对方，方便合并。"
+      }
     },
     {
       "name": "vim -R",
@@ -11195,7 +12331,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vim -R config.cfg\n-- VISUAL --  (只读, 写入会被拒绝)\n\"config.cfg\" [readonly] 12L",
+        "explain": "以只读模式打开 config.cfg，状态行标 [readonly]；尝试写入会报 \"readonly\" 错误，防止误改重要配置。"
+      }
     },
     {
       "name": "view",
@@ -11215,7 +12355,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ view script.sh\n(只读 Vim; :w 提示 E45: 'readonly' option is set)",
+        "explain": "`view` 等同 `vim -R`，只读编辑；`:w` 会被拒绝，适合查看不希望被改的文件。"
+      }
     },
     {
       "name": "vim -r",
@@ -11236,7 +12380,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vim -r\nSwap files found:\n   .report.txt.swp  owned by: user\n$ vim -r report.txt\n(从交换文件恢复未保存内容)",
+        "explain": "崩溃/异常退出后可恢复：`vim -r` 列出可用交换文件(swp)，`vim -r report.txt` 从中恢复未保存的编辑。"
+      }
     },
     {
       "name": "i",
@@ -11257,7 +12405,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "插入前: Helo world\n按 i 在光标前插入 -> 输入 'l' -> Hello world",
+        "explain": "普通模式下 `i` 进入插入模式，在**光标前**插入字符；常用于补字。左下角显示 `-- INSERT --`。"
+      }
     },
     {
       "name": "a",
@@ -11277,7 +12429,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "插入前: Hello orld\n按 a 在光标后追加 -> 输入 'w' -> Hello world",
+        "explain": "`a` 在**光标后**追加插入(append)；与 i 相反，适合在字符右侧补字。"
+      }
     },
     {
       "name": "I",
@@ -11297,7 +12453,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行:  world\n按 I 跳到行首插入 -> 输入 'Hello' -> Hello world",
+        "explain": "`I`(大写 i) 跳到当前行**第一个非空白字符前**并插入；快速在行首补内容。"
+      }
     },
     {
       "name": "A",
@@ -11317,7 +12477,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: Hello \n按 A 跳到行尾插入 -> 输入 'world' -> Hello world",
+        "explain": "`A` 跳到当前行**行尾**并插入(append)；在一行末尾连续补充时极方便。"
+      }
     },
     {
       "name": "o",
@@ -11338,7 +12502,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "当前行: line one\n按 o -> 在其下方新建一行并插入 -> 输入 line two",
+        "explain": "`o` 在**当前行下方**新建空行并进入插入模式；写列表/日志时常用。"
+      }
     },
     {
       "name": "O",
@@ -11359,7 +12527,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "当前行: line two\n按 O -> 在其上方新建一行并插入 -> 输入 line one",
+        "explain": "`O` 在**当前行上方**新建空行并插入；与 o 相反。"
+      }
     },
     {
       "name": "s",
@@ -11379,7 +12551,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "字符: worXd\n光标在 X -> 按 s -> 删除 X 并插入 -> 输入 'l' -> word",
+        "explain": "`s` 删除光标下**一个字符**并进入插入模式(substitute)；适合改单个错字。"
+      }
     },
     {
       "name": "S",
@@ -11399,7 +12575,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "S 等同 cc（修改整行）",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: old content\n按 S -> 删除整行并插入 -> 输入 new line",
+        "explain": "`S`(等同 `cc`) 删除**整行**并进入插入模式，在原位置重写字行。"
+      }
     },
     {
       "name": "cc",
@@ -11419,7 +12599,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "cc 等同 S；与 dd 区别：cc 保留行、进入插入",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: foo bar baz\n按 cc -> 整行清空并插入 -> 输入 new",
+        "explain": "`cc` 删除当前行并进入插入模式(change line)；与 S 完全相同。"
+      }
     },
     {
       "name": "R",
@@ -11439,7 +12623,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "R 与 r 区别：R 持续替换，r 只换一个字符",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: print 'old'\n按 R 进入替换模式 -> 覆盖输入 new -> print 'new'",
+        "explain": "`R` 进入**替换模式**，输入的字符逐个覆盖原文本(而非插入)；改写一段内容时好用。"
+      }
     },
     {
       "name": "Esc",
@@ -11464,7 +12652,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": "插入模式下忘了按 Esc 会直接把字母写进文件",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "-- INSERT --  (插入中)\n按 Esc -> 回到普通模式 (-- INSERT -- 消失)",
+        "explain": "`Esc`(或 Ctrl+[) 从插入/替换/可视模式退回**普通模式**；几乎所有操作前先按 Esc 确保回到普通模式。"
+      }
     },
     {
       "name": "v",
@@ -11485,7 +12677,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 v 进入字符可视 -> 移动光标 -> 选中 'hello' 高亮",
+        "explain": "`v` 进入**字符可视模式**，移动光标逐字符选择；可对选区做删除/复制/替换(y/d/c)。"
+      }
     },
     {
       "name": "V",
@@ -11505,7 +12701,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 V 进入行可视 -> 选中整行 (高亮整行)",
+        "explain": "`V`(大写) 进入**行可视模式**，整行整行选择；批量操作行(缩进/删除)方便。"
+      }
     },
     {
       "name": "Ctrl+v",
@@ -11526,7 +12726,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "Windows 下 Ctrl+v 可能被剪贴板占用，可用 Ctrl+q 代替",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 Ctrl+v 进入块可视 -> 选矩形区域(如多行首列)高亮",
+        "explain": "`Ctrl+v` 进入**块(列)可视模式**，按矩形区域选择；在多行同列插入/删除(如注释)时神器。"
+      }
     },
     {
       "name": "h",
@@ -11546,7 +12750,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标: H[e]llo -> 按 h -> [H]ello",
+        "explain": "`h` 光标**左**移一格；方向键左等价。普通模式基础移动之一。"
+      }
     },
     {
       "name": "j",
@@ -11566,7 +12774,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在第 1 行 -> 按 j -> 下移一行到第 2 行",
+        "explain": "`j` 光标**下**移一行；方向键下等价。"
+      }
     },
     {
       "name": "k",
@@ -11586,7 +12798,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在第 3 行 -> 按 k -> 上移一行到第 2 行",
+        "explain": "`k` 光标**上**移一行；方向键上等价。"
+      }
     },
     {
       "name": "l",
@@ -11606,7 +12822,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标: [H]ello -> 按 l -> H[e]llo",
+        "explain": "`l` 光标**右**移一格；方向键右等价。"
+      }
     },
     {
       "name": "w（移动）",
@@ -11627,7 +12847,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": "w 按标点分词；W 按空格分 WORD",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: foo bar baz\n光标在 f -> 按 w -> 跳到 b(ar) 的词首",
+        "explain": "`w` 光标向前跳到**下一个词首**(word forward)；快速在词间移动。"
+      }
     },
     {
       "name": "W",
@@ -11647,7 +12871,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: a.b.c  foo\n按 W -> 按空格分隔跳到 foo 词首(忽略标点)",
+        "explain": "`W` 按**空格分隔的\"大词\"**向前跳(忽略标点)，与 w 的区别在于词的界定方式。"
+      }
     },
     {
       "name": "b",
@@ -11667,7 +12895,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: foo bar baz\n光标在 baz 的 z -> 按 b -> 跳回 b(ar) 词首",
+        "explain": "`b` 光标向后跳到**上一个词首**(back word)；与 w 相反。"
+      }
     },
     {
       "name": "e",
@@ -11687,7 +12919,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: foo bar\n光标在 f -> 按 e -> 跳到 foo 的词尾 o",
+        "explain": "`e` 光标跳到**当前/下一个词的末尾**(end)；便于在词尾插入。"
+      }
     },
     {
       "name": "0",
@@ -11707,7 +12943,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": "0 到行首；^ 到首个非空白字符",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行:   hello (前有两个空格)\n光标在 o -> 按 0 -> 跳到行首第一个字符(含前导空格)",
+        "explain": "`0`(数字零) 跳到**行首第一个字符**(含前导空白)。"
+      }
     },
     {
       "name": "^",
@@ -11727,7 +12967,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行:   hello\n光标在 o -> 按 ^ -> 跳到第一个非空白字符 h",
+        "explain": "`^` 跳到行内**第一个非空白字符**(首个有效内容)；与 0 区别在跳过缩进。"
+      }
     },
     {
       "name": "$",
@@ -11747,7 +12991,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: hello world\n光标在 h -> 按 $ -> 跳到行尾 d",
+        "explain": "`$` 跳到**行尾最后一个字符**；`d$` 可删除到行尾。"
+      }
     },
     {
       "name": "g_",
@@ -11767,7 +13015,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: hello world   \n光标任意 -> 按 g_ -> 跳到行尾最后一个非空白字符(d 之前)",
+        "explain": "`g_` 跳到行内**最后一个非空白字符**(忽略尾部空格)，与 $ 区别在于不过尾随空格。"
+      }
     },
     {
       "name": "gg",
@@ -11787,7 +13039,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在第 20 行 -> 按 gg -> 跳到文件第 1 行",
+        "explain": "`gg` 跳到**文件首行**；`5gg` 或 `:5` 跳到第 5 行。"
+      }
     },
     {
       "name": "G",
@@ -11807,7 +13063,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在第 1 行 -> 按 G -> 跳到文件最后一行",
+        "explain": "`G` 跳到**文件末行**；`5G` 跳到第 5 行(与 :5 等同)。"
+      }
     },
     {
       "name": ":n",
@@ -11832,7 +13092,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :n 回车\n(跳转到下一个文件, 多文件编辑时)",
+        "explain": "`:n` 在打开多个文件时跳到**下一个文件**；`:N`/`:prev` 跳上一个，`args` 查看列表。"
+      }
     },
     {
       "name": "H",
@@ -11852,7 +13116,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "当前在中间 -> 按 H -> 光标跳到屏幕顶部第一行",
+        "explain": "`H`(High) 跳到**当前屏幕可见区顶部**那一行(非文件首)。"
+      }
     },
     {
       "name": "M",
@@ -11872,7 +13140,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 M -> 光标跳到屏幕可见区中间行",
+        "explain": "`M`(Middle) 跳到屏幕可见区**中间**那一行。"
+      }
     },
     {
       "name": "L",
@@ -11892,7 +13164,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 L -> 光标跳到屏幕可见区底部行",
+        "explain": "`L`(Low) 跳到屏幕可见区**底部**那一行。"
+      }
     },
     {
       "name": "%",
@@ -11912,7 +13188,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: if (a == b) { ... }\n光标在 ( -> 按 % -> 跳到匹配的 )",
+        "explain": "`%` 在括号/花括号/方括号间**跳转配对**；检查括号是否匹配时极有用。"
+      }
     },
     {
       "name": "{",
@@ -11932,7 +13212,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在段落中 -> 按 { -> 跳到上一段落开头(空行分隔)",
+        "explain": "`{` 向后跳到**段落起始**(以空行划分)；`}` 跳到段落结尾。"
+      }
     },
     {
       "name": "}",
@@ -11952,7 +13236,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在段落中 -> 按 } -> 跳到下一段落结尾",
+        "explain": "`}` 向前跳到**段落结尾**(空行分隔)；与 { 相对。"
+      }
     },
     {
       "name": "(",
@@ -11972,7 +13260,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在句中 -> 按 ( -> 跳到上一句开头",
+        "explain": "`(` 跳到**上一句**(按标点划分)；`)` 跳下一句，句子级移动。"
+      }
     },
     {
       "name": ")",
@@ -11992,7 +13284,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在句中 -> 按 ) -> 跳到下一句开头",
+        "explain": "`)` 跳到**下一句**开头；与 ( 相对。"
+      }
     },
     {
       "name": "Ctrl+f",
@@ -12012,7 +13308,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "当前在第 1 屏 -> 按 Ctrl+f -> 向下翻一整页",
+        "explain": "`Ctrl+f` 向下翻**一页**(forward)；浏览长文档。"
+      }
     },
     {
       "name": "Ctrl+b",
@@ -12032,7 +13332,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 Ctrl+b -> 向上翻一整页(back)",
+        "explain": "`Ctrl+b` 向上翻**一页**；与 Ctrl+f 方向相反。"
+      }
     },
     {
       "name": "Ctrl+d",
@@ -12052,7 +13356,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 Ctrl+d -> 向下翻半页(down)",
+        "explain": "`Ctrl+d` 向下翻**半页**；幅度小于 Ctrl+f。"
+      }
     },
     {
       "name": "Ctrl+u",
@@ -12072,7 +13380,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 Ctrl+u -> 向上翻半页(up)",
+        "explain": "`Ctrl+u` 向上翻**半页**；与 Ctrl+d 相对。"
+      }
     },
     {
       "name": "zz",
@@ -12092,7 +13404,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在某行 -> 按 zz -> 把该行滚到屏幕中央",
+        "explain": "`zz` 把**当前行滚动到屏幕中间**(不移动光标)；便于聚焦当前行。"
+      }
     },
     {
       "name": "fx",
@@ -12112,7 +13428,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: function x\n光标在 f -> 按 fx -> 跳到本行下一个 x",
+        "explain": "`fx` 跳到**本行下一个字符 x**(find)；`Fx` 反向找，`tx` 跳到 x 前，`;` 重复、`;` 反向。"
+      }
     },
     {
       "name": "Fx",
@@ -12132,7 +13452,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: max value\n光标在 e -> 按 Fv -> 跳到本行前一个 v",
+        "explain": "`Fx` 反向查找本行**前一个字符 x**；与 fx 方向相反。"
+      }
     },
     {
       "name": "tx",
@@ -12152,7 +13476,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: text x y\n光标在 t -> 按 tx -> 跳到 x 的前一个字符",
+        "explain": "`tx` 跳到本行下一个 x 的**前一个字符**(till)；配合删除/插入在 x 前操作。"
+      }
     },
     {
       "name": ";",
@@ -12172,7 +13500,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 ; -> 重复上一次 f/F/t/T 查找(同方向)",
+        "explain": "`;` 重复最近一次 `f/F/t/T` 查找(同向)；`,` 以反方向重复。连续定位同字符时用。"
+      }
     },
     {
       "name": "*",
@@ -12192,7 +13524,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在 word 上 -> 按 * -> 向下搜索该词并跳到下一处",
+        "explain": "`*` 以光标下**完整单词**为模式向下搜索并跳转；`#` 向上。`n/N` 继续。"
+      }
     },
     {
       "name": "#",
@@ -12212,7 +13548,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在 word 上 -> 按 # -> 向上搜索该词并跳到上一处",
+        "explain": "`#` 以光标下单词为模式**向上**搜索；与 * 相反。"
+      }
     },
     {
       "name": "Ctrl+o",
@@ -12232,7 +13572,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "跳转历史中 -> 按 Ctrl+o -> 跳回上一次光标位置(old)",
+        "explain": "`Ctrl+o` 在**跳转列表**中后退一步(回到上次光标位置)；`Ctrl+i` 前进。"
+      }
     },
     {
       "name": "Ctrl+i",
@@ -12252,7 +13596,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 Ctrl+i -> 前进到跳转列表的下一位置",
+        "explain": "`Ctrl+i`(等同 Tab) 在跳转列表中**前进**；与 Ctrl+o 相对。"
+      }
     },
     {
       "name": "``",
@@ -12272,7 +13620,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "在 A 处按 `` -> 跳回跳转前的位置(同 Cursor 标记)",
+        "explain": "双反引号 `` 跳回**上一次光标所在位置**(与 Ctrl+o 不同，仅记最近一处)；`''` 跳回上次所在行的行首。"
+      }
     },
     {
       "name": "x",
@@ -12292,7 +13644,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "字符: wor[d]\n光标在 d -> 按 x -> 删除 d -> wor",
+        "explain": "`x` 删除**光标下字符**(剪切)；`3x` 删 3 个。等同 `dl`。"
+      }
     },
     {
       "name": "X",
@@ -12312,7 +13668,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "字符: [w]ord\n光标在 w -> 按 X -> 删除 w -> ord",
+        "explain": "`X` 删除**光标前一个字符**(退格删除)；与 x 方向相反。"
+      }
     },
     {
       "name": "dw",
@@ -12332,7 +13692,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: remove this word\n光标在 r -> 按 dw -> 删除单词 remove -> this word",
+        "explain": "`dw` 删除**从光标到下一个词首**(delete word)；光标在词首即删整词。"
+      }
     },
     {
       "name": "dd（删行）",
@@ -12357,7 +13721,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": "dd 实际是剪切，删后可用 p 粘贴；误删用 u 撤销",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "第 3 行: obsolete line\n光标在其上 -> 按 dd -> 删除整行",
+        "explain": "`dd` 删除**整行**(delete line)；`3dd` 删 3 行。被删内容进寄存器可 `p` 粘贴。"
+      }
     },
     {
       "name": "D",
@@ -12377,7 +13745,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "D 等同 d$；d0 删到行首",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: keep this DELETE\n光标在 D -> 按 D -> 删除到行尾 -> keep this",
+        "explain": "`D` 删除**从光标到行尾**的内容(等同 `d$`)；保留行首。"
+      }
     },
     {
       "name": "cw",
@@ -12397,7 +13769,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "词: eror\n光标在 e -> 按 cw -> 删词并插入 -> 输入 error",
+        "explain": "`cw` 删除**当前词**(change word)并进入插入模式；改单词首选。"
+      }
     },
     {
       "name": "C",
@@ -12417,7 +13793,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: print 'a' # fix\n光标在 p -> 按 C -> 删除到行尾并插入",
+        "explain": "`C` 删除**从光标到行尾**并进入插入模式(等同 `c$`)；重写该行后半。"
+      }
     },
     {
       "name": "r",
@@ -12437,7 +13817,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "r 只换一个字符；R 进入持续替换模式",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "字符: heXo\n光标在 X -> 按 r 再按 l -> 替换为 l -> helo",
+        "explain": "`r` 替换**光标下单个字符**(replace)后留在普通模式；快速改错字。"
+      }
     },
     {
       "name": "J",
@@ -12457,7 +13841,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "两行: line one\n       line two\n光标在第 1 行按 J -> 合并为 line one line two",
+        "explain": "`J` 把**下一行接到当前行尾**(join)；`3J` 合并 3 行。"
+      }
     },
     {
       "name": "~",
@@ -12477,7 +13865,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "字符: a\n光标在 a -> 按 ~ -> 切换大小写 -> A",
+        "explain": "`~` 切换**光标下字符大小写**；选中后按 ~ 可整段切换。"
+      }
     },
     {
       "name": "gu",
@@ -12497,7 +13889,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "词: Word\n光标在 W -> guw -> 转小写 -> word",
+        "explain": "`gu` 后接动作把文本转**小写**；`guw` 转当前词，`guG` 转到底部。"
+      }
     },
     {
       "name": "gU",
@@ -12517,7 +13913,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "词: word\n光标在 w -> gUw -> 转大写 -> WORD",
+        "explain": "`gU` 把文本转**大写**；`gUiw` 转整个当前词。"
+      }
     },
     {
       "name": ".",
@@ -12537,7 +13937,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "配合动作使用最强，如 dw. 连续删词",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "删除一词后 -> 移到下一词按 . -> 重复该删除",
+        "explain": "`.` 重复**上一次修改操作**(不包含移动)；批量同操作(如多处删词)神器。"
+      }
     },
     {
       "name": "u",
@@ -12557,7 +13961,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "误删一行后 -> 按 u -> 撤销该删除",
+        "explain": "`u` 撤销**上一次修改**(undo)；连按逐步回退。"
+      }
     },
     {
       "name": "Ctrl+r",
@@ -12577,7 +13985,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "撤销过头 -> 按 Ctrl+r -> 重做(redo)恢复",
+        "explain": "`Ctrl+r` 重做(redo)被撤销的操作；与 u 相对。"
+      }
     },
     {
       "name": "U",
@@ -12597,7 +14009,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行内多次修改后 -> 按 U -> 撤销本行所有修改",
+        "explain": "`U` 撤销**当前行的全部修改**(回到进入本行时的状态)；再按可恢复。"
+      }
     },
     {
       "name": "yy",
@@ -12621,7 +14037,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": "Y 在部分配置等同 yy；y 是复制操作符",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "第 5 行: copy me\n光标在其上 -> 按 yy -> 复制到寄存器",
+        "explain": "`yy`(或 `Y`) 复制**整行**(yank)；`p` 粘贴到下一行。"
+      }
     },
     {
       "name": "yw",
@@ -12641,7 +14061,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "词: hello\n光标在 h -> 按 yw -> 复制该词到寄存器",
+        "explain": "`yw` 复制**当前词**；`y$` 复制到行尾，`yib` 复制括号内。"
+      }
     },
     {
       "name": "y$",
@@ -12661,7 +14085,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "行: take this part\n光标在 t -> 按 y$ -> 复制 t 到行尾",
+        "explain": "`y$` 复制**从光标到行尾**的文本；供后续 `p` 粘贴。"
+      }
     },
     {
       "name": "p",
@@ -12681,7 +14109,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "寄存器有 'line'\n光标在第 2 行 -> 按 p -> 在下方粘贴该行",
+        "explain": "`p` 在**光标后/下一行**粘贴寄存器内容(整行则粘贴到下方)；`P` 粘贴到上方/前。"
+      }
     },
     {
       "name": "P",
@@ -12701,7 +14133,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "寄存器有 'x'\n光标在 a -> 按 P -> 在光标前插入 x -> xa",
+        "explain": "`P` 在**光标前/上一行**粘贴；与 p 方向相反。"
+      }
     },
     {
       "name": "diw",
@@ -12721,7 +14157,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "文本对象：d/c/y + i/a + 对象；i 不含边界，a 含边界",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "词: mistake\n光标在词内任意处 -> 按 diw -> 删除整个词(忽略空白)",
+        "explain": "`diw` 删除**内词**(inner word)——整词不含两侧空白；改词时比 dw 更准。"
+      }
     },
     {
       "name": "ciw",
@@ -12741,7 +14181,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "词: oldname\n光标在词内 -> 按 ciw -> 删整词并插入 -> 输入 newname",
+        "explain": "`ciw` 修改**内词**(change inner word)；快速替换光标所在单词。"
+      }
     },
     {
       "name": "di\"",
@@ -12761,7 +14205,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: name = \"value\"\n光标在 value 内 -> 按 di\" -> 删除引号内容 -> name = \"\"",
+        "explain": "`di\"` 删除**双引号内的内容**(delete inner quote)，保留引号；改字符串值用。同理 di( 删括号内、di[ 删方括号内。"
+      }
     },
     {
       "name": "ci\"",
@@ -12781,7 +14229,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: msg = \"old\"\n光标在 old 内 -> 按 ci\" -> 删引号内容并插入 -> 输入 new",
+        "explain": "`ci\"` 修改**双引号内的内容**并进入插入；快速替换字符串。di( / ci( 同理作用于括号。"
+      }
     },
     {
       "name": "di(",
@@ -12801,7 +14253,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: func(a, b)\n光标在 a -> 按 di( -> 删除括号内 a, b -> func()",
+        "explain": "`di(` 删除**圆括号内的内容**(inner parenthesis)；改函数参数、删除 JSON 值常用。"
+      }
     },
     {
       "name": "dit",
@@ -12821,7 +14277,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "文本: <tag>content</tag>\n光标在 content -> 按 dit -> 删除标签内容 -> <tag></tag>",
+        "explain": "`dit` 删除**标签内的内容**(inner tag，XML/HTML)；配合 ci{ 改花括号内。"
+      }
     },
     {
       "name": "/pattern",
@@ -12846,7 +14306,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": "n 下一个，N 上一个；:noh 取消高亮",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 /error 回车\n高亮匹配, 跳到下一个 error",
+        "explain": "`/pattern` 向前搜索模式(支持正则)；回车后跳到首个匹配，`n` 下一处、`N` 上一处。"
+      }
     },
     {
       "name": "?pattern",
@@ -12866,7 +14330,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 ?main 回车\n向上搜索, 跳到上一个 main",
+        "explain": "`?pattern` 向上搜索模式；与 / 方向相反，`n`/`N` 仍继续相应方向。"
+      }
     },
     {
       "name": "n",
@@ -12886,7 +14354,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "已搜索 error -> 按 n -> 跳到下一个匹配",
+        "explain": "`n` 跳到**下一个**搜索匹配(沿 / 或 ? 当前方向)；连续浏览命中项。"
+      }
     },
     {
       "name": "N",
@@ -12906,7 +14378,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "已搜索 error -> 按 N -> 跳到上一个匹配",
+        "explain": "`N` 跳到**上一个**搜索匹配；与 n 相反。"
+      }
     },
     {
       "name": ":%s",
@@ -12931,7 +14407,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "漏写 g 只换每行首个；c 逐个确认更安全",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :%s/foo/bar/g 回车\n3 substitutions on 3 lines",
+        "explain": "`:%s/foo/bar/g` 在**全文**把 foo 替换为 bar(g 全局、不止首处)；% 表示全部行。"
+      }
     },
     {
       "name": ":s",
@@ -12951,7 +14431,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :s/old/new 回车\n仅替换当前行第一个 old -> new",
+        "explain": "`:s/old/new` 只替换**当前行首个**匹配；加 /g 才替换行内全部。"
+      }
     },
     {
       "name": ":5,20s",
@@ -12971,7 +14455,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :5,20s/err/ERR/g 回车\n第 5-20 行内 err 全部改为 ERR",
+        "explain": "`:5,20s/.../g` 限定在**第 5 到 20 行**范围内替换；范围可写 %、.、$ 或可视选择。"
+      }
     },
     {
       "name": ":set ic",
@@ -12991,7 +14479,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set ic 回车\n(之后搜索不区分大小写)",
+        "explain": "`:set ic`(ignorecase) 让搜索**忽略大小写**；`:set noic` 恢复区分。"
+      }
     },
     {
       "name": ":set hls",
@@ -13015,7 +14507,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set hls 回车\n(搜索命中项全部高亮)",
+        "explain": "`:set hls`(hlsearch) 高亮**所有搜索匹配**；`:noh` 临时清除高亮。"
+      }
     },
     {
       "name": ":w",
@@ -13040,7 +14536,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :w 回车\n\"report.txt\" 3L, 42C written",
+        "explain": "`:w` 保存文件；状态行回显行数与字节数 \"3L, 42C written\"。`:w new.txt` 另存为。"
+      }
     },
     {
       "name": ":q",
@@ -13060,7 +14560,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :q 回车\n(无改动则退出; 有未保存改动会提示 E37)",
+        "explain": "`:q` 退出；若有未保存修改会拒绝并提示 E37，需 `:w` 或 `:q!`。"
+      }
     },
     {
       "name": ":q!",
@@ -13080,7 +14584,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": "会丢失所有未保存改动，慎用",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :q! 回车\n(放弃所有修改并强制退出)",
+        "explain": "`:q!` **强制退出不保存**；丢弃本次会话全部编辑，慎用。"
+      }
     },
     {
       "name": ":wq",
@@ -13100,7 +14608,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": ":wq / :x / ZZ 都保存退出；:x 仅在改动时写盘",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :wq 回车\n\"report.txt\" 3L, 42C written\n(保存并退出)",
+        "explain": "`:wq` 保存并退出(等同 ZZ)；写盘后离开 Vim。"
+      }
     },
     {
       "name": ":x",
@@ -13120,7 +14632,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": ":x 比 :wq 更优：未改动不更新 mtime",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :x 回车\n(保存并退出, 功能同 :wq)",
+        "explain": "`:x` 保存并退出，与 :wq 几乎一致(区别: 仅当文件改动才更新修改时间)。"
+      }
     },
     {
       "name": "ZZ",
@@ -13140,7 +14656,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "普通模式按 ZZ\n(保存并退出, 等价 :x)",
+        "explain": "`ZZ`(大写) 在普通模式**保存并退出**，无需冒号命令；`:x` 的快捷等价。"
+      }
     },
     {
       "name": ":e",
@@ -13160,7 +14680,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :e other.txt 回车\n\"other.txt\" 12L 加载新文件",
+        "explain": "`:e file` 在当前窗口**打开/切换到另一文件**；未保存改动会先提示。"
+      }
     },
     {
       "name": ":e!",
@@ -13180,7 +14704,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :e! 回车\n(丢弃当前文件改动并重新从磁盘载入)",
+        "explain": "`:e!` 放弃当前缓冲区改动，**重新从磁盘读取**文件；撤销本地编辑。"
+      }
     },
     {
       "name": ":qa",
@@ -13204,7 +14732,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :qa 回车\n(所有窗口/文件一并退出; 有未保存会提示)",
+        "explain": "`:qa` 退出**全部**窗口(quit all)；有未保存改动会拒绝，需用 `:qa!`。"
+      }
     },
     {
       "name": ":ls",
@@ -13224,7 +14756,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :ls 回车\n  1 %a   \"report.txt\"  line 3\n  2  h   \"notes.md\"    line 1",
+        "explain": "`:ls` 列出**缓冲区列表**(已打开文件)；% 当前、# 交替、h 隐藏。`:b N` 跳到第 N 个。"
+      }
     },
     {
       "name": ":bn",
@@ -13244,7 +14780,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :bn 回车\n(切换到缓冲区列表中的下一个文件)",
+        "explain": "`:bn`(buffer next) 切换到**下一个缓冲区**(已打开文件)；`:bp` 上一个。"
+      }
     },
     {
       "name": ":bp",
@@ -13264,7 +14804,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :bp 回车\n(切换到上一个缓冲区)",
+        "explain": "`:bp`(buffer previous) 切换到上一个缓冲区；与 :bn 相对。"
+      }
     },
     {
       "name": ":bd",
@@ -13284,7 +14828,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :bd 回车\n(关闭当前缓冲区, 但不退出 Vim)",
+        "explain": "`:bd`(buffer delete) 关闭当前缓冲区(文件)；仍留在 Vim 中可继续其他文件。"
+      }
     },
     {
       "name": ":sp",
@@ -13308,7 +14856,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :sp other.txt 回车\n(上下分屏打开 other.txt)",
+        "explain": "`:sp file` **水平分屏**(split)打开文件；`Ctrl+w` 后再按方向键在窗格间移动。"
+      }
     },
     {
       "name": ":vsp",
@@ -13328,7 +14880,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :vsp other.txt 回车\n(左右分屏打开 other.txt)",
+        "explain": "`:vsp file` **垂直分屏**(vertical split)打开文件；适合对照编辑。"
+      }
     },
     {
       "name": "Ctrl+w",
@@ -13356,7 +14912,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "所有窗口操作都以 Ctrl+w 开头；误按会触发切换",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "分屏状态下按 Ctrl+w 再按 h/j/k/l\n(在窗格间移动焦点)",
+        "explain": "`Ctrl+w` 后接方向在**分屏窗格间移动焦点**；`Ctrl+w =` 均分、`Ctrl+w o` 只留当前。"
+      }
     },
     {
       "name": ":tabnew",
@@ -13376,7 +14936,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :tabnew 回车\n(新建一个标签页)",
+        "explain": "`:tabnew` 新建**标签页**(隔离不同任务/文件组)；`gt`/`gT` 切换，`tabclose` 关闭。"
+      }
     },
     {
       "name": "gt",
@@ -13396,7 +14960,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "多标签时按 gt\n(切换到下一个标签页)",
+        "explain": "`gt` 切到**下一个标签页**；`gT` 上一个，`Ngt` 跳第 N 个。"
+      }
     },
     {
       "name": "gT",
@@ -13416,7 +14984,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 gT\n(切换到上一个标签页)",
+        "explain": "`gT` 切到上一个标签页；与 gt 相对。"
+      }
     },
     {
       "name": "za",
@@ -13436,7 +15008,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在折叠行 -> 按 za -> 展开/收起该折叠切换",
+        "explain": "`za` **切换**当前折叠的展/收状态(fold toggle)；`zo` 展开、`zc` 收起。"
+      }
     },
     {
       "name": "zo",
@@ -13456,7 +15032,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在收起折叠 -> 按 zo -> 展开该折叠",
+        "explain": "`zo` **展开**当前折叠(open)；查看折叠内的内容。"
+      }
     },
     {
       "name": "zc",
@@ -13476,7 +15056,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在展开折叠 -> 按 zc -> 收起该折叠",
+        "explain": "`zc` **收起**当前折叠(close)；用于隐藏细节聚焦大纲。"
+      }
     },
     {
       "name": "zR",
@@ -13496,7 +15080,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 zR\n(展开所有折叠)",
+        "explain": "`zR` **展开全部**折叠；一览所有被折叠内容。"
+      }
     },
     {
       "name": "zM",
@@ -13516,7 +15104,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "按 zM\n(收起所有折叠)",
+        "explain": "`zM` **收起全部**折叠；仅看大纲。"
+      }
     },
     {
       "name": "qa",
@@ -13544,7 +15136,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "录制以 q 开始、以 q 结束；注意 q 也是退出键",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "普通模式按 qa -> 开始录制宏到寄存器 a\n(操作序列被记录, 再按 q 停止)",
+        "explain": "`qa` 开始把后续按键**录制进宏寄存器 a**(quit to record)；结束再按 `q`，`@a` 回放。"
+      }
     },
     {
       "name": "@a",
@@ -13568,7 +15164,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "录制好宏 a 后按 @a\n(在当前位置回放宏 a 的操作)",
+        "explain": "`@a` **回放寄存器 a 中的宏**；`@@` 重复上一次宏，批量处理多行利器。"
+      }
     },
     {
       "name": "ma",
@@ -13592,7 +15192,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "光标在第 10 行按 ma\n(设置名为 a 的标记)",
+        "explain": "`ma` 在当前位置设置**标记 a**(mark)；`'a` 跳回该标记行首，``a` 跳精确位置。"
+      }
     },
     {
       "name": "Ctrl+n",
@@ -13612,7 +15216,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "插入模式输入 wor -> 按 Ctrl+n\n(弹出补全: word / work / world...)",
+        "explain": "插入模式 `Ctrl+n` 触发**关键字补全**(next)，列出候选；`Ctrl+p` 反向。无需插件即用。"
+      }
     },
     {
       "name": "Ctrl+p",
@@ -13632,7 +15240,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "插入模式按 Ctrl+p\n(向上反向补全候选)",
+        "explain": "`Ctrl+p` 在补全菜单中**向前**(previous)选择；与 Ctrl+n 相对。"
+      }
     },
     {
       "name": ":set nu",
@@ -13656,7 +15268,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set nu 回车\n  1 first line\n  2 second line\n(每行前显示行号)",
+        "explain": "`:set nu`(number) **显示行号**；`:set nonu` 关闭。定位与引用行号必备。"
+      }
     },
     {
       "name": ":set rnu",
@@ -13676,7 +15292,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set rnu 回车\n  2 first line\n  1 second line  <- 光标行\n(显示相对行号, 光标行标 0)",
+        "explain": "`:set rnu`(relativenumber) 显示**相对行号**(相对光标行)；配合 `5j`/`3k` 精确跳转。`:set nu rnu` 兼得。"
+      }
     },
     {
       "name": ":syntax on",
@@ -13696,7 +15316,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :syntax on 回车\n(关键字/字符串/注释以不同颜色高亮)",
+        "explain": "`:syntax on` 开启**语法高亮**；不同语言元素着色，可读性大增。通常写进 vimrc 默认开启。"
+      }
     },
     {
       "name": ":set ai",
@@ -13716,7 +15340,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set ai 回车\n(新行自动沿用上一行缩进)",
+        "explain": "`:set ai`(autoindent) **自动缩进**——新行延续上一行缩进；写代码排版整齐。`:set noai` 关。"
+      }
     },
     {
       "name": ":set list",
@@ -13736,7 +15364,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set list 回车\n行尾以 $ 标出, 制表符显示为 ^I",
+        "explain": "`:set list` 显示**不可见字符**(行尾 $、Tab 为 ^I)；排查多余空格/混用 Tab 很直观。`:set nolist` 关。"
+      }
     },
     {
       "name": ":set wrap",
@@ -13760,7 +15392,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :set wrap 回车\n(长行在窗口内自动折行显示)",
+        "explain": "`:set wrap` 让超长行**折行**显示(不横向滚动)；`:set nowrap` 关闭则一行到底需横向移动。"
+      }
     },
     {
       "name": ":retab",
@@ -13780,7 +15416,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :retab 回车\n(按 expandtab 把 Tab 转为对应数量空格)",
+        "explain": "`:retab` 按当前 `tabstop`/`expandtab` 设置**重排缩进**(Tab↔空格互转)；统一缩进风格用。"
+      }
     },
     {
       "name": ":r",
@@ -13800,7 +15440,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :r other.txt 回车\n(把 other.txt 内容插入到光标下方)",
+        "explain": "`:r file` 把指定文件**读入并插入到当前行下方**；`:r !cmd` 还可插入命令输出。"
+      }
     },
     {
       "name": ":!cmd",
@@ -13824,7 +15468,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :!ls 回车\nfile1.txt  file2.txt\n(按 Enter 返回 Vim)",
+        "explain": "`:!cmd` 在 Vim 内**执行外部 shell 命令**(如 :!ls、:!make)；临时跑命令不退出编辑器。"
+      }
     },
     {
       "name": ":%!",
@@ -13848,7 +15496,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :%!sort 回车\n(把全文作为 stdin 交给 sort, 结果替换全文)",
+        "explain": "`:%!cmd` 把**全文**管道给外部命令、用其输出**替换全文**；`:%!sort` 即把文档整篇排序。"
+      }
     },
     {
       "name": ":help",
@@ -13868,7 +15520,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "输入 :help :w 回车\n(打开帮助窗口, 显示 :w 的说明)",
+        "explain": "`:help topic` 打开**内置帮助**(如 :help :w、:help pattern)；`Ctrl+]` 跳标签、`q` 关闭帮助窗。"
+      }
     },
     {
       "name": "vimtutor",
@@ -13888,7 +15544,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vimtutor\n(启动交互式 Vim 教程, 按步练习移动/编辑/保存)",
+        "explain": "`vimtutor` 在终端启动**官方交互教程**，约 30 分钟循序渐进练手 Vim 基础，新手最佳入口。"
+      }
     },
     {
       "name": "mktemp",
@@ -13913,7 +15573,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mktemp\n/tmp/tmp.abc123\n$ mktemp -d\n/tmp/tmp.XyZ789",
+        "explain": "第1行 `mktemp` 在 /tmp 创建唯一命名的临时文件并返回路径。\n第2行 `mktemp -d` 创建临时目录，适合脚本中安全存放中间产物。"
+      }
     },
     {
       "name": "shred",
@@ -13938,7 +15602,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "默认仅覆盖不删除，需 -u 才真正删除；SSD/日志类存储仍可能残留",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ shred -u secret.txt\n$ ls secret.txt\nls: cannot access 'secret.txt': No such file or directory",
+        "explain": "`shred -u` 多次覆写文件内容后再删除，使数据难以恢复。\n随后 ls 确认文件已不存在，敏感文件应如此安全擦除而非普通 rm。"
+      }
     },
     {
       "name": "install",
@@ -13962,7 +15630,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ install -m 755 app /usr/local/bin/app\n$ ls -l /usr/local/bin/app\n-rwxr-xr-x 1 root root 12345 Aug  4 11:30 /usr/local/bin/app",
+        "explain": "`install` 复制文件并设置目标权限/属主，常用于 Makefile 安装阶段。\n此处将 app 复制到 /usr/local/bin 并设为 755（属主可执行），ls 确认权限已生效。"
+      }
     },
     {
       "name": "rename",
@@ -13986,7 +15658,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "多为 Perl 版 rename，语法是表达式；使用前确认本地版本",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ rename 's/\\.txt$/.md/' *.txt\n$ ls\na.md b.md c.md",
+        "explain": "`rename` 用 Perl 表达式批量重命名：`s/\\.txt$/.md/` 把所有 .txt 改为 .md。\nls 显示原 .txt 文件已变为 .md。"
+      }
     },
     {
       "name": "view",
@@ -14006,7 +15682,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": "view 等价于 vim -R，改后无法 :w 保存",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ view script.sh\n(只读 Vim; :w 提示 E45: 'readonly' option is set)",
+        "explain": "`view` 等同 `vim -R`，只读编辑；`:w` 会被拒绝，适合查看不希望被改的文件。"
+      }
     },
     {
       "name": "md5sum",
@@ -14067,7 +15747,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "MD5 已被证实可构造碰撞，只适合校验传输完整性，绝不可用于安全签名。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ md5sum file.iso\nd41d8cd98f00b204e9800998ecf8427e  file.iso",
+        "explain": "输出 32 位十六进制 MD5 摘要与文件名，用于校验下载完整性（比对发布方公布的哈希）。"
+      }
     },
     {
       "name": "sha256sum",
@@ -14128,7 +15812,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "同系列还有 sha1sum、sha512sum，用法一致；SHA-1 亦已不安全，新场景应选 SHA-256 及以上。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sha256sum file.iso\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  file.iso",
+        "explain": "输出 64 位 SHA-256 摘要，比 MD5 更安全，是当今主流的文件完整性校验方式。"
+      }
     },
     {
       "name": "sha1sum",
@@ -14149,7 +15837,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ sha1sum file.txt\nda39a3ee5e6b4b0d3255bfef95601890afd80709  file.txt",
+        "explain": "输出 40 位 SHA-1 摘要；因已被证明可碰撞，仅用于兼容旧系统，新场景建议 SHA-256。"
+      }
     },
     {
       "name": "iconv",
@@ -14210,7 +15902,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "iconv 不会自动识别源编码，可先用 file -i 或 chardet 判断。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ iconv -f GBK -t UTF-8 old.txt > new.txt\n$ file new.txt\nnew.txt: Unicode text, UTF-8",
+        "explain": "`iconv -f GBK -t UTF-8` 把 GBK 编码转成 UTF-8；`file` 确认结果已为 UTF-8，解决乱码。"
+      }
     },
     {
       "name": "jq",
@@ -14291,7 +15987,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "对 null 使用对象取值会报错，可用 '.a?' 或 // 提供默认值来容错。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ echo '{\"name\":\"alice\",\"age\":30}' | jq '.name'\n\"alice\"\n$ echo '{\"users\":[{\"n\":\"a\"},{\"n\":\"b\"}]}' | jq '.users[].n'\n\"a\"\n\"b\" ",
+        "explain": "第1条 `jq '.name'` 取 JSON 的 name 字段，输出 \"alice\"。\n第2条 `.users[].n` 遍历数组取每个元素的 n，输出 a、b。jq 是命令行处理 JSON 的利器。"
+      }
     },
     {
       "name": "rev",
@@ -14311,7 +16011,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ echo 'hello' | rev\nolleh",
+        "explain": "`rev` 将每行字符顺序反转；hello → olleh，常用于简单字符串处理。"
+      }
     },
     {
       "name": "column",
@@ -14335,7 +16039,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ printf 'a 1\nb 2\n' | column -t\na  1\nb  2",
+        "explain": "`column -t` 把输入按空白对齐成规整表格列，提升多列数据的可读性。"
+      }
     },
     {
       "name": "shuf",
@@ -14360,7 +16068,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ shuf -n 2 names.txt\nbob\nalice",
+        "explain": "`shuf -n 2` 从输入中随机取 2 行，用于随机抽样或打乱顺序。"
+      }
     },
     {
       "name": "numfmt",
@@ -14384,7 +16096,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ numfmt --to=si 1536\n1.5K",
+        "explain": "`numfmt` 在数值与可读格式间转换；`--to=si` 把 1536 字节表示为 1.5K。"
+      }
     },
     {
       "name": "colrm",
@@ -14404,7 +16120,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ echo 'abcdef' | colrm 3 4\nabef",
+        "explain": "`colrm 3 4` 删除每行的第 3–4 列（字符位置）；abcdef → 删掉 cd 得 abef。"
+      }
     },
     {
       "name": "look",
@@ -14424,7 +16144,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ look 'phone' dict.txt\nphone\nphoneme",
+        "explain": "`look` 在已排序的字典/文件中查找以给定前缀开头的行；此处列出 phone 开头词。"
+      }
     },
     {
       "name": "tsort",
@@ -14444,7 +16168,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ tsort <<'EOF'\na b\nb c\nEOF\na\nb\nc",
+        "explain": "`tsort` 对依赖关系做拓扑排序；输入 a→b、b→c，输出满足先后依赖的顺序 a,b,c。"
+      }
     },
     {
       "name": "chcon",
@@ -14465,7 +16193,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "重启或 restorecon 可能还原上下文，需配合 semanage 持久化",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ chcon -t httpd_sys_content_t /srv/www/index.html\n$ ls -Z /srv/www/index.html\nunconfined_u:object_r:httpd_sys_content_t:s0 index.html",
+        "explain": "`chcon` 临时修改 SELinux 安全上下文类型（此处设为 Web 内容类型），`ls -Z` 确认生效。\n重启或 restorecon 可能还原。"
+      }
     },
     {
       "name": "restorecon",
@@ -14485,7 +16217,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ restorecon -v /srv/www/index.html\nRelabeled /srv/www/index.html from unconfined_u:object_r:default_t:s0 to unconfined_u:object_r:httpd_sys_content_t:s0",
+        "explain": "`restorecon` 依据策略把文件上下文恢复为默认值；输出显示从 default_t 改回 httpd_sys_content_t。"
+      }
     },
     {
       "name": "getenforce",
@@ -14506,7 +16242,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ getenforce\nEnforcing",
+        "explain": "显示 SELinux 当前模式：Enforcing（强制拦截违规）、Permissive（仅记录）、Disabled（关闭）。"
+      }
     },
     {
       "name": "setenforce",
@@ -14530,7 +16270,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "仅临时生效，重启后恢复；永久需改 /etc/selinux/config",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ setenforce 0\n$ getenforce\nPermissive",
+        "explain": "`setenforce 0` 临时切到 Permissive（仅告警不拦截），`1` 切回 Enforcing；重启后失效，需改配置文件持久化。"
+      }
     },
     {
       "name": "setfattr",
@@ -14551,7 +16295,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ setfattr -n user.note -v 'reviewed' file.txt\n$ getfattr -n user.note file.txt\nuser.note=\"reviewed\" ",
+        "explain": "`setfattr -n user.note -v 'reviewed'` 给文件加自定义扩展属性 user.note。\n`getfattr` 读回该属性值 reviewed，适合附加元数据而不改文件内容。"
+      }
     },
     {
       "name": "getfattr",
@@ -14576,7 +16324,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ getfattr -d -m - file.txt\nuser.note=\"reviewed\"\nuser.owner=\"alice\" ",
+        "explain": "`getfattr -d -m -` 列出文件全部用户扩展属性；输出 user.note 与 user.owner 等键值对。"
+      }
     },
     {
       "name": "groupmod",
@@ -14596,7 +16348,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ groupmod -n developers dev\n$ getent group developers\ndevelopers:x:1002:",
+        "explain": "`groupmod -n developers dev` 把组 dev 重命名为 developers；`getent` 显示新组名生效。"
+      }
     },
     {
       "name": "chage",
@@ -14620,7 +16376,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ chage -l alice\nLast password change: Aug 01, 2026\nPassword expires: never\nAccount expires: never",
+        "explain": "`chage -l` 列出密码/账户过期策略；此处密码永不过期，用于审计账号安全设置。"
+      }
     },
     {
       "name": "chsh",
@@ -14640,7 +16400,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ chsh -s /bin/zsh\nPassword: \nShell changed.",
+        "explain": "`chsh -s /bin/zsh` 把登录 shell 改为 zsh；输入密码后提示 Shell changed，下次登录生效。"
+      }
     },
     {
       "name": "chfn",
@@ -14660,7 +16424,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ chfn -f 'Alice Wang' alice\nPassword: \nfinger information changed.",
+        "explain": "`chfn -f` 设置用户的全名(finger 信息)；保存后 finger 可查到该名称。"
+      }
     },
     {
       "name": "getent",
@@ -14720,7 +16488,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "遵循 /etc/nsswitch.conf 中配置的查询顺序。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ getent passwd alice\nalice:x:1001:1001:Alice:/home/alice:/bin/bash",
+        "explain": "`getent passwd alice` 通过系统名称服务(NSS)查询用户，兼容本地与 LDAP/SSSD 等后端，比直接读 /etc/passwd 更通用。"
+      }
     },
     {
       "name": "logname",
@@ -14740,7 +16512,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ logname\nuser",
+        "explain": "输出最初登录的用户名（不受 su/sudo 影响），区别于 whoami 的当前有效身份。"
+      }
     },
     {
       "name": "faillog",
@@ -14764,7 +16540,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ faillog -u alice\nUsername   Failures  Latest    On\nalice         3       08/04/26   pts/0",
+        "explain": "`faillog -u alice` 显示该用户登录失败次数(3)与最近失败时间，用于发现暴力破解迹象。"
+      }
     },
     {
       "name": "nologin",
@@ -14784,7 +16564,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nologin\nThis account is currently not available.",
+        "explain": "`nologin` 作为不可登录账号的 shell，执行即返回\"账户不可用\"提示并拒绝登录，常用于服务账号。"
+      }
     },
     {
       "name": "vipw",
@@ -14804,7 +16588,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "vipw 编辑时加锁避免并发损坏；对应组文件用 vigr",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ vipw\n(locked /etc/passwd, syntax-checked edit; saved)",
+        "explain": "`vipw` 以加锁+语法校验方式编辑 /etc/passwd，防止并发写损坏导致无法登录。"
+      }
     },
     {
       "name": "pwck",
@@ -14824,7 +16612,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pwck\nuser 'lp': directory '/var/spool/lpd' does not exist\npwck: no changes",
+        "explain": "`pwck` 校验 /etc/passwd 与 /etc/shadow 一致性（如家目录是否存在）；此处仅告警、未改动。"
+      }
     },
     {
       "name": "pstree",
@@ -14889,7 +16681,11 @@ window.COMMAND_DATA = {
           "default": "全部",
           "desc": "只显示指定用户的进程树。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ pstree -p | head -5\nsystemd(1)─┬─sshd(812)───sshd(1050)───bash(1051)───vim(1234)\n           └─nginx(900)─┬─nginx(901)\n                        └─nginx(902)",
+        "explain": "`pstree -p` 以树状展示进程父子关系（含 PID）；可见 vim 由 bash 派生、nginx 多 worker 由主进程 fork。"
+      }
     },
     {
       "name": "fuser",
@@ -14954,7 +16750,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "输出中 c 为当前目录、e 为可执行文件、f 为打开的文件、r 为根目录、m 为映射文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ fuser -m /mnt/data\n/mnt/data:  1234c  1250m\n$ fuser -k /mnt/data\n(终止占用进程后卸载)",
+        "explain": "`fuser -m /mnt/data` 显示正在使用该挂载点的进程（c=当前目录、m=映射）；`-k` 杀死它们，便于安全卸载。"
+      }
     },
     {
       "name": "ionice",
@@ -14978,7 +16778,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ionice -c 3 -p 4001\n$ ionice -p 4001\nnone: prio 0",
+        "explain": "`ionice -c 3` 把进程设为 idle 磁盘调度类（仅在空闲时读写），避免拖慢系统；`-p` 作用于已运行 PID。"
+      }
     },
     {
       "name": "taskset",
@@ -15002,7 +16806,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ taskset -c 0,1 ./app\n$ taskset -p 4001\npid 4001's current affinity mask: 3",
+        "explain": "`taskset -c 0,1` 把进程绑定到 CPU 0 和 1；`taskset -p` 显示亲和掩码 3(二进制 11)即第0/1核，用于 NUMA/性能调优。"
+      }
     },
     {
       "name": "pmap",
@@ -15026,7 +16834,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ pmap -x 1234 | tail -3\n total kB        1224000  215000  180000\n$ pmap 1234 | head -3\n1234:   vim app.js\n000055d...  r-xp ... /usr/bin/vim",
+        "explain": "`pmap -x` 显示进程内存映射明细；total 行给出虚拟/常驻/可写内存总量(kB)，定位内存泄漏时有用。"
+      }
     },
     {
       "name": "service",
@@ -15071,7 +16883,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "无法管理开机自启，也不显示 systemd 的详细状态与日志，新系统建议直接用 systemctl。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ service nginx status\n* nginx is running\n$ service nginx restart\n* Restarting nginx... done.",
+        "explain": "`service nginx status` 查看服务状态；`restart` 重启。底层调用 SysV 脚本，systemd 系统建议用 systemctl。"
+      }
     },
     {
       "name": "tmux",
@@ -15151,7 +16967,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "进入复制模式，可用方向键翻阅历史输出，按 q 退出。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ tmux new -s dev\n[detached (from session dev)]\n$ tmux ls\ndev: 1 windows (created Mon Aug 4 11:00)",
+        "explain": "`tmux new -s dev` 新建名为 dev 的会话并可 detach；`tmux ls` 列出会话，便于重连 `tmux attach -t dev`。"
+      }
     },
     {
       "name": "screen",
@@ -15221,7 +17041,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "screen 更老且几乎所有系统预装；tmux 分屏与配置能力更强，新环境优先选 tmux。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ screen -S work\n[detached from 12345.work]\n$ screen -ls\nThere is a screen on:\n\t12345.work\t(Detached)",
+        "explain": "`screen -S work` 新建会话；可 Ctrl+A D 分离，`screen -ls` 查看，`screen -r work` 恢复，功能类似 tmux。"
+      }
     },
     {
       "name": "gdisk",
@@ -15277,7 +17101,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "gdisk 面向 GPT，fdisk 传统上面向 MBR；超过 2TB 的磁盘必须用 GPT。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ gdisk -l /dev/sdb\nPartition table: GPT\nNumber  Start End    Size   Code  Name\n   1    2048  33554431 16.0G 8300  Linux",
+        "explain": "`gdisk` 是 GPT 分区表专用工具；`-l` 列出 GPT 分区（Code 8300=Linux）。比 fdisk 更适合 >2T 磁盘。"
+      }
     },
     {
       "name": "partprobe",
@@ -15297,7 +17125,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "分区后未 partprobe 可能导致设备节点未生成",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ partprobe /dev/sdb\n$ lsblk /dev/sdb\nsdb      8:16 0 16G 0 disk\n└─sdb1   8:17 0 16G 0 part",
+        "explain": "`partprobe` 通知内核重新读取分区表（改完分区后无需重启）；`lsblk` 确认新分区 sdb1 已被内核识别。"
+      }
     },
     {
       "name": "findmnt",
@@ -15362,7 +17194,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "校验 fstab 配置的正确性。修改 fstab 后重启前建议执行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ findmnt /data\nTARGET SOURCE    FSTYPE OPTIONS\n/data  /dev/sdb1 ext4   rw,relatime",
+        "explain": "`findmnt /data` 显示某挂载点的来源设备、文件系统类型与挂载选项；排查挂载问题很方便。"
+      }
     },
     {
       "name": "hdparm",
@@ -15386,7 +17222,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "写参数类选项有风险，只读查询更安全",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ hdparm -Tt /dev/sda\n Timing cached reads:   12345 MB in 2.00 seconds = 6172 MB/sec\n Timing buffered disk reads: 560 MB in 3.00 seconds = 186 MB/sec",
+        "explain": "`hdparm -Tt` 测磁盘速度：cached 为缓存读(反映 CPU/内存)、buffered 为实际盘读；此处顺序读约 186 MB/s。"
+      }
     },
     {
       "name": "smartctl",
@@ -15452,7 +17292,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "重点关注 Reallocated_Sector_Ct、Current_Pending_Sector、Offline_Uncorrectable，非零即预示磁盘退化。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ smartctl -H /dev/sda\nSMART overall-health self-assessment test result: PASSED\n$ smartctl -A /dev/sda | head -3\nID# ATTRIBUTE  FLAG  VALUE WORST THRESH\n  5 Reallocated_Sector_Ct 0x0033 100 100 010",
+        "explain": "`smartctl -H` 给出硬盘健康总评 PASSED；`-A` 列出 SMART 属性(VALUE 越低越差)，提前预警磁盘故障。"
+      }
     },
     {
       "name": "cryptsetup",
@@ -15477,7 +17321,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "luksFormat 会清空分区数据，确认无误再执行",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ cryptsetup luksOpen /dev/sdb1 cryptdata\nEnter passphrase: \n$ ls /dev/mapper/cryptdata\n/dev/mapper/cryptdata",
+        "explain": "`cryptsetup luksOpen` 用密码解锁 LUKS 加密分区并映射到 /dev/mapper/cryptdata，之后可 mount 使用；保护磁盘数据。"
+      }
     },
     {
       "name": "mountpoint",
@@ -15497,7 +17345,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mountpoint /data\n/data is a mountpoint\n$ mountpoint /home\n/home is not a mountpoint",
+        "explain": "`mountpoint` 判断某路径是否为挂载点；/data 是(独立分区)，/home 不是(只是目录)，用于脚本条件判断。"
+      }
     },
     {
       "name": "ssh-keygen",
@@ -15577,7 +17429,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "私钥权限必须为 600、.ssh 目录为 700，否则 SSH 会拒绝使用该密钥。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ssh-keygen -t ed25519 -C 'user@host'\nGenerating public/private ed25519 key pair.\nYour public key has been saved in ~/.ssh/id_ed25519.pub\n$ cat ~/.ssh/id_ed25519.pub\nssh-ed25519 AAAA... user@host",
+        "explain": "`ssh-keygen -t ed25519` 生成密钥对(更安全的 ed25519 算法)；公钥存 .pub，复制到服务器即可免密登录。"
+      }
     },
     {
       "name": "ssh-copy-id",
@@ -15637,7 +17493,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "若配置后仍要求密码，多为远程家目录或 .ssh 权限过宽，用 ssh -v 可看到具体拒绝原因。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ ssh-copy-id user@192.168.1.10\nNumber of key(s) added: 1\n$ ssh user@192.168.1.10 'echo ok'\nok",
+        "explain": "`ssh-copy-id` 把本地公钥自动追加到远端 ~/.ssh/authorized_keys；之后 ssh 无需输密码(返回 ok 验证免密成功)。"
+      }
     },
     {
       "name": "telnet",
@@ -15687,7 +17547,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "仅测端口可用 nc -zv host port 或 timeout 3 bash -c '</dev/tcp/host/port'。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ telnet smtp.example.com 25\nTrying 93.184.216.34...\nConnected to smtp.example.com.\n220 mailserver ESMTP",
+        "explain": "`telnet host port` 建立原始 TCP 连接；此处连到 SMTP 25 端口并收到服务端横幅 220，常用于手动调试服务协议。"
+      }
     },
     {
       "name": "hostname",
@@ -15742,7 +17606,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "永久修改应使用 hostnamectl set-hostname 或写入 /etc/hostname。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ hostname\nserver01\n$ hostnamectl set-hostname web01\n$ hostname\nweb01",
+        "explain": "`hostname` 显示当前主机名；`hostnamectl set-hostname`(systemd) 永久修改，下次登录生效。"
+      }
     },
     {
       "name": "nmcli",
@@ -15816,7 +17684,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "modify 后需执行一次 down 再 up 才会应用，或使用 nmcli connection reload。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ nmcli device status\nDEVICE  TYPE      STATE      CONNECTION\neth0    ethernet  connected  wired\nwlan0   wifi      disconnected  --\n$ nmcli con up wired",
+        "explain": "`nmcli device status` 列出网络设备及连接状态；`con up wired` 激活名为 wired 的连接，管理 NetworkManager 网络。"
+      }
     },
     {
       "name": "iperf3",
@@ -15891,7 +17763,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "以 JSON 输出，便于自动化采集。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ iperf3 -s &   # 服务端\n$ iperf3 -c 127.0.0.1\n[ ID] Interval  Transfer  Bitrate\n[  5] 0-1   sec 1.10 GBytes 9.45 Gbits/sec",
+        "explain": "`iperf3` 测网络吞吐；服务端 `-s`、客户端 `-c` 连接，结果约 9.45 Gbit/s，用于评估带宽上限。"
+      }
     },
     {
       "name": "ethtool",
@@ -15915,7 +17791,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ethtool eth0\nSettings for eth0:\n\tSpeed: 1000Mb/s\n\tDuplex: Full\n\tLink detected: yes",
+        "explain": "`ethtool eth0` 显示网卡速率(1000Mb/s)、双工模式与链路状态(yes)；排查网速不达标时确认协商结果。"
+      }
     },
     {
       "name": "resolvectl",
@@ -15939,7 +17819,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "无 systemd-resolved 的系统用 nslookup/dig 替代",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ resolvectl status\nGlobal\n       DNS Servers: 8.8.8.8\n        Protocols: +DNSSEC\nLink 2 (eth0):  Current DNS Server: 192.168.1.1",
+        "explain": "`resolvectl status` 显示 systemd-resolved 的 DNS 配置：全局 8.8.8.8、网卡 eth0 当前 192.168.1.1，查 DNS 解析来源。"
+      }
     },
     {
       "name": "route",
@@ -15994,7 +17878,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "属 net-tools 已废弃，新系统请使用 ip route；命令行添加的路由重启后均会丢失。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ route -n\nKernel IP routing table\nDestination  Gateway      Genmask        Flags Iface\n0.0.0.0      192.168.1.1  0.0.0.0        UG    eth0\n192.168.1.0  0.0.0.0      255.255.255.0  U     eth0",
+        "explain": "`route -n` 显示路由表；`0.0.0.0` 行即默认网关 192.168.1.1，`192.168.1.0` 为本地直连网段。已过时，建议 ip route。"
+      }
     },
     {
       "name": "ftp",
@@ -16018,7 +17906,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "明文传输，敏感场景优先 scp/sftp",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ftp ftp.example.com\nName: anonymous\n230 Login successful.\nftp> get file.txt\n226 Transfer complete.",
+        "explain": "`ftp` 交互式文件传输；以 anonymous 登录成功(230)，`get` 下载文件并提示 226 传输完成。明文传输已不推荐。"
+      }
     },
     {
       "name": "nft",
@@ -16043,7 +17935,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "nftables 是 iptables 的现代替代；二者规则语法不兼容",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ nft list ruleset\ntable inet filter {\n    chain input { type filter hook input priority 0;\n        tcp dport 22 accept } }\n$ nft add rule inet filter input tcp dport 80 accept",
+        "explain": "`nft` 是 nftables(取代 iptables)工具；`list ruleset` 显示规则集，第二行动态添加放行 80 端口的规则。"
+      }
     },
     {
       "name": "cpio",
@@ -16067,7 +17963,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ find . -name '*.txt' | cpio -o > txt.cpio\n12 blocks\n$ cpio -id < txt.cpio",
+        "explain": "`cpio` 把 find 输出打包成 cpio；`-o` 归档、`-id` 解包。RPM 等格式内部常用。"
+      }
     },
     {
       "name": "ar",
@@ -16092,7 +17992,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ ar r lib.a a.o b.o\n$ ar t lib.a\na.o\nb.o",
+        "explain": "`ar` 创建/管理 .a 静态库(归档目标文件)；`t` 列出成员。Linux 静态库本质就是 ar 归档。"
+      }
     },
     {
       "name": "bzcat",
@@ -16112,7 +18016,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ bzcat log.bz2 | grep ERROR\n2026-08-04 ERROR: ... ",
+        "explain": "`bzcat` 不解压直接输出 .bz2 内容；配合 grep 在压缩日志里搜 ERROR，省时省盘。"
+      }
     },
     {
       "name": "xzcat",
@@ -16132,7 +18040,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ xzcat kernel.tar.xz | tar -tv\ndrwxr-xr-x user/user 0 2026-08-04 a/",
+        "explain": "`xzcat` 解流 .xz 内容并管道给 tar 列出包内文件(`tar -tv`)，直接预览压缩包结构。"
+      }
     },
     {
       "name": "unxz",
@@ -16152,7 +18064,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ unxz kernel.tar.xz\n$ ls\nkernel.tar",
+        "explain": "`unxz` 解压 .xz 得到 kernel.tar；等同于 `xz -d`。"
+      }
     },
     {
       "name": "bunzip2",
@@ -16172,7 +18088,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ bunzip2 big.log.bz2\n$ ls\nbig.log",
+        "explain": "`bunzip2` 解压 .bz2 得到原文件；等同于 `bzip2 -d`。"
+      }
     },
     {
       "name": "systemd-analyze",
@@ -16200,7 +18120,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ systemd-analyze\nStartup finished in 2.1s (kernel) + 5.3s (userspace) = 7.4s\n$ systemd-analyze blame | head -3\n  1.2s nginx.service",
+        "explain": "`systemd-analyze` 统计开机耗时(7.4s)；`blame` 列出各服务启动耗时，定位拖慢开机的罪魁。"
+      }
     },
     {
       "name": "lsipc",
@@ -16224,7 +18148,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lsipc\nTYPE  ID   KEY       OWNER  PERMS  BYTES\nMSG    0 0x00000000 root    600    0",
+        "explain": "`lsipc` 列出 System V 进程间通信对象(消息队列/信号量/共享内存)；排查 IPC 资源耗尽时用。"
+      }
     },
     {
       "name": "lslocks",
@@ -16244,7 +18172,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lslocks\nCOMMAND  PID  TYPE  SIZE  MODE  MNT          PATH\nnginx   900  FLOCK 0B    WRITE /var/log/nginx/access.log",
+        "explain": "`lslocks` 列出当前文件锁；可见 nginx 对访问日志持写锁，排查\"文件被占用\"类问题。"
+      }
     },
     {
       "name": "lsns",
@@ -16268,7 +18200,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ lsns\nNS TYPE  NPROCS  PID USER  COMMAND\n4026531836 pid      210    1 root  /sbin/init\n4026531840 mnt        3  900 root  nginx: master",
+        "explain": "`lsns` 列出命名空间(pid/mnt/net 等)及所属进程；容器/隔离环境排障时确认命名空间边界。"
+      }
     },
     {
       "name": "pidstat",
@@ -16333,7 +18269,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "第一次输出为自启动以来的平均值，观察实时情况应看第二次及以后的数据。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ pidstat -u 1 2\nLinux 6.8.0\n12:00:01 UID   PID  %usr %system  Command\n12:00:02  1000 1234  2.10   0.50  vim",
+        "explain": "`pidstat -u` 按进程统计 CPU 使用；可加 `-r`(内存)/`-d`(I/O)，比 top 更适合做进程级性能采样。"
+      }
     },
     {
       "name": "dstat",
@@ -16393,7 +18333,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "原版已停止维护，新发行版多提供 dool 作为替代实现。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ dstat 1 2\n----total-cpu-usage---- --dsk/total- --net/total-\nusr sys idl  | read  writ  | recv  send\n  2   1  97  | 20k   48k  | 12k   3k",
+        "explain": "`dstat` 综合实时统计 CPU/磁盘/网络/内存，一行刷新；替代 vmstat/iostat/netstat 组合，概览系统负载。"
+      }
     },
     {
       "name": "apt-file",
@@ -16417,7 +18361,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ apt-file update\n$ apt-file search bin/ls\ncoreutils: /bin/ls\n$ apt-file list nginx | head\nnginx: /usr/sbin/nginx",
+        "explain": "`apt-file` 检索\"哪个包提供某文件\"；`search bin/ls` 得知来自 coreutils，`list nginx` 列出其所有文件。装包前找文件所属。"
+      }
     },
     {
       "name": "apt-mark",
@@ -16441,7 +18389,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ apt-mark hold nginx\nnginx set on hold.\n$ apt-mark showhold\nnginx",
+        "explain": "`apt-mark hold nginx` 把包标记为\"保持\"避免被升级；`showhold` 列出被锁定的包。用于钉住关键版本。"
+      }
     },
     {
       "name": "sysctl",
@@ -16505,7 +18457,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "-w 的修改重启即丢失，永久生效须写入 /etc/sysctl.d/ 下的 .conf 文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ sysctl net.ipv4.ip_forward\nnet.ipv4.ip_forward = 0\n$ sysctl -w net.ipv4.ip_forward=1\nnet.ipv4.ip_forward = 1",
+        "explain": "`sysctl` 运行时读写内核参数；首行查看到 IP 转发当前为 0，`-w` 临时开启为 1(做路由器需此)。持久化写 /etc/sysctl.d/。"
+      }
     },
     {
       "name": "update-initramfs",
@@ -16529,7 +18485,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ update-initramfs -u\nupdate-initramfs: Generating /boot/initrd.img-6.8.0-45\n$ ls /boot/initrd.img-6.8.0-45\n/boot/initrd.img-6.8.0-45",
+        "explain": "`update-initramfs -u` 更新当前内核的 initrd(启动初期用的临时根文件系统)；`ls` 确认生成。装驱动/改启动后需执行。"
+      }
     },
     {
       "name": "dracut",
@@ -16553,7 +18513,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "dracut 多见于 RHEL 系；Debian/Ubuntu 用 update-initramfs",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ dracut -f /boot/initramfs-6.8.0-45.img 6.8.0-45\n$ ls -l /boot/initramfs-6.8.0-45.img\n-rw------- 1 root root 31234567 ... initramfs-6.8.0-45.img",
+        "explain": "`dracut -f` 在 RHEL 系生成/更新 initramfs；指定目标文件与内核版本。`ls` 确认文件已生成(约 31MB)。"
+      }
     },
     {
       "name": "bind",
@@ -16577,7 +18541,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ bind '\"\\C-x\\C-e\": edit-and-execute-command'\n$ bind -p | grep C-x\n\"\\C-x\\C-e\": edit-and-execute-command",
+        "explain": "`bind` 绑定 readline 快捷键；此处把 Ctrl-X Ctrl-E 绑为\"在编辑器编辑当前行\"。`bind -p` 列出键绑定。"
+      }
     },
     {
       "name": "compgen",
@@ -16601,7 +18569,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ compgen -c | grep git | head\ngit\ngit-status\ngit-commit\n$ compgen -W 'red green blue' -- bl\nblue",
+        "explain": "`compgen` 在补全脚本中生成候选；`-c` 列命令、`-W` 给定词表并按已输入 bl 过滤出 blue。"
+      }
     },
     {
       "name": "complete",
@@ -16625,7 +18597,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ complete -W 'start stop restart' svc\n$ svc <TAB><TAB>\nrestart  start  stop",
+        "explain": "`complete -W` 为 svc 命令注册补全词表；输入 svc 按 Tab 列出 start/stop/restart，提升命令行效率。"
+      }
     },
     {
       "name": "mapfile",
@@ -16650,7 +18626,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": "mapfile 别名 readarray；适合脚本中批量读行",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ mapfile -t lines < a.txt\n$ echo ${#lines[@]}\n3",
+        "explain": "`mapfile -t lines`(即 readarray) 把文件逐行读入数组 lines；`${#lines[@]}` 显示数组长度 3，即文件 3 行。"
+      }
     },
     {
       "name": "enable",
@@ -16674,7 +18654,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ enable -n echo\n$ type echo\necho is a shell builtin (disabled)\n$ enable echo",
+        "explain": "`enable -n echo` 禁用内置 echo(转用外部)；`enable echo` 重新启用。极少用，特殊场景隔离内置/外部命令。"
+      }
     },
     {
       "name": "help",
@@ -16698,7 +18682,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": "help 仅对内建有效；外部命令用 man",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ help cd\ncd: cd [-L|[-P [-e]] [-@]] [dir]\n    Change the current directory...",
+        "explain": "`help` 显示 bash 内置命令用法(无参数列全部)；此处查 cd 的语法与说明，比 man 更聚焦内置。"
+      }
     },
     {
       "name": "getopts",
@@ -16718,7 +18706,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ cat get.sh\nwhile getopts \":a:b:\" o; do case $o in a) A=$OPTARG;; b) B=$OPTARG;; esac; done\n$ bash get.sh -a x -b y; echo \"$A $B\"\nx y",
+        "explain": "`getopts` 解析短选项(-a x -b y)，循环中把参数值赋给 A/B；脚本标准化处理命令行参数的标准做法。"
+      }
     },
     {
       "name": "times",
@@ -16738,7 +18730,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ times\n0m0.012s 0m0.008s\n0m0.004s 0m0.002s",
+        "explain": "`times` 显示当前 shell 及其子进程累计的用户/系统 CPU 时间(两行)；调试脚本性能用。"
+      }
     },
     {
       "name": "xargs",
@@ -16812,7 +18808,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "默认按空白分隔，含空格的文件名会被拆散；同时会引发对引号的解释，务必配合 -0 使用。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ find . -name '*.log' | xargs rm\n$ find . -name '*.txt' -print0 | xargs -0 rm\n(安全处理含空格文件名)",
+        "explain": "`xargs` 把标准输入转成命令参数；首例删除所有 .log。含空格文件名用 `-print0 | xargs -0` 防断词错误。"
+      }
     },
     {
       "name": "env",
@@ -16871,7 +18871,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "#!/usr/bin/env python3 会在 PATH 中查找解释器，比写死路径更可移植。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ env | grep PATH\nPATH=/usr/local/bin:/usr/bin:/bin\n$ env -i bash --noprofile --norc\n(在干净环境启动新 shell)",
+        "explain": "`env` 显示全部环境变量；`env -i` 以空环境启动命令，测试程序在无污染环境下行为用。"
+      }
     },
     {
       "name": "printenv",
@@ -16916,7 +18920,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "printenv 只能读到导出的环境变量，未 export 的 shell 局部变量读不到，可据此区分两类变量。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ printenv HOME\n/home/user\n$ printenv | head -3\nHOME=/home/user\nPATH=/usr/local/bin:...",
+        "explain": "`printenv` 打印环境变量；单独加变量名(如 HOME)只取该值，比 env 更聚焦查询。"
+      }
     },
     {
       "name": "seq",
@@ -16980,7 +18988,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "bash 的 {1..10} 更快但不支持变量，seq 可接受变量作为边界。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ seq 1 3\n1\n2\n3\n$ seq -s, 1 5 2\n1,3,5",
+        "explain": "`seq` 生成数字序列；`1 3` 输出 1-3，`-s,` 用逗号分隔、`1 5 2` 步长 2 得 1,3,5，常用于循环。"
+      }
     },
     {
       "name": "expr",
@@ -17049,7 +19061,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "bash 中推荐用 $((...)) 做算术、${#var} 取长度，比 expr 更快且无需转义。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ expr 5 + 3\n8\n$ expr length 'hello'\n5\n$ expr 'a.txt' : '.*\\.txt'\n4",
+        "explain": "`expr` 做整数运算(length 求串长、正则 `:`)；`5 + 3`=8。注意运算符两边需空格。现代脚本多用 `$(( ))`。"
+      }
     },
     {
       "name": "xdg-open",
@@ -17073,7 +19089,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ xdg-open report.pdf\n(在默认图形程序中打开 report.pdf)",
+        "explain": "`xdg-open` 用桌面默认应用打开文件/URL；无 GUI 时无效，适合桌面环境快速预览。"
+      }
     },
     {
       "name": "apropos",
@@ -17128,7 +19148,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "依赖 mandb 索引，新装软件后若搜不到，需先执行 sudo mandb 更新。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ apropos copy\ncp (1)  - copy files and directories\nscp (1) - secure copy",
+        "explain": "`apropos`(等同 man -k) 按关键词搜 whatis 库；\"copy\" 列出 cp、scp 等，忘记命令名时按功能反查。"
+      }
     },
     {
       "name": "gpg",
@@ -17217,7 +19241,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "私钥一旦丢失，用其加密的数据将永久无法恢复，务必备份并妥善保管吊销证书。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ gpg -c secret.txt\n(输入口令后生成 secret.txt.gpg)\n$ gpg -d secret.txt.gpg > secret.txt\n(解密需口令)",
+        "explain": "`gpg -c` 对称加密(口令保护)生成 .gpg；`-d` 解密。也可 `-e` 用接收方公钥加密，确保文件机密。"
+      }
     },
     {
       "name": "git init",
@@ -17268,7 +19296,11 @@ window.COMMAND_DATA = {
           "default": "当前目录",
           "desc": "在指定目录而非当前目录初始化仓库。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git init\nInitialized empty Git repository in /home/user/project/.git/\n$ ls -a | grep .git\n.git",
+        "explain": "在当前目录创建 .git 仓库(Initialized empty)；`ls -a` 可见新增 .git 目录，此后该目录纳入版本控制。"
+      }
     },
     {
       "name": "git clone",
@@ -17328,7 +19360,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "克隆但不检出工作区文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git clone https://github.com/user/repo.git\nCloning into 'repo'...\nremote: Enumerating objects: 120, done.\nReceiving objects: 100% (120/120), done.",
+        "explain": "从远程 URL 克隆整个仓库到本地 repo/ 目录；显示枚举与接收对象进度，完成后得到完整仓库(含历史)。"
+      }
     },
     {
       "name": "git config",
@@ -17393,7 +19429,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "为同名键追加一个值，用于多值配置（如 remote.pushurl）。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git config --global user.name \"Alice\"\n$ git config --global user.email \"alice@example.com\"\n$ git config --list | grep user\nuser.name=Alice\nuser.email=alice@example.com",
+        "explain": "`git config --global` 设置全局用户名/邮箱(提交者身份)；`--list` 查看，缺这两项会无法提交。"
+      }
     },
     {
       "name": "git help",
@@ -17434,7 +19474,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "在浏览器打开 HTML 版手册，需本地已生成。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git help commit\n(打开 git-commit 手册页)\n$ git help -a | head\navailable git commands... add commit clone",
+        "explain": "`git help <cmd>` 查某命令手册(man 页)；`-a` 列出全部可用子命令，适合回忆命令名。"
+      }
     },
     {
       "name": "git var",
@@ -17454,7 +19498,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git var GIT_COMMITTER_IDENT\nAlice <alice@example.com> 1722748800 +0800",
+        "explain": "`git var` 显示 Git 内部变量求值结果；此处输出提交者身份(名<邮箱> 时间戳 时区)，排查身份配置用。"
+      }
     },
     {
       "name": "git version",
@@ -17474,7 +19522,11 @@ window.COMMAND_DATA = {
       "difficulty": "入门",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git version\ngit version 2.40.0",
+        "explain": "打印 Git 客户端版本号；确认特性支持或排错时先看版本。"
+      }
     },
     {
       "name": "git bugreport",
@@ -17494,7 +19546,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git bugreport\n(生成 git-bugreport-<日期>.txt 模板供填写)",
+        "explain": "交互生成 bug 报告模板文件，内含环境信息，便于向 Git 社区报问题。"
+      }
     },
     {
       "name": "git status",
@@ -17544,7 +19600,11 @@ window.COMMAND_DATA = {
           "default": "all",
           "desc": "控制未跟踪文件显示粒度：no 不显示、normal 仅顶层、all 含子目录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git status\nOn branch main\nChanges to be committed:\n  new file:   app.js\nChanges not staged for commit:\n  modified:   index.html",
+        "explain": "显示工作区状态：On branch main；`Changes to be committed` 是已暂存待提交，`Changes not staged` 是已改未暂存。据此决定 add/commit。"
+      }
     },
     {
       "name": "git add",
@@ -17599,7 +19659,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示将被添加的文件，不实际改动暂存区。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git add index.html app.js\n$ git status -s\nA  app.js\n M index.html\n$ git add -A",
+        "explain": "`git add` 把文件改动纳入暂存区；`status -s` 中 A=已加、M=已改。`-A` 暂存全部改动(含删改)。"
+      }
     },
     {
       "name": "git commit",
@@ -17664,7 +19728,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "指定提交作者（姓名 <邮箱>），覆盖当前用户配置。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git commit -m \"feat: add login page\"\n[main 3a1b2c4] feat: add login page\n 1 file changed, 12 insertions(+)",
+        "explain": "`-m` 指定提交说明；输出新提交短哈希 3a1b2c4、改动文件数与增删行数。提交即生成版本快照。"
+      }
     },
     {
       "name": "git rm",
@@ -17710,7 +19778,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示将被删除的文件。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git rm old.js\nrm 'old.js'\n$ git status -s\nD  old.js",
+        "explain": "`git rm` 同时删除工作区文件并暂存删除；status 显示 D(已删待提交)。仅删工作区用 `rm` 后 `git add`。"
+      }
     },
     {
       "name": "git mv",
@@ -17746,7 +19818,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示将执行的操作。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git mv a.js src/a.js\n$ git status -s\nR  a.js -> src/a.js",
+        "explain": "`git mv` 移动/重命名并暂存；status 以 R 标记重命名(保留历史关联)，优于手动 mv+add。"
+      }
     },
     {
       "name": "git clean",
@@ -17796,7 +19872,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "交互式逐项选择要清理的内容。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git clean -n\nWould remove debug.log\n$ git clean -f\nRemoving debug.log",
+        "explain": "`git clean -n` 预览将被删除的未跟踪文件；`-f` 真正删除(危险，不可恢复)。`-d` 含未跟踪目录。"
+      }
     },
     {
       "name": "git stage",
@@ -17816,7 +19896,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "git stage 是 git add 的别名",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git stage *.py\n$ git status -s\nA  main.py\nA  util.py",
+        "explain": "`git stage` 是 `git add` 的同义别名，把改动加入暂存区；输出显示多个 .py 已暂存。"
+      }
     },
     {
       "name": "git log",
@@ -17891,7 +19975,11 @@ window.COMMAND_DATA = {
           "default": "medium",
           "desc": "自定义输出格式；--pretty=format:'%h %s' 可精确控制字段。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git log --oneline -3\n3a1b2c4 feat: add login page\n8f2d1a0 fix: header style\n1c9e8b7 init project",
+        "explain": "`git log` 显示提交历史；`--oneline` 单行精简，每行=短哈希+说明。可加 `--graph --all` 看分支图。"
+      }
     },
     {
       "name": "git show",
@@ -17941,7 +20029,11 @@ window.COMMAND_DATA = {
           "default": "medium",
           "desc": "自定义输出格式。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git show 3a1b2c4\ncommit 3a1b2c4...\nAuthor: Alice <alice@example.com>\nDate:   2026-08-04\n    feat: add login page\ndiff --git a/app.js b/app.js\n+ console.log('login')",
+        "explain": "`git show <commit>` 显示该次提交的元信息+完整 diff；便于查看某次改动的具体内容。"
+      }
     },
     {
       "name": "git diff",
@@ -18006,7 +20098,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "忽略空白变化，避免无关差异。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git diff\ndiff --git a/index.html b/index.html\n-index.html\n+<title>New</title>",
+        "explain": "`git diff` 显示**工作区 vs 暂存区**的差异；`git diff --cached` 看暂存区 vs 上次提交。`+` 新增、`-` 删除。"
+      }
     },
     {
       "name": "git blame",
@@ -18052,7 +20148,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "显示作者邮箱而非姓名。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git blame -L 5,7 app.js\n3a1b2c4 (Alice 2026-08-04 1) function f() {\n3a1b2c4 (Alice 2026-08-04 2)   return 1;\n8f2d1a0 (Bob   2026-08-03 3) }",
+        "explain": "`git blame -L 5,7` 逐行标注第 5-7 行是谁、何时、哪次提交写的；追溯\"谁改了这行\"利器。"
+      }
     },
     {
       "name": "git grep",
@@ -18108,7 +20208,11 @@ window.COMMAND_DATA = {
           "default": "随终端",
           "desc": "高亮匹配文本。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git grep -n 'TODO' -- '*.py'\napp/main.py:12:    # TODO refactor\nutil/helper.py:45:    # TODO add test",
+        "explain": "`git grep` 在**版本库内**搜索(不搜未跟踪文件)，`-n` 带行号，`-- '*.py'` 限定类型；比系统 grep 更贴合仓库。"
+      }
     },
     {
       "name": "git shortlog",
@@ -18128,7 +20232,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git shortlog -sne\n    12  Alice <alice@example.com>\n     5  Bob <bob@example.com>",
+        "explain": "`git shortlog -sne` 按作者汇总提交数(s 计数、n 按提交数排序、e 显示邮箱)；看团队贡献分布。"
+      }
     },
     {
       "name": "git describe",
@@ -18148,7 +20256,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git describe --tags\nv1.2.0-3-g3a1b2c4",
+        "explain": "`git describe --tags` 用最近的标签+领先提交数+短哈希描述当前提交(如 v1.2.0 后第3个提交)；生成可读版本号。"
+      }
     },
     {
       "name": "git reflog",
@@ -18189,7 +20301,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "手动删除某条 reflog 记录。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git reflog -3\n3a1b2c4 HEAD@{0}: commit: feat: add login page\n8f2d1a0 HEAD@{1}: checkout: moving from dev to main\n1c9e8b7 HEAD@{2}: commit: init project",
+        "explain": "`git reflog` 记录 HEAD 的每一次移动(提交/切换/重置)；**找回误删提交**的救命绳，可 `git reset --hard HEAD@{n}` 回退。"
+      }
     },
     {
       "name": "git whatchanged",
@@ -18209,7 +20325,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "类似 git log 但侧重文件列表",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git whatchanged --oneline -2\n3a1b2c4 feat: add login page\n:000000 100644 0000000... a/app.js (A)\n8f2d1a0 fix: header\n:100644 100644 b1..c2  index.html (M)",
+        "explain": "`git whatchanged` 以\"提交 + 受影响的文件及状态(A新增/M修改/D删除)\"形式展示历史；类似 log 但聚焦文件变更。"
+      }
     },
     {
       "name": "git difftool",
@@ -18256,7 +20376,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "跳过逐个确认直接打开工具。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git difftool\n(启动配置的可视化对比工具如 vimdiff 比对改动)",
+        "explain": "`git difftool` 用图形/外部对比工具(如 vimdiff、meld)替代纯文本 diff，直观比对工作区改动。"
+      }
     },
     {
       "name": "git branch",
@@ -18321,7 +20445,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "设置本地分支跟踪的远程上游（如 origin/main）。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git branch\n  dev\n* main\n$ git branch feature-x\n$ git branch -d dev",
+        "explain": "`git branch` 列出本地分支(`*` 为当前)；`feature-x` 新建分支；`-d dev` 删除已合并分支。"
+      }
     },
     {
       "name": "git switch",
@@ -18371,7 +20499,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "切到某提交进入游离 HEAD 状态（临时查看旧版本）。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git switch dev\nSwitched to branch 'dev'\n$ git switch -c hotfix\nSwitched to a new branch 'hotfix'",
+        "explain": "`git switch dev` 切换分支；`-c hotfix` 新建并切换。比 checkout 语义更清晰(只管分支切换)。"
+      }
     },
     {
       "name": "git checkout",
@@ -18422,7 +20554,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "从某历史提交恢复指定文件到工作区。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git checkout main\nSwitched to branch 'main'\n$ git checkout -b feature\nSwitched to a new branch 'feature'\n$ git checkout -- index.html",
+        "explain": "`git checkout` 多用途：切分支、`-b` 新建、`<file>` 丢弃工作区改动还原文件(危险)。现代建议 switch/restore 替代。"
+      }
     },
     {
       "name": "git merge",
@@ -18477,7 +20613,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "中止进行中的合并，恢复到合并前状态。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git merge feature\nUpdating 8f2d1a0..3a1b2c4\nFast-forward\n index.html | 2 +-\n 1 file changed",
+        "explain": "`git merge feature` 把 feature 合并进当前分支；Fast-forward 表示可直接快进(无分叉)；有冲突会标记并暂停。"
+      }
     },
     {
       "name": "git mergetool",
@@ -18518,7 +20658,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "中止合并工具流程。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git mergetool\nMerging: index.html\n(打开 vimdiff 三方对比, 解决后保存退出)",
+        "explain": "合并冲突时 `git mergetool` 调起可视化工具(如 vimdiff)逐文件解决冲突；解决后 `git add` 标记完成。"
+      }
     },
     {
       "name": "git rebase",
@@ -18578,7 +20722,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "每步重放后执行指定命令（如跑测试），验证历史正确。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git rebase main\nSuccessfully rebased and updated refs/heads/feature.\n$ git rebase -i HEAD~3",
+        "explain": "`git rebase main` 把当前分支提交\"重放\"到 main 之上，得到线性历史；`-i` 交互改写最近 3 个提交(整理提交)。改写已推送历史需谨慎。"
+      }
     },
     {
       "name": "git cherry-pick",
@@ -18629,7 +20777,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "解决冲突后继续。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git cherry-pick 8f2d1a0\n[feature 9c0d1e2] fix: header\n Date: 2026-08-03\n 1 file changed",
+        "explain": "`git cherry-pick <commit>` 把某个已有提交的改动**复制**到当前分支；挑选个别提交而不合并整条分支。"
+      }
     },
     {
       "name": "git tag",
@@ -18684,7 +20836,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "列出标签说明的前 N 行。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git tag v1.2.0\n$ git tag -a v1.2.0 -m \"release 1.2\"\n$ git tag\nv1.2.0",
+        "explain": "`git tag v1.2.0` 打轻量标签；`-a -m` 打附注标签(带说明)。`git tag` 列出；发布里程碑用。"
+      }
     },
     {
       "name": "git range-diff",
@@ -18704,7 +20860,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git range-diff main~3..main feature~3..feature\n1:  3a1b2c4 = 9c0d1e2  feat: add login",
+        "explain": "`git range-diff` 比较两个提交区间的差异(常用于 rebase 后核对是否一致)；`=` 表示两边提交等价。"
+      }
     },
     {
       "name": "git merge-tree",
@@ -18729,7 +20889,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "常用于 CI 检测能否无冲突合并；不修改工作区与提交历史",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git merge-tree main feature\n<<<<<<< .base\n...三重冲突标记展示合并结果(不实际写入)",
+        "explain": "`git merge-tree` **不实际合并**地计算两分支合并结果(用于钩子/预览)；输出含冲突标记供分析。"
+      }
     },
     {
       "name": "git remote",
@@ -18789,7 +20953,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "清理本地已不存在于远程的跟踪分支。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git remote -v\norigin  https://github.com/user/repo.git (fetch)\norigin  https://github.com/user/repo.git (push)\n$ git remote add upstream https://github.com/up/repo.git",
+        "explain": "`git remote -v` 列出远程仓库及 URL；`add upstream` 增一个上游远程，用于同步原项目更新。"
+      }
     },
     {
       "name": "git fetch",
@@ -18844,7 +21012,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示将要获取的更新。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git fetch origin\nremote: Enumerating objects: 15, done.\nFrom github.com:user/repo\n   8f2d1a0..3a1b2c4  main       -> origin/main",
+        "explain": "`git fetch` 从远程拉取**最新对象但不动工作区**；origin/main 指针更新，可再 review 后合并。比 pull 更安全。"
+      }
     },
     {
       "name": "git pull",
@@ -18894,7 +21066,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "浅层拉取。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git pull origin main\nUpdating 8f2d1a0..3a1b2c4\nFast-forward\n index.html | 2 +-\n$ git pull --rebase",
+        "explain": "`git pull` = fetch + merge，直接更新工作区分支；`--rebase` 改为 rebase 保持线性历史。可能触发冲突。"
+      }
     },
     {
       "name": "git push",
@@ -18954,7 +21130,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示将要推送的内容。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git push origin main\nEnumerating objects: 12, done.\nTo github.com:user/repo.git\n   8f2d1a0..3a1b2c4  main -> main\n$ git push -u origin feature",
+        "explain": "`git push origin main` 把本地提交推到远程 main；`-u` 建立跟踪，之后可简写 `git push`。**已推送后勿用 --force 覆盖他人提交**。"
+      }
     },
     {
       "name": "git submodule",
@@ -18978,7 +21158,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git submodule add https://github.com/x/lib lib\nCloning into 'lib'...\n$ git submodule update --init --recursive",
+        "explain": "`git submodule add` 把另一仓库作为子模块挂入 lib/；`update --init --recursive` 拉取并初始化嵌套子模块。"
+      }
     },
     {
       "name": "git worktree",
@@ -18998,7 +21182,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git worktree add ../hotfix main\nPreparing worktree (checking out 'main')\n$ git worktree list\n/path/proj       abc123 [main]\n/path/hotfix     def456 [hotfix]",
+        "explain": "`git worktree add` 在另一目录检出另一分支，多个工作区共享同一仓库；`list` 查看。避免频繁切换分支丢失改动。"
+      }
     },
     {
       "name": "git bundle",
@@ -19018,7 +21206,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git bundle create repo.bundle main\n$ git clone repo.bundle repo2",
+        "explain": "`git bundle create` 把仓库打包成单文件(适合无网络传输)；对方 `clone` 该 .bundle 即可复原，离线分发用。"
+      }
     },
     {
       "name": "git request-pull",
@@ -19038,7 +21230,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git request-pull origin/main myfork feature\nThe following changes since commit 8f2d1a0:\n  feat: add login (3a1b2c4)\nare available in the git repository at:",
+        "explain": "`git request-pull` 生成发给上游维护者的拉取请求摘要(基于某基线、指向你的 fork)；用于邮件式协作。"
+      }
     },
     {
       "name": "git ls-remote",
@@ -19085,7 +21281,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "只显示已打包的引用（不含符号引用）。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git ls-remote origin\n3a1b2c4...  HEAD\n3a1b2c4...  refs/heads/main\n8f2d1a0...  refs/tags/v1.2.0",
+        "explain": "`git ls-remote` 列出远程仓库的引用(分支/标签及其哈希)而**不克隆**；快速查看远程有哪些分支/标签。"
+      }
     },
     {
       "name": "git reset",
@@ -19136,7 +21336,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "尽量保留工作区改动，遇冲突则中止。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git reset --soft HEAD~1\n(最近提交撤回暂存区, 文件改动保留)\n$ git reset --hard HEAD~1\nHEAD is now at 8f2d1a0 fix: header",
+        "explain": "`git reset` 移动分支指针：`--soft` 保留改动在暂存区、`--mixed`(默认) 留在工作区、`--hard` **丢弃改动**(危险)。"
+      }
     },
     {
       "name": "git restore",
@@ -19187,7 +21391,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "同时重置暂存区与工作区（等同 reset --hard 针对单文件）。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git restore index.html\n(丢弃 index.html 工作区改动, 还原为上次提交)\n$ git restore --staged app.js",
+        "explain": "`git restore <file>` 丢弃工作区改动；`--staged` 把文件移出暂存区(保留改动)。替代 checkout 的部分用途，语义清晰。"
+      }
     },
     {
       "name": "git revert",
@@ -19234,7 +21442,11 @@ window.COMMAND_DATA = {
           "default": "无",
           "desc": "解决冲突后继续。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git revert 3a1b2c4\n[main 7b8c9d0] Revert \"feat: add login page\"\n$ git log --oneline -1\n7b8c9d0 Revert \"feat: add login page\" ",
+        "explain": "`git revert <commit>` **新建一个反向提交**来抵消某次改动；不改写历史，对公共分支安全(优于 reset)。"
+      }
     },
     {
       "name": "git stash",
@@ -19299,7 +21511,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "连被忽略的文件也一并暂存。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git stash\nSaved working directory and index state WIP on main\n$ git stash list\nstash@{0}: WIP on main\n$ git stash pop",
+        "explain": "`git stash` 暂存当前未提交改动(清理工作区)；`list` 查看；`pop` 恢复并删除栈顶暂存。临时切分支前好用。"
+      }
     },
     {
       "name": "git format-patch",
@@ -19319,7 +21535,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git format-patch main..feature\n0001-feat-add-login.patch\n0002-fix-header.patch",
+        "explain": "`git format-patch` 把提交区间生成为 .patch 邮件文件(含提交信息+diff)；适合邮件列表提交补丁。"
+      }
     },
     {
       "name": "git am",
@@ -19339,7 +21559,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git am 0001-feat-add-login.patch\nApplying: feat: add login page",
+        "explain": "`git am` 应用 format-patch 生成的补丁(保留原作者与提交信息)；邮件工作流接收补丁用。失败会提示冲突。"
+      }
     },
     {
       "name": "git apply",
@@ -19359,7 +21583,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": "apply 不动提交；am 会创建提交",
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git apply fix.patch\n(无输出即应用成功)\n$ git apply --check fix.patch",
+        "explain": "`git apply` 应用普通 diff 补丁(不创建提交)；`--check` 只校验能否应用而不实际改动。比 am 底层。"
+      }
     },
     {
       "name": "git send-email",
@@ -19379,7 +21607,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git send-email --to dev@list 0001-*.patch\nOK. Log says: Sent 1 message(s)",
+        "explain": "`git send-email` 直接把补丁邮件发送到指定地址；开源项目邮件贡献流程用。"
+      }
     },
     {
       "name": "git imap-send",
@@ -19399,7 +21631,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git imap-send *.patch\n(把补丁通过 IMAP 存入草稿箱待发送)",
+        "explain": "`git imap-send` 经 IMAP 把补丁存入邮件草稿(再于客户端发送)；与 send-email 互补的邮件提交方式。"
+      }
     },
     {
       "name": "git mailinfo",
@@ -19419,7 +21655,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git mailinfo msg patch < email.txt\n(从邮件原文拆分出提交说明 msg 与补丁 patch)",
+        "explain": "`git mailinfo` 解析邮件原文，抽出提交信息与 diff 到文件；`am` 内部即调用它，处理收到的补丁邮件用。"
+      }
     },
     {
       "name": "git bisect",
@@ -19447,7 +21687,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git bisect start\n$ git bisect bad\n$ git bisect good 8f2d1a0\nBisecting: 3 revisions left to test after this\n(二分定位引入 bug 的提交)",
+        "explain": "`git bisect` 二分查找：标记当前为 bad、某旧版为 good，Git 自动切到中间提交让你测试，逐轮缩小范围定位首个引入 bug 的提交。"
+      }
     },
     {
       "name": "git gc",
@@ -19467,7 +21711,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git gc\nEnumerating objects: 312, done.\nWriting objects: 100% (312/312)\nTotal 312 (delta 80), reused 300 (delta 70)",
+        "explain": "`git gc` 垃圾回收：压缩松散对象、打包、清理不可达对象；减小 .git 体积、提升性能。通常自动触发。"
+      }
     },
     {
       "name": "git fsck",
@@ -19487,7 +21735,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git fsck --full\nChecking object directories: 100% (256/256)\ndangling commit 7b8c9d0\n$ git fsck --lost-found",
+        "explain": "`git fsck` 检查仓库完整性(对象是否损坏)；dangling commit 可能是误删提交，`--lost-found` 找回。仓库健康体检。"
+      }
     },
     {
       "name": "git prune",
@@ -19507,7 +21759,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git prune -n\n(预览将被删除的不可达对象)\n$ git prune",
+        "explain": "`git prune` 删除**不可达**的松散对象(无引用指向)；通常配合 gc 自动执行。`-n` 先预览。"
+      }
     },
     {
       "name": "git repack",
@@ -19527,7 +21783,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git repack -ad\n(把松散对象重新打包进 pack 文件并删冗余)",
+        "explain": "`git repack -ad` 将对象重新打包、`-d` 删除被新包取代的旧包；精简存储，常由 gc 调用。"
+      }
     },
     {
       "name": "git maintenance",
@@ -19547,7 +21807,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git maintenance start\n(注册后台定时任务: prefetch/loose-objects/incremental-repack)\n$ git maintenance run --task=gc",
+        "explain": "`git maintenance` 管理后台自动维护任务(预取、垃圾回收等)；`start` 注册定时，`run --task=gc` 立即跑某项。"
+      }
     },
     {
       "name": "git count-objects",
@@ -19567,7 +21831,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git count-objects -vH\ncount: 12\nsize: 24.00 KiB\nin-pack: 300\npacks: 2",
+        "explain": "`git count-objects -vH` 显示松散对象数/大小与已打包情况(-H 人类可读)；判断是否需要 gc。"
+      }
     },
     {
       "name": "git check-ignore",
@@ -19614,7 +21882,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "不依赖 .git 索引，对任意目录也能检查。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git check-ignore -v node_modules\n.gitignore:3:node_modules/  node_modules\n$ echo \"debug.log\" >> .gitignore; git check-ignore debug.log\ndebug.log",
+        "explain": "`git check-ignore -v` 解释某文件为何被忽略(显示匹配的规则与所在 .gitignore 行)；排查\"该忽略却没忽略\"用。"
+      }
     },
     {
       "name": "git archive",
@@ -19634,7 +21906,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git archive --format=zip -o rel.zip v1.2.0\n$ unzip -l rel.zip | head\nArchive: rel.zip\n  src/main.py",
+        "explain": "`git archive` 把某提交/标签导出为 tar/zip(不含 .git)；发版交付源码快照用，比 clone 干净。"
+      }
     },
     {
       "name": "git check-attr",
@@ -19659,7 +21935,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git check-attr text .gitattributes\n.gitattributes: text: auto\n$ git check-attr -a main.py\nmain.py: text: auto",
+        "explain": "`git check-attr` 查询某文件应用的 .gitattributes 属性(text/eol/export-ignore 等)；确认换行/处理规则生效。"
+      }
     },
     {
       "name": "git svn",
@@ -19689,7 +21969,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "用于从 SVN 迁移；dcommit 会把本地提交逐条转为 SVN 提交",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git svn clone https://svn/repo\n(从 Subversion 仓库克隆为 Git)\n$ git svn rebase",
+        "explain": "`git svn` 桥接 Subversion：把 SVN 仓库当 Git 操作；`rebase` 从 SVN 同步最新。迁移遗留 SVN 用。"
+      }
     },
     {
       "name": "git ls-files",
@@ -19709,7 +21993,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git ls-files\nREADME.md\nsrc/main.py\n$ git ls-files -m\nindex.html",
+        "explain": "`git ls-files` 列出版本库跟踪的全部文件；`-m` 仅列已修改的，快速看当前改动范围。"
+      }
     },
     {
       "name": "git rev-parse",
@@ -19733,7 +22021,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git rev-parse HEAD\n3a1b2c4f5e6d7...  (40 位完整 SHA)\n$ git rev-parse --abbrev-ref HEAD\nmain",
+        "explain": "`git rev-parse` 解析引用为对象名(哈希)；`HEAD` 得完整 40 位 SHA，`--abbrev-ref HEAD` 得分支名。脚本取信息用。"
+      }
     },
     {
       "name": "git rev-list",
@@ -19753,7 +22045,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git rev-list --count main\n142\n$ git rev-list --count main..feature\n3",
+        "explain": "`git rev-list` 列出提交(沿逆向)；`--count` 统计提交数，main..feature 得 feature 领先 main 的提交数(3)。"
+      }
     },
     {
       "name": "git cat-file",
@@ -19777,7 +22073,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git cat-file -t 3a1b2c4\ncommit\n$ git cat-file -p HEAD\ntree 9c0d...\nauthor Alice ...\nfeat: add login",
+        "explain": "`git cat-file` 查看任意对象的类型(-t)与内容(-p)；底层探查工具，确认对象结构与数据。"
+      }
     },
     {
       "name": "git hash-object",
@@ -19797,7 +22097,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git hash-object -w hello.txt\n2d832d...  (生成并写入该文件的 blob SHA)\n$ git hash-object hello.txt\n2d832d...  (仅计算不写入)",
+        "explain": "`git hash-object` 计算(或 `-w` 写入)文件的 blob 哈希(SHA-1)；理解 Git 如何以内容寻址存储文件。"
+      }
     },
     {
       "name": "git update-index",
@@ -19817,7 +22121,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git update-index --add hello.txt\n(把文件加入索引/暂存区, 偏底层)\n$ git update-index --assume-unchanged big.bin",
+        "explain": "`git update-index` 直接操作索引；`--add` 暂存文件，`--assume-unchanged` 让 Git 忽略某文件后续改动(加速大仓)。"
+      }
     },
     {
       "name": "git write-tree",
@@ -19837,7 +22145,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git write-tree\n9c0d1e2...  (根据当前索引生成 tree 对象 SHA)",
+        "explain": "`git write-tree` 把暂存区当前状态序列化为一个 tree 对象并返回其 SHA；构建提交时由 commit-tree 引用。"
+      }
     },
     {
       "name": "git commit-tree",
@@ -19857,7 +22169,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git commit-tree 9c0d1e2 -p HEAD -m \"msg\"\n3a1b2c4...  (生成新 commit 对象)",
+        "explain": "`git commit-tree` 用给定 tree、父提交与说明**直接创建提交对象**；底层命令，`git commit` 即在其上封装。"
+      }
     },
     {
       "name": "git update-ref",
@@ -19877,7 +22193,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git update-ref refs/heads/dev 3a1b2c4\n(把 dev 分支指针移动到某提交)",
+        "explain": "`git update-ref` 直接改写引用(分支/标签)指向；等价于底层移动分支指针，脚本与高级操作使用。"
+      }
     },
     {
       "name": "git show-ref",
@@ -19897,7 +22217,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git show-ref\n3a1b2c4 refs/heads/main\n3a1b2c4 refs/remotes/origin/main",
+        "explain": "`git show-ref` 列出所有本地与远程引用的 SHA；核对分支/标签指向，底层排查用。"
+      }
     },
     {
       "name": "git symbolic-ref",
@@ -19917,7 +22241,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git symbolic-ref HEAD\nrefs/heads/main\n$ git symbolic-ref HEAD refs/heads/dev",
+        "explain": "`git symbolic-ref` 读写符号引用(如 HEAD 指向哪个分支)；可改当前分支指向而不切工作区。"
+      }
     },
     {
       "name": "git name-rev",
@@ -19937,7 +22265,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git name-rev 3a1b2c4\n3a1b2c4 main~2",
+        "explain": "`git name-rev` 把提交哈希反解为可读引用名(如 main~2)；日志/报错里看到裸哈希时定位用。"
+      }
     },
     {
       "name": "git for-each-ref",
@@ -19957,7 +22289,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git for-each-ref --format='%(refname) %(objectname:short)' refs/tags\nrefs/tags/v1.2.0 3a1b2c4",
+        "explain": "`git for-each-ref` 遍历引用并按格式输出(分支/标签/远程)；生成自定义列表，CI/脚本取数据用。"
+      }
     },
     {
       "name": "git verify-pack",
@@ -19977,7 +22313,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git verify-pack -v .git/objects/pack/*.idx | head\n3a1b2c4... commit 1234 1 1",
+        "explain": "`git verify-pack` 校验 pack 索引完整性并列出其中对象；`-v` 详列每个对象的类型/大小/偏移。"
+      }
     },
     {
       "name": "git pack-objects",
@@ -19997,7 +22337,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ echo HEAD | git pack-objects pack\n(把所列对象打包生成 pack-<SHA>.pack/.idx)",
+        "explain": "`git pack-objects` 把对象列表打包成 pack 文件(传输/存储优化)；`git push` 内部即打包后发送。"
+      }
     },
     {
       "name": "git index-pack",
@@ -20017,7 +22361,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git index-pack downloaded.pack\n(为收到的 pack 生成 .idx 索引)",
+        "explain": "`git index-pack` 为 pack 文件建立索引(.idx)；接收端拿到 pack 后必须建索引才能使用，fetch 内部调用。"
+      }
     },
     {
       "name": "git unpack-objects",
@@ -20037,7 +22385,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git unpack-objects < packfile\n(把 pack 流解包为松散对象)",
+        "explain": "`git unpack-objects` 从 pack 流还原出单独对象文件；少量对象解包时用(大规模建议 index-pack)。"
+      }
     },
     {
       "name": "git pack-refs",
@@ -20057,7 +22409,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git pack-refs --all\n(把 refs/heads 下松散引用打包进 packed-refs 文件)",
+        "explain": "`git pack-refs --all` 将大量分支/标签引用合并为单个 packed-refs 文件，减少目录项、提升性能。"
+      }
     },
     {
       "name": "git read-tree",
@@ -20077,7 +22433,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git read-tree HEAD\n(把某 tree 读入索引/暂存区, 不碰工作区)",
+        "explain": "`git read-tree` 把 tree 对象载入索引；底层操作，常用于 merge/checkout 的暂存区构建。"
+      }
     },
     {
       "name": "git ls-tree",
@@ -20097,7 +22457,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git ls-tree HEAD\n100644 blob 2d832d...  hello.txt\n040000 tree 9c0d1e2...  src",
+        "explain": "`git ls-tree` 列出某 tree(提交/目录)下的条目及类型(100644 文件/040000 目录)与对象哈希；看目录结构用。"
+      }
     },
     {
       "name": "git mktree",
@@ -20117,7 +22481,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git mktree < entries.txt\n9c0d1e2...  (由条目清单生成 tree 对象 SHA)",
+        "explain": "`git mktree` 从\"模式 类型 哈希 文件名\"条目清单构建 tree 对象；脚本化构造树结构用。"
+      }
     },
     {
       "name": "git notes",
@@ -20137,7 +22505,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git notes add -m \"reviewed by Bob\" HEAD\n$ git notes show HEAD\nreviewed by Bob",
+        "explain": "`git notes` 给提交附加**额外备注**(不改动提交本身)；审阅意见、补充背景可存此处，独立于历史。"
+      }
     },
     {
       "name": "git replace",
@@ -20157,7 +22529,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git replace 3a1b2c4 7b8c9d0\n(用 7b8c9d0 替换 3a1b2c4 在历史中的出现, 便于调试不改原历史)",
+        "explain": "`git replace` 建立替换引用：让某对象在遍历历史时显示为另一对象；调试旧提交而不改写原历史(注意推送需 --force-with-lease)。"
+      }
     },
     {
       "name": "git filter-repo",
@@ -20177,7 +22553,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "破坏性操作，先备份；取代已弃用 filter-branch",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git filter-repo --path src/ --force\n(重写整个历史, 仅保留 src/ 目录, 移除其他)\n$ git filter-repo --replace-text secrets.txt",
+        "explain": "`git filter-repo` 重写历史的现代工具(比 filter-branch 快且安全)；可清洗大文件/密钥、仅留子目录。会改所有提交哈希。"
+      }
     },
     {
       "name": "git filter-branch",
@@ -20197,7 +22577,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": "已弃用，优先 filter-repo；慢且易错",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git filter-branch --tree-filter 'rm -f secrets' HEAD\n(逐提交执行删除, 重写历史; 已不推荐)",
+        "explain": "`git filter-branch` 旧式历史重写(删除某文件/改作者等)；功能强但慢且易错，**新项目优先用 filter-repo**。"
+      }
     },
     {
       "name": "git subtree",
@@ -20217,7 +22601,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git subtree add --prefix=vendor/lib https://.../lib main\n(把外部仓库作为子目录并入本仓库历史)\n$ git subtree pull --prefix=vendor/lib main",
+        "explain": "`git subtree` 把另一仓库合并为子目录(区别于 submodule，无独立 .gitmodules)；`pull` 同步更新。单一仓库管理依赖用。"
+      }
     },
     {
       "name": "git sparse-checkout",
@@ -20237,7 +22625,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git sparse-checkout init --cone\n$ git sparse-checkout set src docs\n(只检出 src/ 与 docs/ 目录, 其余不落地)",
+        "explain": "`git sparse-checkout` 只检出需要的目录(大仓提速)；`set src docs` 限定工作区仅含这两目录，减少文件数量。"
+      }
     },
     {
       "name": "git rerere",
@@ -20257,7 +22649,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git config rerere.enabled true\n(启用\"重用记录的冲突解决方案\")\n(下次相同冲突自动复用上次解法)",
+        "explain": "`git rerere`(reuse recorded resolution) 记录你解决过的冲突，重演时自动套用；频繁 rebase/merge 时省去重复解冲突。"
+      }
     },
     {
       "name": "git instaweb",
@@ -20277,7 +22673,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git instaweb -d webrick\n(启动本地 Web 服务浏览仓库, 默认 http://127.0.0.1:1234)",
+        "explain": "`git instaweb` 起一个本地 Web 界面浏览仓库(提交/差异)；临时查看仓库用，Ctrl+C 关闭。"
+      }
     },
     {
       "name": "git credential",
@@ -20297,7 +22697,11 @@ window.COMMAND_DATA = {
       "difficulty": "日常",
       "pitfalls": "store 明文存密码不安全，推荐 cache/osxkeychain",
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git credential fill\nprotocol=https\nhost=github.com\n(回显并缓存该主机的凭据, 免去重复输入密码)",
+        "explain": "`git credential` 管理凭据助手(填充/存储/清除)；`fill` 按协议主机返回账号密码，配合缓存避免反复输入。"
+      }
     },
     {
       "name": "git fast-export",
@@ -20317,7 +22721,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git fast-export main > main.fe\n(把 main 分支导出为可读的流式格式)",
+        "explain": "`git fast-export` 将提交历史导出为流格式(便于迁移/转换)；`git fast-import` 可再导入，跨系统搬家用。"
+      }
     },
     {
       "name": "git fast-import",
@@ -20337,7 +22745,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git fast-import < main.fe\n(从流格式快速重建仓库历史)",
+        "explain": "`git fast-import` 从 fast-export 生成的流**批量重建**提交/分支；大数据量迁移比逐条 commit 快得多。"
+      }
     },
     {
       "name": "git daemon",
@@ -20357,7 +22769,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git daemon --base-path=/srv/git --export-all\n(启动 Git 协议守护进程, 供 git:// 克隆访问)",
+        "explain": "`git daemon` 提供 `git://` 只读协议服务；`--export-all` 导出目录下所有仓库，局域网共享用。"
+      }
     },
     {
       "name": "git upload-pack",
@@ -20377,7 +22793,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git upload-pack /srv/git/repo\n(服务端进程, 响应 clone/fetch 发送对象; 通常由守护进程/SSH 调起)",
+        "explain": "`git upload-pack` 服务端组件，处理客户端的 clone/fetch，打包并发送对象；通常经 git daemon 或 SSH 自动触发。"
+      }
     },
     {
       "name": "git receive-pack",
@@ -20397,7 +22817,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git receive-pack /srv/git/repo\n(服务端进程, 接收 push 并写入对象/更新引用)",
+        "explain": "`git receive-pack` 服务端组件，接收客户端的 push、写入对象并更新分支引用；push 时由远程自动调用。"
+      }
     },
     {
       "name": "git http-backend",
@@ -20417,7 +22841,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git http-backend\n(CGI 程序, 使普通 Web 服务器经 HTTP/HTTPS 提供 Git 服务)",
+        "explain": "`git http-backend` 作为 CGI 运行，让 Apache/Nginx 通过 HTTP(S) 提供 Git 读写；无 SSH 环境下的标准部署方式。"
+      }
     },
     {
       "name": "git send-pack",
@@ -20437,7 +22865,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git send-pack ssh://host/repo main\n(底层把本地引用/对象推送到远端, 被 git push 调用)",
+        "explain": "`git send-pack` 是 `git push` 的底层实现，建立连接、协商并推送对象与引用；一般用 push 即可。"
+      }
     },
     {
       "name": "git shell",
@@ -20457,7 +22889,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git shell -c 'git-receive-pack \"/srv/git/repo\"'\n(受限登录 shell, 仅允许 Git 操作, 用作 SSH 账号的登录 shell)",
+        "explain": "`git shell` 作为受限 shell 分配给仅做 Git 的账号；只能跑 Git 服务命令，无法获得普通 shell，提升安全。"
+      }
     },
     {
       "name": "git upload-archive",
@@ -20477,7 +22913,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git upload-archive /srv/git/repo\n(响应 git archive --remote, 经协议打包远端仓库)",
+        "explain": "`git upload-archive` 服务端组件，处理 `git archive --remote` 请求，把远端指定提交打包传回客户端。"
+      }
     },
     {
       "name": "git cherry",
@@ -20512,7 +22952,11 @@ window.COMMAND_DATA = {
           "default": "关闭",
           "desc": "同时显示每笔提交的主题说明。"
         }
-      ]
+      ],
+      "sample": {
+        "output": "$ git cherry main feature\n+ 9c0d1e2 fix: header\n- 3a1b2c4 feat: add login",
+        "explain": "`git cherry` 比较两分支：`-` 表示已存在于上游、`+` 表示独有提交(尚未合并)；挑选要补的提交用。"
+      }
     },
     {
       "name": "git show-branch",
@@ -20536,7 +22980,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git show-branch\n! [dev] fix: x\n * [main] feat: y\n--",
+        "explain": "`git show-branch` 以矩阵展示各分支的最近提交与分叉点；快速看清分支关系。"
+      }
     },
     {
       "name": "git verify-commit",
@@ -20556,7 +23004,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git verify-commit 3a1b2c4\nGood signature from \"Alice <alice@example.com>\"\n$ git verify-commit badhash\nNo signature found",
+        "explain": "`git verify-commit` 校验某提交是否带**合法 GPG 签名**；输出 Good signature 或 No signature，验证提交来源可信。"
+      }
     },
     {
       "name": "git verify-tag",
@@ -20576,7 +23028,11 @@ window.COMMAND_DATA = {
       "difficulty": "进阶",
       "pitfalls": null,
       "compare": null,
-      "options": null
+      "options": null,
+      "sample": {
+        "output": "$ git verify-tag v1.2.0\nGood signature from \"Alice <alice@example.com>\" ",
+        "explain": "`git verify-tag` 校验标签的 GPG 签名；发布版本用标签签名后，用户可验真防篡改。"
+      }
     }
   ]
 };
