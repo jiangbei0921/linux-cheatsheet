@@ -1,0 +1,228 @@
+HOME / CHEATSHEETS / LINUX COMMANDS CHEATSHEET
+Linux Commands Cheatsheet
+By Dejan Panovski • Updated on Jan 12, 2026 • Download PDF
+Quick reference for essential Linux commands
+A comprehensive quick reference guide covering the most commonly used Linux
+commands. From ﬁle management and text processing to networking and system
+administration, this cheatsheet helps you ﬁnd the right command fast. Click on any
+command to read the full tutorial.
+File Listing
+View directory contents and ﬁle details.
+ls List directory contents
+ls -la List all with details
+ls -lh Human readable sizes
+ls -R List recursively
+Navigation
+Move between directories in the ﬁlesystem.
+cd Change directory
+cd .. Go up one level
+cd ~ Go to home
+cd - Go to previous dir
+pwd Print working directory
+pushd/popd Directory stack
+Create & Delete
+Create and remove ﬁles and directories.
+mkdir Create directory
+mkdir -p a/b/c Create nested dirs
+touch Create empty ﬁle
+rm Remove ﬁle
+rm -rf dir Remove dir recursively
+rmdir dir Remove empty dir
+Copy & Move
+Copy, move, and link ﬁles.
+cp Copy ﬁle
+cp -r src dest Copy directory
+mv Move or rename
+ln -s Create symlink
+File Viewing
+Display and browse ﬁle contents.
+cat Display contents
+less View with pagination
+head First N lines
+tail Last N lines
+tail -f file Follow changes
+File Search
+Find ﬁles by name, type, or date.
+find Find ﬁles by criteria
+find . -name "*.txt" Find by name
+find . -type d Find directories
+locate Quick search (db)
+Text Search
+Search for patterns inside ﬁles.
+grep Search in ﬁle
+grep -r "text" dir Search recursively
+grep -i "text" Case insensitive
+grep -n "text" Show line numbers
+grep -v "text" Invert match
+File Info
+Get information about ﬁles and commands.
+file Determine ﬁle type
+stat Display ﬁle status
+type Show command type
+which Locate a command
+whereis Locate binary/source
+basename Strip directory path
+Permissions
+Manage ﬁle permissions and ownership.
+chmod Change permissions
+chmod 755 file Set rwxr-xr-x
+chmod +x file Add execute
+chown Change owner
+chgrp Change group
+chattr Change attributes
+umask Set default perms
+User Info
+Display information about users.
+whoami Current username
+id User ID and groups
+who Logged in users
+w Who + what they do
+last Login history
+User Management
+Create, modify, and delete users.
+useradd Create user
+userdel Delete user
+passwd user Change password
+usermod Modify user
+su Switch user
+sudo Run as root
+Group Management
+Create and delete user groups.
+groupadd Create group
+groupdel Delete group
+Process Viewing
+Monitor running processes.
+ps List processes
+ps aux All processes
+top Interactive viewer
+htop Better viewer
+pgrep Find by name
+pidof Find PID by name
+pstree Process tree
+Process Control
+Terminate and manage processes.
+kill Terminate process
+kill -9 PID Force kill
+pkill Kill by name
+killall name Kill all by name
+timeout Run with time limit
+Background Jobs
+Run and manage background processes.
+cmd & Run in background
+bg Background current
+fg Foreground current
+jobs List jobs
+nohup Immune to hangups
+at Schedule command
+Disk Usage
+Check disk space and ﬁlesystem health.
+df Disk space
+du Directory size
+du -h --max-depth=1 Subdir sizes
+[free](/post/free-comma, “http”, “networking"nd-in-linux/) Memory usage
+fdisk Partition table
+fsck Check ﬁlesystem
+Network
+Conﬁgure and test network connections.
+ip a Show IP addresses
+ifconfig Network interfaces
+ping Test connectivity
+curl Transfer data
+wget Download ﬁle
+dig DNS lookup
+SSH & Transfer
+Secure remote access and ﬁle transfer.
+ssh SSH connection
+ssh -p 22 user@host Custom port
+scp Secure copy
+rsync Sync ﬁles
+sftp Secure FTP
+ftp FTP transfer
+Network Tools
+Advanced network diagnostics and scanning.
+ss -tulpn Listening ports
+netstat -tulpn Listening ports
+lsof -i :80 What uses port 80
+nmap Network scanner
+nc Netcat utility
+tcpdump Packet capture
+Archives
+Create and extract compressed archives.
+tar Archive ﬁles
+tar -czvf a.tar.gz dir Create tar.gz
+tar -xzvf a.tar.gz Extract tar.gz
+gzip Compress ﬁle
+gunzip Decompress ﬁle
+zip -r a.zip dir Create zip
+unzip a.zip Extract zip
+Text Processing
+Transform and manipulate text data.
+sort file Sort lines
+uniq file Remove duplicates
+wc Count lines/words
+cut Cut columns
+tr Translate chars
+paste Merge lines
+Sed & Awk
+Stream editing and pattern processing.
+sed 's/old/new/g' Find & replace
+sed -i 's/old/new/g' In-place replace
+awk Pattern processing
+awk '{print $1}' Print 1st ﬁeld
+awk -F: '{print $1}' Custom delimiter
+Pipes & Redirection
+Connect commands and redirect output.
+tee Read and write
+xargs Build arguments
+diff Compare ﬁles
+cmd > file Redirect output
+cmd >> file Append output
+cmd 2>&1 Stderr to stdout
+System Info
+Display system and hardware information.
+uname -a System info
+hostname Show hostname
+uptime System uptime
+date Current date/time
+dmesg Kernel messages
+history Command history
+Timing & Scheduling
+Schedule and time command execution.
+time Measure runtime
+watch Run repeatedly
+[sleep](/post/how-to-us, “http”, “networking"e-linux-sleep-command-to-pause-a-bash-script/) Delay execution
+at Schedule once
+crontab -e Schedule recurring
+System Control
+Manage system power and settings.
+shutdown Shutdown system
+reboot Restart system
+sysctl Kernel parameters
+wall Broadcast message
+export Set env variable
+Package Management
+Install and manage software packages.
+apt Debian packages
+apt install pkg Install package
+apt update Update package list
+rpm RPM packages
+yum install pkg RHEL/CentOS install
+dnf install pkg Fedora install
+Kernel Modules
+Load and manage kernel modules.
+lsmod List modules
+modprobe Load module
+rmmod Remove module
+Bash Built-ins
+Common shell built-in commands.
+echo Print text
+source Execute script
+read Read input
+printf Format output
+exit Exit shell
+wait Wait for process
+File Operations
+Rename, delete, and edit ﬁles.
+rename Batch rename
+unlink Remove link
+nano Text editor

@@ -1,0 +1,717 @@
+Linux Commands Cheat Sheet
+Hardware Information
+Searching
+Files
+Directory Navigation
+File Compression
+lscpu
+lsblk
+lspci -tv
+lsusb -tv
+lshw
+cat /proc/cpuinfo
+cat /proc/meminfo
+cat /proc/mounts
+free -h
+sudo dmidecode
+hdparm -i /dev/
+[device_name]
+hdparm -tT /dev/
+[device_name]
+badblocks -s /dev/
+[device_name]
+fsck /dev/[device_name]
+See CPU information.
+See information about 
+block devices.
+Show PCI devices in a tree-
+like diagram.
+Display USB devices in a 
+tree-like diagram.
+List hardware configuration 
+information.
+Show detailed CPU 
+information.
+View detailed system 
+memory information.
+See mounted file systems.
+Display free and used 
+memory.
+Show hardware information 
+from the BIOS.
+Display disk data 
+information.
+Conduct a read speed test 
+on the device/disk.
+Test for unreadable blocks 
+on the device/disk.
+Run a disk check on an 
+unmounted disk or 
+partition.
+find [path] -name 
+[search_pattern]
+find [path] -size [+100M]
+grep [search_pattern] 
+[file_name]
+grep -r [search_pattern] 
+[directory_name]
+locate [name]
+which [command]
+whereis [command]
+awk '[search_pattern] 
+{print $0}' [file_name]
+sed 's/[old_text]/
+[new_text]/' [file_name]
+Find files and 
+directories that match the 
+specified pattern in a 
+specified location.
+See files and directories 
+larger than a specified size 
+in a directory.
+Search for a specific 
+pattern in a file with grep.
+Recursively search for a 
+pattern in a directory.
+Locate all files and 
+directories related to a 
+particular name.
+Search the command 
+path in 
+the $PATH environment 
+variable.
+Find the source, binary, 
+and manual page for a 
+command.
+Print all lines matching a 
+pattern in a file. See also 
+the gawk command, the 
+GNU version of awk.
+Find and replace text in a 
+specified file.
+mkdir [directory_name]
+rm [file_name]
+rm -r [directory_name]
+rm -rf [directory_name]
+cp [source_file] 
+[destination_file]
+cp -r [source_directory] 
+[destination_directory]
+mv [source_file] 
+[destination_file]
+ln -s [path]/[file_name] 
+[link_name]
+touch [file_name]
+cat [file_name]
+cat [source_file] >> 
+[destination_file]
+head [file_name]
+tail [file_name]
+more [file_name]
+less [file_name]
+nano [file_name]
+vi [file_name]
+vim [file_name]
+gpg -c [file_name]
+gpg [file_name].gpg
+wc -w [file_name]
+ls | xargs wc
+cut -d [delimiter] 
+[file_name]
+[data] | cut -d [delimiter]
+shred -u [file_name]
+diff [first_file] 
+[second_file]
+source [file_name]
+[command] | tee 
+[file_name] >/dev/null
+Create a new directory.
+Remove a file.
+Remove a directory 
+recursively.
+Recursively remove a 
+directory without requiring 
+confirmation.
+Copy the contents of one 
+file to another file.
+Recursively copy a 
+directory to a second 
+directory.
+Move or rename files or 
+directories.
+Create a symbolic link to a 
+file.
+Create a new file.
+Show the contents of a file.
+Append file contents to 
+another file.
+Show the first ten lines of a 
+file.
+Show the last ten lines of a 
+file.
+Display contents of a file 
+page by page.
+Show the contents of a file 
+with navigation.
+Open or create a file using 
+the nano text editor.
+Open or create a file using 
+the Vi/Vim text editor.
+Encrypt a file.
+Decrypt an 
+encrypted .gpg file.
+Show the number of 
+words, lines, and bytes in a 
+file.
+List the number of lines/
+words/characters in each 
+file in a directory.
+Cut a section of a file and 
+print the result to standard 
+output.
+Cut a section of piped data 
+and print the result to 
+standard output.
+Overwrite a file to prevent 
+its recovery, then delete it.
+Compare two files and 
+display differences.
+Read and execute the file 
+content in the current shell.
+Store the command output 
+in a file and skip the 
+terminal output.
+ls
+ls -a
+ls -l
+pwd
+cd
+cd ~
+cd ..
+cd -
+cd [directory_path]
+dirs
+List files and directories in 
+the current directory.
+List all files and directories 
+in the current directory 
+(shows hidden files).
+List files and directories in 
+long format.
+Show the directory you 
+are currently working in.
+Change 
+directory to $HOME.
+Move up one directory 
+level.
+Change to the previous 
+directory.
+Change location to a 
+specified directory.
+Show current directory 
+stack.
+tar cf [archive.tar] [file/
+directory]
+tar xf [archive.tar]
+tar czf [archive.tar.gz]
+gzip [file_name]
+gunzip [file_name.gz]
+bzip2 [file_name]
+bunzip2 [file_name.bz2]
+Archive an existing file or 
+directory.
+Extract an archived file.
+Create a .gz compressed 
+tar archive.
+Compress or 
+decompress .gz files.
+Compress or decompress 
+.bz2 files.
+File Transfer
+scp [source_file] 
+[user]@[remote_host]:[de
+stination_path]
+rsync -a 
+[source_directory] 
+[user]@[remote_host]:[de
+stination_directory]
+wget [link]
+curl -O [link]
+ftp [remote_host]
+sftp 
+[user]@[remote_host]
+Copy a file to a server 
+directory securely.
+Synchronize the contents 
+of a directory with a 
+backup directory.
+Download files from FTP 
+or web servers.
+Transfer data to or from a 
+server with various 
+protocols.
+Transfer files between 
+local and remote systems 
+interactively using FTP.
+Securely transfer between 
+local and remote hosts 
+using SFTP.
+Users and Groups
+id
+last
+who
+w
+finger [user_name]
+sudo useradd 
+[user_name]
+sudo adduser 
+[user_name]
+sudo userdel [user_name]
+sudo usermod -aG 
+[group_name] 
+[user_name]
+passwd
+sudo passwd [user_name]
+sudo groupadd 
+[group_name]
+sudo groupdel 
+[group_name]
+sudo groupmod -n 
+[new_name] [old_name]
+sudo [command]
+su - [user_name]
+chgrp [group_name] [file/
+directory]
+See details about the 
+active users.
+Show the last system 
+logins.
+Display who is currently 
+logged into the system.
+Show which users 
+are logged in and their 
+activity.
+Show user information.
+Create a new user account.
+Create a new user account 
+through the adduser 
+command interface.
+Delete a user account.
+Modify user 
+information (add a user to 
+a group).
+Change the current user's 
+or another user's 
+password.
+Add a new group.
+Delete a group.
+Modify a user group 
+(change group name).
+Temporarily elevate user 
+privileges to superuser or 
+root.
+Switch the user account or 
+become a superuser.
+Change file or directory 
+group.
+Packages (Debian/Ubuntu)
+sudo apt-get install 
+[package_name]
+sudo apt install 
+[package_name]
+apt search [keyword]
+apt list
+apt show 
+[package_name]
+sudo dpkg -i 
+[package_name.deb]
+sudo dpkg -l
+Install an APT package 
+using the apt-get 
+package utility.
+Install an APT package 
+using a newer APT 
+package manager.
+Search for a package in 
+the APT repositories.
+List packages installed 
+with APT.
+Show information about a 
+package.
+Install a .deb package with 
+the Debian package 
+manager.
+List packages installed 
+with dpkg.
+Packages (Red Hat, CentOS, Fedora)
+sudo yum install 
+[package_name]
+yum search [keyword]
+yum list installed
+yum info [package_name]
+sudo dnf install 
+[package_name]
+sudo rpm -i 
+[package_name.rpm]
+Install a package using 
+the YUM package 
+manager.
+Find a package in the 
+YUM repositories based 
+on the provided keyword.
+List all packages installed 
+with YUM.
+Show package 
+information for a 
+package.
+Install a package using 
+the DNF package 
+manager.
+Install a .rpm package 
+from a local file.
+Packages (Universal)
+tar zxvf [file_name.tar.gz]
+cd [extracted_directory]
+./configure make
+make install
+sudo snap install 
+[package_name]
+sudo snap find [keyword]
+sudo snap list
+flatpak install 
+[package_name]
+flatpak search [keyword]
+flatpak list
+Install software 
+from source code.
+Install a Snap package.
+Search for a package in 
+the Snap store.
+List installed Snap 
+packages.
+Install a Flatpak package.
+Search for a Flatpak 
+application in repositories.
+List installed Flatpack 
+packages.
+Processes
+ps
+pstree
+pmap
+top
+htop
+kill [process_id]
+pkill [process_name]
+killall [label]
+prgrep [keyword]
+pidof [process_name]
+bg
+fg
+fg [job]
+lsof
+trap "[commands]" 
+[signal]
+wait
+nohup [command] &
+List active processes.
+Show processes in a tree-
+like diagram.
+Display a memory usage 
+map of processes.
+See all running processes.
+Interactive and colorful 
+process viewer.
+Terminate a Linux 
+process under a given ID.
+Terminate a process under 
+a specific name.
+Terminate all processes with 
+a given label.
+List processes based on the 
+provided keyword.
+Show the PID of a process.
+List and resume stopped 
+jobs in the background.
+Bring the most recently 
+suspended job to the 
+foreground.
+Bring a particular job to the 
+foreground.
+List files opened by running 
+processes.
+Catch a system error 
+signal in a shell script. 
+Executes provided 
+commands when the signal 
+is caught.
+Pause the terminal or a 
+Bash script until a running 
+process is completed.
+Run a Linux process in the 
+background.
+System Management
+uname -r 
+uname -a 
+uptime 
+hostname
+hostname -i 
+last reboot 
+date
+timedatectl 
+cal
+w
+whoami
+finger [user_name]
+ulimit [flags] [limit]
+shutdown [hh:mm]
+shutdown now
+modprobe 
+[module_name]
+dmesg
+Show system information 
+via uname command.
+See kernel release 
+information.
+Display how long the 
+system has been running, 
+including the load average.
+View system hostname.
+Show the IP address of the 
+system.
+List system reboot history.
+See current time and date.
+Query and change 
+the system clock.
+Show current calendar 
+(month and day).
+List logged-in users.
+See which user you are 
+using.
+Show information about a 
+particular user.
+View or limit system 
+resource amounts.
+Schedule a system 
+shutdown.
+Shut down the system 
+immediately.
+Add a new kernel module.
+Show bootup messages.
+Disk Usage
+df -h
+df -i
+fdisk -l
+du -ah
+du -sh
+mount
+findmnt
+mount [device_path] 
+[mount_point]
+Check free and used 
+space on mounted 
+systems.
+Show free inodes on 
+mounted file systems.
+Display disk partitions, 
+sizes, and types with the 
+command.
+See disk usage for all files 
+and directories.
+Show disk usage of the 
+current directory.
+Show currently mounted 
+file systems.
+Display target mount 
+point for all file systems.
+Mount a device.
+SSH Login
+ssh [user_name]@[host]
+ssh [host]
+ssh -p [port] 
+[user_name]@[host]
+ssh-keygen
+sudo service sshd start
+scp [file_name] 
+[user_name]@[host]:[rem
+ote_path]
+sftp [user_name]@[host]
+telnet [host]
+Connect to a remote 
+host as a user via SSH.
+Securely connect to a 
+host via SSH default 
+port 22.
+Connect to the host 
+using a particular port.
+Generate SSH key pairs.
+Start SSH 
+server daemon.
+Securely copy 
+files between local and 
+remote systems via SSH.
+Interactive file transfer 
+over encrypted SSH 
+session 
+using SFTP protocol.
+Connect to the host 
+via Telnet default port 
+23.
+File Permissions
+chmod 777 [file_name]
+chmod 755 [file_name]
+chmod 766 [file_name]
+chown [user_name] 
+[file_name]
+chown 
+[user_name]:[group_nam
+e] [file_name]
+Assign read, write, and 
+execute file permission to 
+everyone (rwxrwxrwx).
+Give read, write, and 
+execute permission to 
+owner, and read and 
+execute permission to 
+group and others 
+(rwxr-xr-x).
+Assign full permission to 
+the owner, and read and 
+write permission to the 
+group and others 
+(rwxrw-rw-).
+Change the ownership of 
+a file with chown 
+command.
+Change the owner and 
+group ownership of a file.
+Network
+ip addr show
+ip address add 
+[IP_address]
+ifconfig
+ping [remote_host]
+netstat -pnltu
+netstat -tuln
+whois [domain_name]
+dig [domain_name]
+dig -x [domain_name]
+dig -x [IP_address]
+host [domain_name]
+hostname -I
+nslookup 
+[domain_name]
+List IP addresses and 
+network interfaces.
+Assign an IP address to 
+interface eth0.
+Display IP addresses of all 
+network interfaces.
+Ping remote host.
+See active (listening) ports 
+with the netstat command.
+Show TCP and UDP ports 
+and their programs.
+Display more information 
+about a domain.
+Show DNS information 
+about a domain using 
+the dig command.
+Do a reverse DNS lookup 
+on the domain.
+Do a reverse DNS lookup of 
+an IP address.
+Perform an IP lookup for a 
+domain.
+Show the local IP address
+Receive information about 
+an internet domain.
+.
+Variables
+let 
+"[variable_name]=[value]"
+export [variable_name]
+declare [variable-name]= 
+"[value]"
+set
+unset [variable_name]
+echo $[variable-name]
+Assign an integer value to 
+a variable.
+Export a Bash variable.
+Declare a Bash variable.
+List the names of all the 
+shell variables and 
+functions.
+Remove an environment 
+variable.
+Display the value of a 
+variable.
+Shell Commands
+alias [alias-
+name]='[command]'
+watch -n [interval-in-
+seconds] [command]
+sleep [time-interval] && 
+[command]
+at [hh:mm]
+man [command]
+history
+Create an alias for a 
+command.
+Set a custom interval to 
+run a user-defined 
+command.
+Postpone the 
+execution of a command.
+Create a job to be 
+executed at a certain time 
+(Ctrl+D to exit prompt 
+after command).
+Display a built-in 
+manual for a command.
+Print the command 
+history used in the 
+terminal.
+Keyboard Shortcuts
+Ctrl + C
+Ctrl + Z
+Ctrl + W
+Ctrl + U
+Ctrl + K
+Ctrl + Y
+Ctrl + R
+Ctrl + O
+Ctrl + G
+clear
+!!
+exit
+Kill process running in the 
+terminal.
+Stop the current process. 
+The process can be 
+resumed in the foreground 
+with fg or in the 
+background with bg.
+Cut one word before the 
+cursor and add it to the 
+clipboard.
+Cut part of the line before 
+the cursor and add it to the 
+clipboard.
+Cut part of the line after the 
+cursor and add it to the 
+clipboard.
+Paste from clipboard.
+Recall the last command 
+that matches the provided 
+characters.
+Run the previously recalled 
+command.
+Exit command history 
+without running a 
+command.
+Clear the terminal screen.
+Run the last command 
+again.
+Log out of the current 
+session.

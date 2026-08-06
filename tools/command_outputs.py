@@ -60,6 +60,12 @@ $ rm -rf build/""",
         """第1行 `rm -i` 删除前询问确认，输入 y 才真正删除，降低误删风险。
 第2行 `rm -rf build/`：`-r` 递归、`-f` 强制不询问，直接删除整个目录——此组合极具破坏性，路径务必先确认。"""
     ),
+    "unlink": (
+        """$ unlink old.log
+$ ls old.log
+ls: cannot access 'old.log': No such file or directory""",
+        """`unlink old.log` 删除该文件；随后 `ls` 报错证明文件已不存在。unlink 只删单文件、不递归，比 rm 更安全。"""
+    ),
     "mkdir": (
         """$ mkdir -p a/b/c
 $ ls -d a/b/c
@@ -1129,6 +1135,22 @@ Disk /dev/sdb: 16 GiB, 17179869184 bytes, 33554432 sectors
 Device     Boot Start      End  Sectors Size Id Type
 /dev/sdb1  *     2048 33554431 33552384  16G 83 Linux""",
         """`fdisk -l /dev/sdb` 列出磁盘与分区表；显示磁盘容量、扇区数、分区 /dev/sdb1(16G, Linux 类型 83)。"""
+    ),
+    "resize2fs": (
+        """$ sudo resize2fs /dev/sda1
+resize2fs 1.46.5 (30-Dec-2021)
+The filesystem on /dev/sda1 is now 5242880 (4k) blocks long.""",
+        """`resize2fs /dev/sda1` 将 ext 文件系统扩展到所在分区的最大容量；提示块数已更新即生效。收缩须先缩数据并 fsck。"""
+    ),
+    "pvcreate": (
+        """$ sudo pvcreate /dev/sdb1
+Physical volume "/dev/sdb1" successfully created.""",
+        """`pvcreate /dev/sdb1` 把分区初始化为 LVM 物理卷，写入元数据；成功后即可加入卷组。原数据被覆盖，确认无重要资料。"""
+    ),
+    "lvcreate": (
+        """$ sudo lvcreate -L 10G -n lv1 vg0
+Logical volume "lv1" created.""",
+        """`lvcreate -L 10G -n lv1 vg0` 从卷组 vg0 划分 10G 名为 lv1 的逻辑卷；路径通常 /dev/vg0/lv1，可格式化挂载。"""
     ),
     "parted": (
         """$ parted /dev/sdb print
@@ -2282,6 +2304,13 @@ $ echo $VIRTUAL_ENV
 /path/venv""",
         """`source script` 在当前 shell 执行脚本(不启子进程)，故能修改当前环境；此处激活 Python 虚拟环境，VIRTUAL_ENV 已设。"""
     ),
+    "dirs": (
+        """$ dirs -v
+ 0  /home/user/project
+ 1  /var/log
+$ dirs -c""",
+        """`dirs -v` 带序号显示目录栈（0 为当前），与 pushd 入栈顺序对应。`dirs -c` 清空整个栈。"""
+    ),
     "history": (
         """$ history 5
   998  ls -l
@@ -2639,6 +2668,37 @@ $ expr length 'hello'
 $ expr 'a.txt' : '.*\\.txt'
 4""",
         """`expr` 做整数运算(length 求串长、正则 `:`)；`5 + 3`=8。注意运算符两边需空格。现代脚本多用 `$(( ))`。"""
+    ),
+    "bc": (
+        """$ echo 'scale=2; 1/3' | bc
+.33
+$ echo 'obase=16; 255' | bc
+FF""",
+        """`scale=2; 1/3` 设 2 位小数得 .33（默认整数除法截断）。`obase=16; 255` 转十六进制得 FF。ibase/obase 做进制转换。"""
+    ),
+    "lpr": (
+        """$ lpr -P myprinter report.txt
+$ lpq -P myprinter
+myprinter is ready and printing
+Rank   Owner      Job  Files
+active user       101  report.txt""",
+        """`lpr -P myprinter report.txt` 把文件提交到指定打印机队列；`lpq` 显示作业 101 已进入打印。需系统已配置打印服务。"""
+    ),
+    "lpq": (
+        """$ lpq
+myprinter is ready and printing
+Rank   Owner      Job  Files
+active user       101  report.txt
+done   user       102  notes.txt""",
+        """`lpq` 列出默认打印机队列：作业号(101/102)、所有者、状态、文件名。作业号可用于 `lprm 101` 取消。"""
+    ),
+    "lprm": (
+        """$ lprm 101
+$ lpq
+myprinter is ready and printing
+Rank   Owner      Job  Files
+done   user       102  notes.txt""",
+        """`lprm 101` 取消作业 101；`lpq` 复查已不见该作业，仅剩 102。无参数时取消当前队列首个任务，慎用。"""
     ),
     "xdg-open": (
         """$ xdg-open report.pdf

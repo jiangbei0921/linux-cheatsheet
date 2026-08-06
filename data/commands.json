@@ -502,6 +502,30 @@
       }
     },
     {
+      "name": "unlink",
+      "category": "file",
+      "description": "删除单个文件，底层调用 unlink() 系统调用；只能删文件不能删目录、无递归，比 rm 误操作面更小。",
+      "keywords": [
+        "删除文件",
+        "unlink"
+      ],
+      "examples": [
+        {
+          "cmd": "unlink file.txt",
+          "desc": "删除指定文件"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "只能删单个文件、不能删目录；相比 rm 不会递归，误操作面更小",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ unlink old.log\n$ ls old.log\nls: cannot access 'old.log': No such file or directory",
+        "explain": "`unlink old.log` 删除该文件；随后 `ls` 报错证明文件已不存在。unlink 只删单文件、不递归，比 rm 更安全。"
+      }
+    },
+    {
       "name": "mkdir",
       "category": "file",
       "description": "创建新目录。-p 可一次创建多级缺失的父目录，避免逐级手动建立。",
@@ -5745,6 +5769,88 @@
       }
     },
     {
+      "name": "resize2fs",
+      "category": "disk",
+      "description": "调整 ext2/3/4 文件系统大小，可在线扩展或离线收缩；收缩前须先缩小数据并 fsck。",
+      "keywords": [
+        "调整大小",
+        "resize2fs"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo resize2fs /dev/sda1",
+          "desc": "扩展到分区上限"
+        },
+        {
+          "cmd": "sudo resize2fs /dev/sda1 20G",
+          "desc": "收缩到 20G"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "收缩前先缩数据并 fsck；应先扩分区再扩文件系统，顺序错会损数据",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ sudo resize2fs /dev/sda1\nresize2fs 1.46.5 (30-Dec-2021)\nThe filesystem on /dev/sda1 is now 5242880 (4k) blocks long.",
+        "explain": "`resize2fs /dev/sda1` 将 ext 文件系统扩展到所在分区的最大容量；提示块数已更新即生效。收缩须先缩数据并 fsck。"
+      }
+    },
+    {
+      "name": "pvcreate",
+      "category": "disk",
+      "description": "将块设备初始化为 LVM 物理卷，写入 LVM 元数据，是组建卷组的第一步。",
+      "keywords": [
+        "LVM",
+        "物理卷",
+        "pvcreate"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo pvcreate /dev/sdb1",
+          "desc": "分区初始化为物理卷"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "写入 LVM 元数据会覆盖目标原有数据，确认无重要数据",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ sudo pvcreate /dev/sdb1\nPhysical volume \"/dev/sdb1\" successfully created.",
+        "explain": "`pvcreate /dev/sdb1` 把分区初始化为 LVM 物理卷，写入元数据；成功后即可加入卷组。原数据被覆盖，确认无重要资料。"
+      }
+    },
+    {
+      "name": "lvcreate",
+      "category": "disk",
+      "description": "从卷组(VG)中划分出逻辑卷(LV)，可指定大小或按比例用尽剩余空间，供格式化挂载。",
+      "keywords": [
+        "LVM",
+        "逻辑卷",
+        "lvcreate"
+      ],
+      "examples": [
+        {
+          "cmd": "sudo lvcreate -L 10G -n lv1 vg0",
+          "desc": "从 vg0 建 10G 逻辑卷"
+        },
+        {
+          "cmd": "sudo lvcreate -l 100%FREE -n lv1 vg0",
+          "desc": "用尽剩余空间"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "进阶",
+      "pitfalls": "需先有卷组 vg；-L 大小、-n 名称、-l 按 PE 比例分配",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ sudo lvcreate -L 10G -n lv1 vg0\nLogical volume \"lv1\" created.",
+        "explain": "`lvcreate -L 10G -n lv1 vg0` 从卷组 vg0 划分 10G 名为 lv1 的逻辑卷；路径通常 /dev/vg0/lv1，可格式化挂载。"
+      }
+    },
+    {
       "name": "parted",
       "category": "disk",
       "description": "支持 GPT 与现代大磁盘的分区工具，命令式操作，适合脚本与大于 2T 的盘。",
@@ -10817,6 +10923,38 @@
       "sample": {
         "output": "$ source ./venv/bin/activate\n(venv) $  # 提示符前缀出现 (venv)\n$ echo $VIRTUAL_ENV\n/path/venv",
         "explain": "`source script` 在当前 shell 执行脚本(不启子进程)，故能修改当前环境；此处激活 Python 虚拟环境，VIRTUAL_ENV 已设。"
+      }
+    },
+    {
+      "name": "dirs",
+      "category": "shell",
+      "description": "显示目录栈内容；与 pushd/popd 配合在多个目录间切换，-v 可显示带序号的栈。",
+      "keywords": [
+        "目录栈",
+        "dirs"
+      ],
+      "examples": [
+        {
+          "cmd": "dirs",
+          "desc": "显示栈"
+        },
+        {
+          "cmd": "dirs -v",
+          "desc": "带序号显示"
+        },
+        {
+          "cmd": "dirs -c",
+          "desc": "清空栈"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "配合 pushd/popd；-v 标号对应 pushd 的 +N/-N 切换",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ dirs -v\n 0  /home/user/project\n 1  /var/log\n$ dirs -c",
+        "explain": "`dirs -v` 带序号显示目录栈（0 为当前），与 pushd 入栈顺序对应。`dirs -c` 清空整个栈。"
       }
     },
     {
@@ -19173,6 +19311,160 @@
       "sample": {
         "output": "$ expr 5 + 3\n8\n$ expr length 'hello'\n5\n$ expr 'a.txt' : '.*\\.txt'\n4",
         "explain": "`expr` 做整数运算(length 求串长、正则 `:`)；`5 + 3`=8。注意运算符两边需空格。现代脚本多用 `$(( ))`。"
+      }
+    },
+    {
+      "name": "bc",
+      "category": "editor",
+      "description": "任意精度计算器，支持小数/进制转换；常通过管道获取表达式，scale 控制小数位。",
+      "keywords": [
+        "计算器",
+        "bc"
+      ],
+      "examples": [
+        {
+          "cmd": "echo '1/3' | bc",
+          "desc": "除法得小数（截断）"
+        },
+        {
+          "cmd": "echo 'scale=2; 1/3' | bc",
+          "desc": "保留 2 位"
+        },
+        {
+          "cmd": "bc <<< '2^10'",
+          "desc": "幂运算"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "默认整数除法截断；scale=N 设小数位；ibase/obase 做进制转换",
+      "compare": null,
+      "options": [
+        {
+          "flag": "-l",
+          "default": "关闭",
+          "desc": "加载标准数学库，提供 sqrt/sin/cos 等函数，并默认 scale=20。"
+        },
+        {
+          "flag": "-q",
+          "default": "关闭",
+          "desc": "安静模式，启动时不打印版权欢迎信息。"
+        },
+        {
+          "flag": "scale=<N>",
+          "default": "0",
+          "desc": "内置变量，设置小数位数；如 scale=2 使 1/3 得 .33。"
+        },
+        {
+          "flag": "ibase=<N> / obase=<N>",
+          "default": "10",
+          "desc": "设置输入/输出进制（2~16），如 obase=16 把十进制转十六进制。"
+        },
+        {
+          "flag": "（管道输入）",
+          "default": "无",
+          "desc": "echo 'expr' | bc 或 bc <<< 'expr' 传入表达式，适合脚本。"
+        }
+      ],
+      "sample": {
+        "output": "$ echo 'scale=2; 1/3' | bc\n.33\n$ echo 'obase=16; 255' | bc\nFF",
+        "explain": "`scale=2; 1/3` 设 2 位小数得 .33（默认整数除法截断）。`obase=16; 255` 转十六进制得 FF。ibase/obase 做进制转换。"
+      }
+    },
+    {
+      "name": "lpr",
+      "category": "editor",
+      "description": "BSD 风格打印命令，将文件提交到打印队列；与 CUPS 的 lp 功能等价。",
+      "keywords": [
+        "打印",
+        "lpr"
+      ],
+      "examples": [
+        {
+          "cmd": "lpr file.txt",
+          "desc": "打印文件"
+        },
+        {
+          "cmd": "lpr -P myprinter file.txt",
+          "desc": "指定打印机"
+        },
+        {
+          "cmd": "lpr -# 3 file.txt",
+          "desc": "打印 3 份"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "与 CUPS 的 lp 等价；-P 选打印机、-# 份数，需系统已配置打印服务",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ lpr -P myprinter report.txt\n$ lpq -P myprinter\nmyprinter is ready and printing\nRank   Owner      Job  Files\nactive user       101  report.txt",
+        "explain": "`lpr -P myprinter report.txt` 把文件提交到指定打印机队列；`lpq` 显示作业 101 已进入打印。需系统已配置打印服务。"
+      }
+    },
+    {
+      "name": "lpq",
+      "category": "editor",
+      "description": "查看打印队列状态，显示作业号/所有者/大小；作业号用于 lprm 取消。",
+      "keywords": [
+        "打印队列",
+        "lpq"
+      ],
+      "examples": [
+        {
+          "cmd": "lpq",
+          "desc": "查看默认队列"
+        },
+        {
+          "cmd": "lpq -P myprinter",
+          "desc": "指定队列"
+        },
+        {
+          "cmd": "lpq -a",
+          "desc": "所有打印机"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "对应 CUPS 的 lpstat；显示的作业号可用于 lprm 取消",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ lpq\nmyprinter is ready and printing\nRank   Owner      Job  Files\nactive user       101  report.txt\ndone   user       102  notes.txt",
+        "explain": "`lpq` 列出默认打印机队列：作业号(101/102)、所有者、状态、文件名。作业号可用于 `lprm 101` 取消。"
+      }
+    },
+    {
+      "name": "lprm",
+      "category": "editor",
+      "description": "取消打印队列中的任务，按作业号移除；不加参数取消当前队列首个任务。",
+      "keywords": [
+        "取消打印",
+        "lprm"
+      ],
+      "examples": [
+        {
+          "cmd": "lprm 123",
+          "desc": "取消作业 123"
+        },
+        {
+          "cmd": "lprm -",
+          "desc": "取消自己全部"
+        },
+        {
+          "cmd": "lprm -P myprinter 123",
+          "desc": "指定队列取消"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "作业号来自 lpq；不加参数取消当前队列首个任务，慎用",
+      "compare": null,
+      "options": null,
+      "sample": {
+        "output": "$ lprm 101\n$ lpq\nmyprinter is ready and printing\nRank   Owner      Job  Files\ndone   user       102  notes.txt",
+        "explain": "`lprm 101` 取消作业 101；`lpq` 复查已不见该作业，仅剩 102。无参数时取消当前队列首个任务，慎用。"
       }
     },
     {
