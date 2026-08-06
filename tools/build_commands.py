@@ -643,8 +643,8 @@ LINUX = [
       [("modinfo kvm", "看模块详情/参数")], "低", "日常"),
 
     # ---- Shell 内建命令 ----
-    c("echo", "shell", "输出文本", ["输出", "echo"],
-      [("echo hello", "打印文本"), ("echo $PATH", "打印变量")], "高", "入门"),
+    c("echo", "shell", "输出文本或变量到标准输出", ["输出", "echo", "打印", "显示", "回显", "打印变量", "屏幕输出", "终端输出"],
+      [("echo hello", "打印文本"), ("echo $PATH", "打印变量"), ("echo -n text", "末尾不换行（-n）"), ("echo -e 'a\\tb'", "解释转义如制表符（-e）")], "高", "入门"),
     c("printf", "shell", "格式化输出", ["格式化输出", "printf"],
       [("printf '%s\n' a b", "格式输出")], "中", "日常", None, "printf 更可控；echo 简单"),
     c("export", "env", "导出环境变量", ["环境变量", "export"],
