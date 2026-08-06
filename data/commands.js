@@ -71,6 +71,11 @@ window.COMMAND_DATA = {
       "group": "linux"
     },
     {
+      "id": "env",
+      "name": "环境变量",
+      "group": "linux"
+    },
+    {
       "id": "editor",
       "name": "编辑器与工具",
       "group": "linux"
@@ -10614,7 +10619,7 @@ window.COMMAND_DATA = {
     },
     {
       "name": "export",
-      "category": "shell",
+      "category": "env",
       "description": "把变量导出为环境变量，使其对子进程可见，如 export PATH=$PATH:/opt/bin。",
       "keywords": [
         "环境变量",
@@ -10624,6 +10629,10 @@ window.COMMAND_DATA = {
         {
           "cmd": "export PATH=$PATH:/opt/bin",
           "desc": "追加 PATH"
+        },
+        {
+          "cmd": "export -n VAR",
+          "desc": "取消导出（变量仍在但不再传给子进程）"
         }
       ],
       "frequency": "高",
@@ -18751,7 +18760,7 @@ window.COMMAND_DATA = {
     },
     {
       "name": "env",
-      "category": "editor",
+      "category": "env",
       "description": "在指定环境变量下运行命令，或打印当前环境，env -i 干净启动。",
       "keywords": [
         "环境变量",
@@ -18814,7 +18823,7 @@ window.COMMAND_DATA = {
     },
     {
       "name": "printenv",
-      "category": "editor",
+      "category": "env",
       "description": "打印环境变量，确认 PATH 等配置是否生效。",
       "keywords": [
         "打印环境",
@@ -18859,6 +18868,156 @@ window.COMMAND_DATA = {
       "sample": {
         "output": "$ printenv HOME\n/home/user\n$ printenv | head -3\nHOME=/home/user\nPATH=/usr/local/bin:...",
         "explain": "`printenv` 打印环境变量；单独加变量名(如 HOME)只取该值，比 env 更聚焦查询。"
+      }
+    },
+    {
+      "name": "declare",
+      "category": "env",
+      "description": "声明并控制 shell 变量与函数的属性：declare -x 导出为环境变量、declare -p 打印定义、declare -i 整数、declare -r 只读、declare -a/-A 数组。函数内默认局部，加 global 才全局。",
+      "keywords": [
+        "声明变量",
+        "环境变量",
+        "只读",
+        "整数",
+        "declare"
+      ],
+      "examples": [
+        {
+          "cmd": "declare -x VAR=val",
+          "desc": "声明并导出为环境变量"
+        },
+        {
+          "cmd": "declare -p VAR",
+          "desc": "打印变量定义与属性"
+        },
+        {
+          "cmd": "declare -i N",
+          "desc": "声明整型，赋值自动算术"
+        },
+        {
+          "cmd": "declare -r PI=3.14",
+          "desc": "设为只读"
+        }
+      ],
+      "frequency": "中",
+      "difficulty": "日常",
+      "pitfalls": "declare -x 等同 export；+x 取消导出。函数内 declare 默认局部，global 才全局",
+      "compare": "declare 声明变量/函数并控制属性；export 只负责导出环境变量",
+      "options": [
+        {
+          "flag": "<名称>",
+          "default": "无",
+          "desc": "声明变量，函数内默认局部于该函数作用域，脚本顶层则为全局。"
+        },
+        {
+          "flag": "-x / +x",
+          "default": "关闭",
+          "desc": "标记导出为环境变量（+x 取消），使子进程可见，等价 export/unset -x。"
+        },
+        {
+          "flag": "-p",
+          "default": "关闭",
+          "desc": "打印变量的定义语句，含当前值与属性，便于查看。"
+        },
+        {
+          "flag": "-i",
+          "default": "关闭",
+          "desc": "声明为整数类型，赋值时自动按算术求值。"
+        },
+        {
+          "flag": "-r",
+          "default": "关闭",
+          "desc": "设为只读，后续赋值或 unset 会报错，适合固定常量。"
+        },
+        {
+          "flag": "-a / -A",
+          "default": "关闭",
+          "desc": "声明为索引数组 / 关联数组。"
+        },
+        {
+          "flag": "-f",
+          "default": "关闭",
+          "desc": "操作函数而非变量（列出或标记函数属性）。"
+        },
+        {
+          "flag": "global",
+          "default": "无",
+          "desc": "在函数内用 declare -g 声明全局变量，否则默认局部。"
+        }
+      ],
+      "sample": {
+        "output": "$ declare -x GREET=hi\n$ echo $GREET\nhi\n$ declare -p GREET\ndeclare -x GREET=\"hi\"\n$ declare -i N=3+4\n$ echo $N\n7",
+        "explain": "`declare -x` 声明并导出环境变量；`declare -p` 打印其定义与属性（-x 标记表示已导出）。`declare -i` 让赋值按整数算术求值。"
+      }
+    },
+    {
+      "name": "typeset",
+      "category": "env",
+      "description": "声明并控制变量与函数的属性（ksh/zsh 中同 bash 的 declare）：typeset -x 导出环境变量、typeset -i 整数、typeset -r 只读、typeset -p 打印定义。",
+      "keywords": [
+        "声明变量",
+        "环境变量",
+        "只读",
+        "整数",
+        "typeset"
+      ],
+      "examples": [
+        {
+          "cmd": "typeset -x VAR=val",
+          "desc": "导出环境变量"
+        },
+        {
+          "cmd": "typeset -i N",
+          "desc": "声明整型"
+        },
+        {
+          "cmd": "typeset -r PI=3.14",
+          "desc": "设为只读"
+        },
+        {
+          "cmd": "typeset -p",
+          "desc": "打印所有变量定义"
+        }
+      ],
+      "frequency": "低",
+      "difficulty": "日常",
+      "pitfalls": "typeset 在 bash 中等价 declare；在 ksh/zsh 中为原生，语法一致",
+      "compare": null,
+      "options": [
+        {
+          "flag": "<名称>",
+          "default": "无",
+          "desc": "声明变量（ksh/zsh 中同 bash 的 declare）。"
+        },
+        {
+          "flag": "-x / +x",
+          "default": "关闭",
+          "desc": "导出为环境变量（+x 取消），子进程可见。"
+        },
+        {
+          "flag": "-i",
+          "default": "关闭",
+          "desc": "声明为整数类型，赋值自动算术求值。"
+        },
+        {
+          "flag": "-r",
+          "default": "关闭",
+          "desc": "设为只读，后续赋值会报错。"
+        },
+        {
+          "flag": "-p",
+          "default": "关闭",
+          "desc": "打印所有变量定义与属性。"
+        },
+        {
+          "flag": "-a / -A",
+          "default": "关闭",
+          "desc": "声明为索引数组 / 关联数组。"
+        }
+      ],
+      "sample": {
+        "output": "$ typeset -i N=3+4\n$ echo $N\n7\n$ typeset -r PI=3.14\n$ echo $PI\n3.14",
+        "explain": "`typeset -i` 声明整数变量，赋值自动算术求值；`typeset -r` 设为只读（ksh/zsh 中同 bash 的 declare）。"
       }
     },
     {

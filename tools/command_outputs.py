@@ -2233,6 +2233,26 @@ $ printf '%.2f\\n' 3.14159
 3.14""",
         """`printf` 类 C 格式化：`%-10s` 左对齐占 10 列，`%d` 整数；`%.2f` 保留 2 位小数。比 echo 更可控。"""
     ),
+    "declare": (
+        """$ declare -x GREET=hi
+$ echo $GREET
+hi
+$ declare -p GREET
+declare -x GREET="hi"
+$ declare -i N=3+4
+$ echo $N
+7""",
+        """`declare -x` 声明并导出环境变量；`declare -p` 打印其定义与属性（-x 标记表示已导出）。`declare -i` 让赋值按整数算术求值。"""
+    ),
+    "typeset": (
+        """$ typeset -i N=3+4
+$ echo $N
+7
+$ typeset -r PI=3.14
+$ echo $PI
+3.14""",
+        """`typeset -i` 声明整数变量，赋值自动算术求值；`typeset -r` 设为只读（ksh/zsh 中同 bash 的 declare）。"""
+    ),
     "export": (
         """$ export API_KEY=abc123
 $ echo $API_KEY

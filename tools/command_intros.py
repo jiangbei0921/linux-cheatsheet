@@ -227,6 +227,8 @@ INTROS = {
     # ==================== shell ====================
     "echo": "输出文本或变量到标准输出，脚本中打印信息或写文件最常见。",
     "printf": "按格式字符串输出，比 echo 更可控（对齐、进制、转义），适合生成规整输出。",
+    "declare": "声明并控制 shell 变量与函数的属性：declare -x 导出为环境变量、declare -p 打印定义、declare -i 整数、declare -r 只读、declare -a/-A 数组。函数内默认局部，加 global 才全局。",
+    "typeset": "声明并控制变量与函数的属性（ksh/zsh 中同 bash 的 declare）：typeset -x 导出环境变量、typeset -i 整数、typeset -r 只读、typeset -p 打印定义。",
     "export": "把变量导出为环境变量，使其对子进程可见，如 export PATH=$PATH:/opt/bin。",
     "alias": "为命令定义别名，如 alias ll='ls -la'，简化常用长命令。",
     "unalias": "取消已定义的别名，恢复原始命令行为。",
